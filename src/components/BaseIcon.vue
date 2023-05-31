@@ -44,19 +44,19 @@ span {
 span.icon:hover {
   // transform: scale(2);
 }
-// .material-symbols-rounded {
-//   font-variation-settings:
-//   'FILL' 1,
-//   'wght' 500,
-//   'GRAD' 0,
-//   'opsz' 24
-// }
-
 .material-symbols-rounded {
-  // font-size: 1em;
-  font-size: inherit;
-
-  font-variation-settings: "FILL" v-bind(FILL), "wght" v-bind(wght), "GRAD" v-bind(GRAD),
-    "opsz" v-bind(opsz);
+  font-variation-settings:
+  'FILL' 1,
+  'wght' 500,
+  'GRAD' 0,
+  'opsz' 24
 }
+
+// .material-symbols-rounded {
+//   // font-size: 1em;
+//   font-size: inherit;
+
+//   font-variation-settings: "FILL" v-bind(FILL), "wght" v-bind(wght), "GRAD" v-bind(GRAD),
+//     "opsz" v-bind(opsz);
+// }
 </style>
