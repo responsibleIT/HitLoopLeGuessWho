@@ -82,6 +82,13 @@ const mouseover =  (column, row) => {
   }
 };
 
+const clickCell = (col, row) => {
+  if (event) {
+    updateCell(col, row);
+  }
+};
+
+
 const container = ref(null);
 const width = ref(10);
 watch(rows, () => {
@@ -169,11 +176,10 @@ const stopM = async (e) => {
 <div id="container" ref="container">
   <div v-for="(column, x) in matrix" :key="x" class="column" :class="{ highlighted: x === highlighted }">
     <button v-for="(cell, y) in column" :key="y" @mouseover="mouseover(x, y)"
-            @mousedown="mouseover(x, y)" @click="mouseover(x,y)" class="cell" :class="{ filled: cell }">
+             @click="clickCell(x,y)" :x="x" :y="y" class="cell" :class="{ filled: cell }">
       {{ x }} <br/> {{ highlighted }}
     </button>
   </div>
-
 </div>
 <p>{{ started }} - {{ highlighted }}</p>
 <p>{{ matrix }}</p>
