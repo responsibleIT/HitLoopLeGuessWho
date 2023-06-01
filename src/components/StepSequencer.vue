@@ -12,7 +12,7 @@ const rows = ref(4);
 const subdivision = ref('8n');
 const sequencer = ref(null);
 const matrix = ref([]);
-const highlighted = ref(1);
+const highlighted = ref(-1);
 const started = ref(false);
 
 const indexArray = (count) => {
@@ -128,15 +128,17 @@ const stopM = async (e) => {
   }
 }
 
+
+
 </script>
 
 
 <template>
 <div id="container" ref="container">
-  <div v-for="(column, x) in matrix" :key="x" class="column" :class="{ highlighted: x == column }">
+  <div v-for="(column, x) in matrix" :key="x" class="column" :class="{ highlighted: x === highlighted }">
     <button v-for="(cell, y) in column" :key="y" @mouseover="mouseover(x, y)"
             @mousedown="mouseover(x, y)" class="cell" :class="{ filled: cell }">
-      {{ x }} = {{ highlighted }}
+      {{ x }} <br/> {{ highlighted }}
     </button>
   </div>
 
@@ -148,7 +150,7 @@ const stopM = async (e) => {
 </template>
 
 
-<style scoped>
+<style scoped lang="scss">
 #container,
 .column {
   gap: 0em;
@@ -167,6 +169,10 @@ const stopM = async (e) => {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
+
+  &.highlighted {
+    border: 1px solid red;
+  }
 }
 
 .filled {
