@@ -169,7 +169,7 @@ const stopM = async (e) => {
 <div id="container" ref="container">
   <div v-for="(column, x) in matrix" :key="x" class="column" :class="{ highlighted: x === highlighted }">
     <button v-for="(cell, y) in column" :key="y" @mouseover="mouseover(x, y)"
-            @mousedown="mouseover(x, y)" class="cell" :class="{ filled: cell }">
+            @mousedown="mouseover(x, y)" @click="mouseover(x,y)" class="cell" :class="{ filled: cell }">
       {{ x }} <br/> {{ highlighted }}
     </button>
   </div>
