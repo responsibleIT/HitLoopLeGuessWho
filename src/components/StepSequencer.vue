@@ -8,12 +8,16 @@ const props = defineProps({
   playPause: Boolean
 })
 const columns = ref(16);
+const notes = ref(['F4', 'Eb4', 'C4', 'Bb3'])
 const rows = ref(4);
 const subdivision = ref('8n');
 const sequencer = ref(null);
 const matrix = ref([]);
 const highlighted = ref(-1);
 const started = ref(false);
+const playing = ref(false);
+const bpm = ref(130);
+
 
 const indexArray = (count) => {
   const indices = ref([]);
@@ -26,20 +30,20 @@ const indexArray = (count) => {
 // 
 
 const tick = (time, index) => {
-  console.log('time')
-  console.log('index')
-  console.log(time)
-  console.log(index)
+  const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+const now = Tone.now()
+
+
+  console.log(now)
   Tone.Draw.schedule(() => {
     if (started.value === true) {
       highlighted.value = index;
-      console.log(index)
     }
   }, time);
+
   matrix.value[index].forEach((value, row) => {
+    // console.log(value)
     if (value) {
-      console.log(value)
-      console.log(row)
       row = rows.value - row - 1;
       console.log(row)
       const event = new CustomEvent('trigger', {
@@ -49,6 +53,8 @@ const tick = (time, index) => {
         },
         composed: true,
       });
+      console.log(notes.value[row])
+      synth.triggerAttackRelease(notes.value[row],subdivision.value)
       document.dispatchEvent(event);
     }
   });
@@ -58,7 +64,7 @@ const updateCell = (column, row) => {
   matrix.value[column][row] = !matrix.value[column][row];
 };
 
-const mouseover = (column, row) => {
+const mouseover =  (column, row) => {
   if (event.buttons) {
     updateCell(column, row);
   }
@@ -78,16 +84,21 @@ watch(cellWidth, () => {
   container.value.style.height = `${cellWidth.value * rows.value}px`;
 });
 
+
+
+
 onMounted(() => {
   sequencer.value = new Tone.Sequence(tick, indexArray(columns.value), subdivision.value).start(0);
   matrix.value = indexArray(columns.value).map(() => {
     return indexArray(rows.value).map(() => false);
   });
-
   console.log(started.value)
-  Tone.Transport.on('start', () => (started.value = true));
+  Tone.Transport.on('start', () => {
+    started.value = true
+    Tone.getDestination().volume.rampTo(-10, 0.001);
+  });
   Tone.Transport.on('stop', () => {
-    highlighted.value = -1;
+    // highlighted.value = -1;
     console.log(started.value)
     started.value = false;
     console.log(started.value)
@@ -96,18 +107,25 @@ onMounted(() => {
 
 
 const togglePlayPause = async (e) => {
-  console.log(started.value)
-  const togglePlayState = useToggle(started);
-  togglePlayState()
-  if (e) {
+  const toggleStarted = useToggle(started);
+  const togglePlayPause = useToggle(playing);
+  if (!started.value) {
     await Tone.start()
+    Tone.getDestination().volume.rampTo(-10, 0.001);
+    started.value = true
   }
-  if (started.value === true) {
-    await Tone.Transport.start()
-
+  if (e && playing.value) {
+    await Tone.Transport.start();
+    togglePlayPause()
   } else {
-    await Tone.start()
+    await Tone.Transport.stop();
+    togglePlayPause()
   }
+
+
+
+
+
 }
 const togglePlayPauseButton = async (e) => {
   if (e) {
@@ -119,12 +137,14 @@ const togglePlayPauseButton = async (e) => {
 const startM = async (e) => {
   if (e) {
     await Tone.Transport.start()
+    // Tone.getDestination().volume.rampTo(-10, 0.001);
   }
 }
 
 const stopM = async (e) => {
+  const now = Tone.now()
   if (e) {
-    await Tone.Transport.stop()
+    await Tone.Transport.stop(now)
   }
 }
 
@@ -145,8 +165,13 @@ const stopM = async (e) => {
 </div>
 <p>{{ started }} - {{ highlighted }}</p>
 <p>{{ matrix }}</p>
+
+<button v-if="!playing" @click="togglePlayPause()">play</button>
+<button v-else @click="togglePlayPause()">pause</button>
+
 <button @click="stopM">Stop</button>
 <button @click="startM">Start</button>
+<button @click="rows+=1">addRow</button>
 </template>
 
 
@@ -173,6 +198,11 @@ const stopM = async (e) => {
   &.highlighted {
     border: 1px solid red;
   }
+}
+
+.cell {
+  width: 3em;
+  height: 3em;
 }
 
 .filled {
