@@ -13,6 +13,9 @@ export default defineConfig({
   css: {
     devSourcemap: true
   },
+  build: {
+    outDir: 'docs', 
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
