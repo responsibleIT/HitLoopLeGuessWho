@@ -43,9 +43,17 @@ const now = Tone.now()
 
   matrix.value[index].forEach((value, row) => {
     // console.log(value)
+
+    // value = true when cell is active 
     if (value) {
+
+      // row = current row that must make a sound, so when its active
       row = rows.value - row - 1;
+
+      //
+
       console.log(row)
+      // idk what this does
       const event = new CustomEvent('trigger', {
         detail: {
           time,
@@ -53,7 +61,11 @@ const now = Tone.now()
         },
         composed: true,
       });
+
       console.log(notes.value[row])
+
+
+      // make a sound when note is active. 
       synth.triggerAttackRelease(notes.value[row],subdivision.value)
       document.dispatchEvent(event);
     }
