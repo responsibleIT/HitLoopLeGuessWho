@@ -1,8 +1,7 @@
-
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue';
-import * as Tone from 'tone';
-import { useFetch, useToggle } from '@vueuse/core';
+import { ref, onMounted, watch, computed } from 'vue'
+import * as Tone from 'tone'
+import { useFetch, useToggle } from '@vueuse/core'
 // import style from './step-sequencer.scss';
 const props = defineProps({
   playPause: Boolean
@@ -21,67 +20,60 @@ const sample5 = 'sfx_2_0_Tramhalte_Amsterdam.wav'
 const URL1 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample1}`
 const URL2 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample2}`
 const URL3 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample3}`
-const URL4= `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample4}`
-const URL5= `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample5}`
+const URL4 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample4}`
+const URL5 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample5}`
 
-
-
-const columns = ref(10);
+const columns = ref(10)
 const notes = ref(['G2', 'F2', 'E2', 'D2', 'C2'])
-const rows = ref(5);
-const subdivision = ref('2n');
-const sequencer = ref(null);
-const matrix = ref([]);
-const highlighted = ref(-1);
-const started = ref(false);
-const playing = ref(false);
-const bpm = ref(130);
-
+const rows = ref(5)
+const subdivision = ref('8n')
+const sequencer = ref(null)
+const matrix = ref([])
+const highlighted = ref(-1)
+const started = ref(false)
+const playing = ref(false)
+const bpm = ref(130)
 
 const indexArray = (count) => {
-  const indices = ref([]);
+  const indices = ref([])
   for (let i = 0; i < count; i++) {
-    indices.value.push(i);
+    indices.value.push(i)
   }
-  return indices.value;
-};
-
-
+  return indices.value
+}
 
 const tick = (time, index) => {
   // const player = new Tone.Player(Tone.Player)
-  const synth = new Tone.PolySynth(Tone.Synth).toDestination();
+  const synth = new Tone.PolySynth(Tone.Synth).toDestination()
   const now = Tone.now()
 
   let newSampler = new Tone.Sampler({
-		urls: {
-		  C2: URL1,
-		  D2: URL2,
-		  E2: URL3,
-		  F2: URL4,
-		  G2: URL5,
-		},
-		onload: () => {
-		  console.log("Sampler loaded");
-		}
-	  }).toDestination();
-
+    urls: {
+      C2: URL1,
+      D2: URL2,
+      E2: URL3,
+      F2: URL4,
+      G2: URL5
+    },
+    onload: () => {
+      console.log('Sampler loaded')
+    }
+  }).toDestination()
 
   console.log(now)
   Tone.Draw.schedule(() => {
     if (started.value === true) {
-      highlighted.value = index;
+      highlighted.value = index
     }
-  }, time);
+  }, time)
 
   matrix.value[index].forEach((value, row) => {
     // console.log(value)
 
-    // value = true when cell is active 
+    // value = true when cell is active
     if (value) {
-
       // row = current row that must make a sound, so when its active
-      row = rows.value - row - 1;
+      row = rows.value - row - 1
 
       //
 
@@ -90,108 +82,96 @@ const tick = (time, index) => {
       const event = new CustomEvent('trigger', {
         detail: {
           time,
-          row,
+          row
         },
-        composed: true,
-      });
+        composed: true
+      })
 
       console.log(notes.value[row])
 
       Tone.loaded().then(() => {
-        newSampler.triggerAttackRelease(notes.value[row],subdivision.value)
-        
-})
-      // make a sound when note is active. 
+        newSampler.triggerAttackRelease(notes.value[row], subdivision.value)
+      })
+      // make a sound when note is active.
       // synth.triggerAttackRelease(notes.value[row],subdivision.value)
-      document.dispatchEvent(event);
+      document.dispatchEvent(event)
     }
-  });
-};
+  })
+}
 
 const updateCell = (column, row) => {
-  matrix.value[column][row] = !matrix.value[column][row];
-};
+  matrix.value[column][row] = !matrix.value[column][row]
+}
 
-const mouseover =  (column, row) => {
+const mouseover = (column, row) => {
   if (event.buttons) {
-    updateCell(column, row);
+    updateCell(column, row)
   }
-};
+}
 
 const clickCell = (col, row) => {
   if (event) {
-    updateCell(col, row);
+    updateCell(col, row)
   }
-};
+}
 
-
-const container = ref(null);
-const width = ref(10);
+const container = ref(null)
+const width = ref(10)
 watch(rows, () => {
   console.log(width)
-  width.value = container.value.offsetWidth;
+  width.value = container.value.offsetWidth
   console.log(container.value)
-});
+})
 
 const cellWidth = computed(() => {
   console.log(width.value)
   console.log(columns.value)
 
   return width.value / columns.value
-});
-console.log(cellWidth.value);
+})
+console.log(cellWidth.value)
 watch(cellWidth, () => {
-  container.value.style.height = `${cellWidth.value * rows.value}px`;
-});
-
-
-
+  container.value.style.height = `${cellWidth.value * rows.value}px`
+})
 
 onMounted(() => {
-  sequencer.value = new Tone.Sequence(tick, indexArray(columns.value), subdivision.value).start(0);
+  sequencer.value = new Tone.Sequence(tick, indexArray(columns.value), subdivision.value).start(0)
   matrix.value = indexArray(columns.value).map(() => {
-    return indexArray(rows.value).map(() => false);
-  });
+    return indexArray(rows.value).map(() => false)
+  })
   console.log(started.value)
   Tone.Transport.on('start', () => {
     started.value = true
-    Tone.getDestination().volume.rampTo(-10, 0.001);
-  });
+    Tone.getDestination().volume.rampTo(-10, 0.001)
+  })
   Tone.Transport.on('stop', () => {
     // highlighted.value = -1;
     console.log(started.value)
-    started.value = false;
+    started.value = false
     console.log(started.value)
-  });
-});
-
+  })
+})
 
 const togglePlayPause = async (e) => {
-  const toggleStarted = useToggle(started);
-  const togglePlayPause = useToggle(playing);
+  const toggleStarted = useToggle(started)
+  const togglePlayPause = useToggle(playing)
   if (!started.value) {
     await Tone.start()
-    Tone.getDestination().volume.rampTo(-10, 0.001);
+    Tone.getDestination().volume.rampTo(-10, 0.001)
     started.value = true
   }
   if (e && playing.value) {
-    await Tone.Transport.start();
+    await Tone.Transport.start()
     togglePlayPause()
   } else {
-    await Tone.Transport.stop();
+    await Tone.Transport.stop()
     togglePlayPause()
   }
-
-
-
-
-
 }
 const togglePlayPauseButton = async (e) => {
   if (e) {
-    await Tone.start();
+    await Tone.start()
   }
-
 }
 
 const startM = async (e) => {
@@ -207,39 +187,46 @@ const stopM = async (e) => {
     await Tone.Transport.stop(now)
   }
 }
-
-
-
 </script>
 
-
 <template>
-<div id="container" ref="container">
-  <div v-for="(column, x) in matrix" :key="x" class="column" :class="{ highlighted: x === highlighted }">
-    <button v-for="(cell, y) in column" :key="y" @mouseover="mouseover(x, y)"
-             @click="clickCell(x,y)" :x="x" :y="y" class="cell" :class="{ filled: cell }">
-      <!-- {{ x }} <br/> {{ highlighted }} -->
-    </button>
+  <div id="container" ref="container">
+    <div
+      v-for="(column, x) in matrix"
+      :key="x"
+      class="column"
+      :class="{ highlighted: x === highlighted }"
+    >
+      <button
+        v-for="(cell, y) in column"
+        :key="y"
+        @mouseover="mouseover(x, y)"
+        @click="clickCell(x, y)"
+        :x="x"
+        :y="y"
+        class="cell"
+        :class="{ filled: cell }"
+      >
+        <!-- {{ x }} <br/> {{ highlighted }} -->
+      </button>
+    </div>
   </div>
-</div>
-<p>{{ started }} - {{ highlighted }}</p>
-<p>{{ matrix }}</p>
+  <p>{{ started }} - {{ highlighted }}</p>
+  <p>{{ matrix }}</p>
 
-<!-- <button v-if="!playing" @click="togglePlayPause()">play</button>
+  <!-- <button v-if="!playing" @click="togglePlayPause()">play</button>
 <button v-else @click="togglePlayPause()">pause</button> -->
 
-<button @click="stopM">Stop</button>
-<button @click="startM">Start</button>
-<button @click="rows+=1">addRow</button>
+  <button @click="stopM">Stop</button>
+  <button @click="startM">Start</button>
+  <button @click="rows += 1">addRow</button>
 </template>
-
 
 <style scoped lang="scss">
 #container,
 .column {
   gap: 0em;
 }
-
 
 #container {
   width: 100%;
@@ -268,10 +255,8 @@ const stopM = async (e) => {
   background: var(--color-primary);
 }
 
-
 /* @import "./step-sequencer.scss"; */
 </style>
-
 
 <!-- <script setup>
 import {ref} from 'vue';
