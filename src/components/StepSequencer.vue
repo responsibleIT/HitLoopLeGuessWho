@@ -1,5 +1,6 @@
+<!-- eslint-disable no-unused-vars -->
 <script setup>
-import { ref, onMounted, watch, computed } from 'vue'
+import { ref, onMounted, watch,watchEffect, computed, onUpdated, reactive, TransitionGroup } from 'vue'
 import * as Tone from 'tone'
 import { useFetch, useToggle } from '@vueuse/core'
 // import style from './step-sequencer.scss';
@@ -29,13 +30,14 @@ const rows = ref(5)
 const subdivision = ref('8n')
 const sequencer = ref(null)
 const matrix = ref([])
+
 const highlighted = ref(-1)
 const started = ref(false)
 const playing = ref(false)
 const bpm = ref(130)
 
 const indexArray = (count) => {
-  const indices = ref([])
+  const indices = ref([])  
   for (let i = 0; i < count; i++) {
     indices.value.push(i)
   }
@@ -46,7 +48,7 @@ const tick = (time, index) => {
   // const player = new Tone.Player(Tone.Player)
   const synth = new Tone.PolySynth(Tone.Synth).toDestination()
   const now = Tone.now()
-
+  
   let newSampler = new Tone.Sampler({
     urls: {
       C2: URL1,
@@ -60,7 +62,6 @@ const tick = (time, index) => {
     }
   }).toDestination()
 
-  console.log(now)
   Tone.Draw.schedule(() => {
     if (started.value === true) {
       highlighted.value = index
@@ -75,9 +76,6 @@ const tick = (time, index) => {
       // row = current row that must make a sound, so when its active
       row = rows.value - row - 1
 
-      //
-
-      console.log(row)
       // idk what this does
       const event = new CustomEvent('trigger', {
         detail: {
@@ -86,8 +84,6 @@ const tick = (time, index) => {
         },
         composed: true
       })
-
-      console.log(notes.value[row])
 
       Tone.loaded().then(() => {
         newSampler.triggerAttackRelease(notes.value[row], subdivision.value)
@@ -118,37 +114,31 @@ const clickCell = (col, row) => {
 const container = ref(null)
 const width = ref(10)
 watch(rows, () => {
-  console.log(width)
   width.value = container.value.offsetWidth
-  console.log(container.value)
 })
 
 const cellWidth = computed(() => {
-  console.log(width.value)
-  console.log(columns.value)
-
   return width.value / columns.value
 })
-console.log(cellWidth.value)
+
 watch(cellWidth, () => {
   container.value.style.height = `${cellWidth.value * rows.value}px`
 })
-
 onMounted(() => {
   sequencer.value = new Tone.Sequence(tick, indexArray(columns.value), subdivision.value).start(0)
+
   matrix.value = indexArray(columns.value).map(() => {
     return indexArray(rows.value).map(() => false)
   })
-  console.log(started.value)
+
   Tone.Transport.on('start', () => {
     started.value = true
     Tone.getDestination().volume.rampTo(-10, 0.001)
   })
   Tone.Transport.on('stop', () => {
-    // highlighted.value = -1;
-    console.log(started.value)
+    
     started.value = false
-    console.log(started.value)
+    
   })
 })
 
@@ -182,15 +172,16 @@ const startM = async (e) => {
 }
 
 const stopM = async (e) => {
-  const now = Tone.now()
+  // const now = Tone.now()
   if (e) {
-    await Tone.Transport.stop(now)
+    await Tone.Transport.stop()
   }
 }
 </script>
 
 <template>
   <div id="container" ref="container">
+    <TransitionGroup>
     <div
       v-for="(column, x) in matrix"
       :key="x"
@@ -210,16 +201,14 @@ const stopM = async (e) => {
         <!-- {{ x }} <br/> {{ highlighted }} -->
       </button>
     </div>
+  </TransitionGroup>
   </div>
-  <p>{{ started }} - {{ highlighted }}</p>
-  <p>{{ matrix }}</p>
-
-  <!-- <button v-if="!playing" @click="togglePlayPause()">play</button>
-<button v-else @click="togglePlayPause()">pause</button> -->
-
+  <p>Started = {{ started }}</p>
+  <p>highlighted = {{ highlighted }}</p>
   <button @click="stopM">Stop</button>
   <button @click="startM">Start</button>
   <button @click="rows += 1">addRow</button>
+  <pre>{{ matrix }}</pre>
 </template>
 
 <style scoped lang="scss">
@@ -230,10 +219,11 @@ const stopM = async (e) => {
 
 #container {
   width: 100%;
+  overflow-x: scroll;
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  align-items: center;
+  // justify-content: center;
+  // align-items: center;
 }
 
 .column {
