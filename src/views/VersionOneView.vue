@@ -1,29 +1,27 @@
 <script setup>
-import { ref } from 'vue';
+import { ref } from 'vue'
 
-import BeatVersionOne from '@/components/BeatVersionOne.vue';
+import BeatVersionOne from '@/components/BeatVersionOne.vue'
 import { useToggle } from '@vueuse/core'
-import StepSequencer from '@/components/StepSequencer.vue';
+import StepSequencer from '@/components/StepSequencer.vue'
 
-const playPause = ref(false);
+const playPause = ref(false)
 const togglePlayPause = useToggle(playPause)
-
 </script>
 
 <template>
-<main>
-  <StepSequencer/>
-  <!-- <div>{{ playPause }}</div>
+  <main>
+    <StepSequencer />
+    <!-- <div>{{ playPause }}</div>
   <div>
     <button v-if="!playPause" @click="togglePlayPause()">play</button>
     <button v-else @click="togglePlayPause()">pause</button>
   </div> -->
-</main>
+  </main>
 </template>
 a
 <style scoped>
 main {
   margin-inline: auto;
-
 }
-</style> 
+</style>

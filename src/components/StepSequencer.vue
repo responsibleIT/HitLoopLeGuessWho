@@ -1,6 +1,15 @@
 <!-- eslint-disable no-unused-vars -->
 <script setup>
-import { ref, onMounted, watch,watchEffect, computed, onUpdated, reactive, TransitionGroup } from 'vue'
+import {
+  ref,
+  onMounted,
+  watch,
+  watchEffect,
+  computed,
+  onUpdated,
+  reactive,
+  TransitionGroup
+} from 'vue'
 import * as Tone from 'tone'
 import { useFetch, useToggle } from '@vueuse/core'
 // import style from './step-sequencer.scss';
@@ -37,7 +46,7 @@ const playing = ref(false)
 const bpm = ref(130)
 
 const indexArray = (count) => {
-  const indices = ref([])  
+  const indices = ref([])
   for (let i = 0; i < count; i++) {
     indices.value.push(i)
   }
@@ -48,7 +57,7 @@ const tick = (time, index) => {
   // const player = new Tone.Player(Tone.Player)
   const synth = new Tone.PolySynth(Tone.Synth).toDestination()
   const now = Tone.now()
-  
+
   let newSampler = new Tone.Sampler({
     urls: {
       C2: URL1,
@@ -136,9 +145,7 @@ onMounted(() => {
     Tone.getDestination().volume.rampTo(-10, 0.001)
   })
   Tone.Transport.on('stop', () => {
-    
     started.value = false
-    
   })
 })
 
@@ -182,26 +189,26 @@ const stopM = async (e) => {
 <template>
   <div id="container" ref="container">
     <TransitionGroup>
-    <div
-      v-for="(column, x) in matrix"
-      :key="x"
-      class="column"
-      :class="{ highlighted: x === highlighted }"
-    >
-      <button
-        v-for="(cell, y) in column"
-        :key="y"
-        @mouseover="mouseover(x, y)"
-        @click="clickCell(x, y)"
-        :x="x"
-        :y="y"
-        class="cell"
-        :class="{ filled: cell }"
+      <div
+        v-for="(column, x) in matrix"
+        :key="x"
+        class="column"
+        :class="{ highlighted: x === highlighted }"
       >
-        <!-- {{ x }} <br/> {{ highlighted }} -->
-      </button>
-    </div>
-  </TransitionGroup>
+        <button
+          v-for="(cell, y) in column"
+          :key="y"
+          @mouseover="mouseover(x, y)"
+          @click="clickCell(x, y)"
+          :x="x"
+          :y="y"
+          class="cell"
+          :class="{ filled: cell }"
+        >
+          <!-- {{ x }} <br/> {{ highlighted }} -->
+        </button>
+      </div>
+    </TransitionGroup>
   </div>
   <p>Started = {{ started }}</p>
   <p>highlighted = {{ highlighted }}</p>
