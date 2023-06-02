@@ -116,7 +116,7 @@ const clickCell = (col, row) => {
 }
 
 const container = ref(null)
-const width = ref(10)
+const width = ref(16)
 watch(rows, () => {
   console.log(width)
   width.value = container.value.offsetWidth
