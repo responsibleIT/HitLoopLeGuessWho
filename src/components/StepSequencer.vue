@@ -23,7 +23,7 @@ const URL3 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&f
 const URL4 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample4}`
 const URL5 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample5}`
 
-const columns = ref(10)
+const columns = ref(16)
 const notes = ref(['G2', 'F2', 'E2', 'D2', 'C2'])
 const rows = ref(5)
 const subdivision = ref('8n')
@@ -116,7 +116,7 @@ const clickCell = (col, row) => {
 }
 
 const container = ref(null)
-const width = ref(16)
+const width = ref(10)
 watch(rows, () => {
   console.log(width)
   width.value = container.value.offsetWidth
