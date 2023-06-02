@@ -97,8 +97,13 @@ watch(rows, () => {
   console.log(container.value)
 });
 
-const cellWidth = computed(() => width.value / columns.value);
-console.log(cellWidth.value)
+const cellWidth = computed(() => {
+  console.log(width.value)
+  console.log(columns.value)
+
+  return width.value / columns.value
+});
+console.log(cellWidth.value);
 watch(cellWidth, () => {
   container.value.style.height = `${cellWidth.value * rows.value}px`;
 });
@@ -177,7 +182,7 @@ const stopM = async (e) => {
   <div v-for="(column, x) in matrix" :key="x" class="column" :class="{ highlighted: x === highlighted }">
     <button v-for="(cell, y) in column" :key="y" @mouseover="mouseover(x, y)"
              @click="clickCell(x,y)" :x="x" :y="y" class="cell" :class="{ filled: cell }">
-      {{ x }} <br/> {{ highlighted }}
+      <!-- {{ x }} <br/> {{ highlighted }} -->
     </button>
   </div>
 </div>
