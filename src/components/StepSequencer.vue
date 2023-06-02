@@ -2,15 +2,34 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import * as Tone from 'tone';
-import { useToggle } from '@vueuse/core';
+import { useFetch, useToggle } from '@vueuse/core';
 // import style from './step-sequencer.scss';
 const props = defineProps({
   playPause: Boolean
 })
-const columns = ref(16);
-const notes = ref(['F4', 'Eb4', 'C4', 'Bb3'])
-const rows = ref(4);
-const subdivision = ref('8n');
+
+// https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_Tramhalte_Amsterdam.wav
+
+// https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=
+
+const sample1 = 'crash_1_0_Tramhalte_Amsterdam.wav'
+const sample2 = 'kick_2_0_REPORTAGE OVER DE METRO.wav'
+const sample3 = 'snare_1_0_REPORTAGE OVER DE METRO.wav'
+const sample4 = 'sfx_2_0_TRAM AMSTERDAM-ZANDVOORT.wav'
+const sample5 = 'sfx_2_0_Tramhalte_Amsterdam.wav'
+
+const URL1 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample1}`
+const URL2 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample2}`
+const URL3 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample3}`
+const URL4= `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample4}`
+const URL5= `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample5}`
+
+
+
+const columns = ref(10);
+const notes = ref(['G2', 'F2', 'E2', 'D2', 'C2'])
+const rows = ref(5);
+const subdivision = ref('2n');
 const sequencer = ref(null);
 const matrix = ref([]);
 const highlighted = ref(-1);
@@ -27,11 +46,25 @@ const indexArray = (count) => {
   return indices.value;
 };
 
-// 
+
 
 const tick = (time, index) => {
+  // const player = new Tone.Player(Tone.Player)
   const synth = new Tone.PolySynth(Tone.Synth).toDestination();
-const now = Tone.now()
+  const now = Tone.now()
+
+  let newSampler = new Tone.Sampler({
+		urls: {
+		  C2: URL1,
+		  D2: URL2,
+		  E2: URL3,
+		  F2: URL4,
+		  G2: URL5,
+		},
+		onload: () => {
+		  console.log("Sampler loaded");
+		}
+	  }).toDestination();
 
 
   console.log(now)
@@ -64,9 +97,12 @@ const now = Tone.now()
 
       console.log(notes.value[row])
 
-
+      Tone.loaded().then(() => {
+        newSampler.triggerAttackRelease(notes.value[row],subdivision.value)
+        
+})
       // make a sound when note is active. 
-      synth.triggerAttackRelease(notes.value[row],subdivision.value)
+      // synth.triggerAttackRelease(notes.value[row],subdivision.value)
       document.dispatchEvent(event);
     }
   });
@@ -189,8 +225,8 @@ const stopM = async (e) => {
 <p>{{ started }} - {{ highlighted }}</p>
 <p>{{ matrix }}</p>
 
-<button v-if="!playing" @click="togglePlayPause()">play</button>
-<button v-else @click="togglePlayPause()">pause</button>
+<!-- <button v-if="!playing" @click="togglePlayPause()">play</button>
+<button v-else @click="togglePlayPause()">pause</button> -->
 
 <button @click="stopM">Stop</button>
 <button @click="startM">Start</button>
