@@ -1,20 +1,3 @@
-<template>
-  <div id="sequencer">
-    <div v-for="(row, index) in sequenceData" :key="index">
-      <select v-model="row.note">
-        <option v-for="note in availableNotes" :key="note" :value="note">{{ note }}</option>
-      </select>
-      <div
-        v-for="step in 16"
-        :key="step"
-        class="step"
-        :class="{ active: row.steps[step] }"
-        @click="toggleStep(row, step)"
-      ></div>
-    </div>
-  </div>
-  <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button>
-</template>
 
 <script setup>
 import { ref, reactive } from 'vue'
@@ -63,6 +46,25 @@ function togglePlay() {
   }
 }
 </script>
+
+<template>
+  <div id="sequencer">
+    <div v-for="(row, index) in sequenceData" :key="index">
+      <select v-model="row.note">
+        <option v-for="note in availableNotes" :key="note" :value="note">{{ note }}</option>
+      </select>
+      <div
+        v-for="step in 16"
+        :key="step"
+        class="step"
+        :class="{ active: row.steps[step] }"
+        @click="toggleStep(row, step)"
+      ></div>
+    </div>
+  </div>
+  <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button>
+</template>
+
 
 <style scoped lang="scss">
 .step {
