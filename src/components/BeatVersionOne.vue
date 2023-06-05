@@ -7,6 +7,10 @@ const availableNotes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4']
 
 const synth = new Tone.PolySynth(Tone.Synth).toDestination()
 
+const BPM = ref(120);
+
+const subNote = ref('8n');
+
 const sequenceData = reactive(
   availableNotes.map((note) => ({
     note,
@@ -25,10 +29,10 @@ const sequence = new Tone.Sequence(
     }
   },
   Array.from({ length: 16 }, (_, i) => i),
-  '16n'
+  '8n'
 )
 
-Tone.Transport.bpm.value = 120
+Tone.Transport.bpm.value = BPM.value
 
 function toggleStep(row, step) {
   row.steps[step] = !row.steps[step]
