@@ -10,6 +10,9 @@ const synth = new Tone.PolySynth(Tone.Synth).toDestination()
 const BPM = ref(120);
 
 const subNote = ref('8n');
+const rows = ref(16);
+
+
 
 const sequenceData = reactive(
   availableNotes.map((note) => ({
