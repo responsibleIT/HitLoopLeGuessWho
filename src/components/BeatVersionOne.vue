@@ -53,6 +53,7 @@ function togglePlay() {
 
 <template>
   <div id="sequencer">
+    <input v-bind="BPM" type='number' :value="BPM">
     <div v-for="(row, index) in sequenceData" :key="index">
       <select v-model="row.note">
         <option v-for="note in availableNotes" :key="note" :value="note">{{ note }}</option>
@@ -68,7 +69,6 @@ function togglePlay() {
   </div>
   <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button>
 </template>
-
 
 <style scoped lang="scss">
 .step {
