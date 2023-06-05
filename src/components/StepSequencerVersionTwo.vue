@@ -37,9 +37,9 @@ const URL4 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&f
 const URL5 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample5}`
 
 const notes = ["G4", "B2", "E2", "G2", "C3"];
-const activeSamples = ref([URL1, URL2])
+const activeSamples = [URL1, URL2]
 const objects = {};
-for (let i = 0; i < activeSamples.value.length; i++) {
+for (let i = 0; i < activeSamples.length; i++) {
   objects[notes[i]] = activeSamples[i];
 }
 console.log(objects)
@@ -66,7 +66,7 @@ const sampler = new Tone.Sampler(
 
 
 
-const sequenceData = reactive(activeSamples.value.map(sample => ({
+const sequenceData = reactive(activeSamples.map(sample => ({
   sample,
   steps: Array(16).fill(false),
 })));
