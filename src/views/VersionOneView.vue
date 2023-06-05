@@ -6,12 +6,14 @@ import { useToggle } from '@vueuse/core'
 import StepSequencer from '@/components/StepSequencer.vue'
 
 const playPause = ref(false)
-const togglePlayPause = useToggle(playPause)
+// const togglePlayPause = useToggle(playPause)
 </script>
 
 <template>
   <main>
-    <StepSequencer />
+    <!-- <StepSequencer /> -->
+    <BeatVersionOne/>
+
     <!-- <div>{{ playPause }}</div>
   <div>
     <button v-if="!playPause" @click="togglePlayPause()">play</button>

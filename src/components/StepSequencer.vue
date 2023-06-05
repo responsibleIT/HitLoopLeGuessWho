@@ -135,7 +135,7 @@ watch(cellWidth, () => {
 })
 onMounted(() => {
   sequencer.value = new Tone.Sequence(tick, indexArray(columns.value), subdivision.value).start(0)
-
+  
   matrix.value = indexArray(columns.value).map(() => {
     return indexArray(rows.value).map(() => false)
   })
@@ -214,7 +214,7 @@ const stopM = async (e) => {
   <p>highlighted = {{ highlighted }}</p>
   <button @click="stopM">Stop</button>
   <button @click="startM">Start</button>
-  <button @click="rows += 1">addRow</button>
+  <button @click="columns++">addRow</button>
   <pre>{{ matrix }}</pre>
 </template>
 
