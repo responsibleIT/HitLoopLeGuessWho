@@ -1,6 +1,6 @@
 
 <script setup>
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import * as Tone from 'tone'
 
 const availableNotes = ['C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4']
@@ -49,11 +49,26 @@ function togglePlay() {
     sequence.stop()
   }
 }
+
+
+function updateBPM(event) {
+  BPM.value = +event.target.value;
+  Tone.Transport.bpm.value = BPM.value
+}
+
+
+watch(BPM.value, (newBPM) => {
+  Tone.Transport.bpm.value = newBPM.value
+})
+
 </script>
 
 <template>
+      <label for='BPM'> {{ BPM }}</label>
+    <input id="BPM" v-model.number="BPM"  @input="updateBPM" type='number'  placeholder="129" default="BPM">
   <div id="sequencer">
-    <input v-bind="BPM" type='number' :value="BPM">
+
+
     <div v-for="(row, index) in sequenceData" :key="index">
       <select v-model="row.note">
         <option v-for="note in availableNotes" :key="note" :value="note">{{ note }}</option>
