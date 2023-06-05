@@ -13,7 +13,7 @@ const sample3 = 'snare_1_0_REPORTAGE OVER DE METRO.wav'
 const sample4 = 'sfx_2_0_TRAM AMSTERDAM-ZANDVOORT.wav'
 const sample5 = 'sfx_2_0_Tramhalte_Amsterdam.wav'
 
-const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
+const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=a&file='
 
 const URL1 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample1}`
 const URL2 = `https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=${sample2}`
@@ -28,58 +28,100 @@ let bpm = ref(120);
 const notes = ["G4", "G4", "E2", "G2", "C3"];
 const availableSamples = ['A3', 'B3', 'C3', 'D3'];
 
-const activeSamples = [URL1, URL2]
+const activeSamples = ["A3","B3"]
 
 const sampleList = ref(samplePackA.files)
 console.log(sampleList)
-const objects = reactive({});
-for (let i = 0; i < activeSamples.length; i++) {
-  objects[notes[i]] = activeSamples[i];
-}
-console.log(objects)
+
+
+
 
 
 const sequenceData = reactive(activeSamples.map(sample => ({
-  sample,
+  sample: sample,
   steps: Array(16).fill(false),
+  url: BaseURL + sampleList.value[0]
 })));
 
-
-
 function addRow() {
+  // console.log(i)
+  let all = sequenceData.length
+  console.log('all');
+  console.log(all);
+  activeSamples.push('G4')
   sequenceData.push(
     {
-      sample: '',
+      sample: 'G4',
       steps: Array(16).fill(false),
-      sampler: new Tone.Sampler({ "E2": URL3 }
-      ).toDestination(),
+      url: BaseURL + sampleList.value[0]
     });
 }
 
 
+let objects = {};
+// for (let i = 0; i < activeSamples.length; i++) {
+//   objects[notes[i]] = activeSamples[i];
+// }
 
-
-
-
+for (let i = 0; i < sequenceData.length; i++) {
+  objects[activeSamples[i]] = sequenceData[i].url;
+}
+console.log('objects')
 console.log(objects)
+console.log('sequenceData.length')
+console.log(sequenceData.length)
+
+
+let newObject = reactive({});
+
+
+const getNewObjects = () => {
+
+
+}
+
+// sequenceData.value.forEach(obj => {
+//   newObject[obj.sample] = obj.url;
+// });
+
+
+
+console.log('objects')
+console.log(objects)
+
+
 const sampler = new Tone.Sampler(
   objects
 ).toDestination();
 
 
 
-
+console.log('sequenceData')
 console.log(sequenceData)
 
 
 
+const arrayOfObjects = [{
+  sample: "A3",
+  url: "https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=kick_2_3_REPORTAGE OVER DE METRO.wav"
+},{
+  sample: "B3",
+  url: "https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=kick_2_3_REPORTAGE OVER DE TRAM.wav"
+}]
 
 
+const newOObject = {
+  A3: "https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=kick_2_3_REPORTAGE OVER DE METRO.wav",
+  B3: "https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=kick_2_3_REPORTAGE OVER DE TRAM.wav"
+}
 
-const sequence = new Tone.Sequence((time, col) => {
+
+const sequence = new Tone.Sequence(async (time, col) => {
   for (const row of sequenceData) {
     if (row.steps[col]) {
-      sampler.triggerAttack(row.sample, time);
+      console.log('col')
+      console.log(col)
+      await sampler.triggerAttackRelease(row.sample,"8n", time);
     }
   }
 }, Array.from({ length: 16 }, (_, i) => i), '16n');
@@ -111,8 +153,8 @@ function togglePlay() {
 <template>
 <div id="sequencer">
   <div v-for="(row, index) in sequenceData" :key="index">
-    <select v-model="row.sample">
-      <option v-for="sample in availableSamples" :key="sample" :value="sample">{{ sample }}</option>
+    <select v-model="row.url">
+      <option v-for="sample in sampleList" :key="sample" :value="BaseURL + sample">{{ sample }}</option>
     </select>
     <div v-for="step in 16" :key="step" class="step" :class="{ 'active': row.steps[step] }"
          @click="toggleStep(row, step)"></div>
