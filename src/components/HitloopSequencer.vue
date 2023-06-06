@@ -3,7 +3,7 @@ import { ref, reactive, watch } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
 import samplePackB from '@/assets/samplePackB.json'
-
+import BaseIcon from '@/components/BaseIcon.vue';
 // Base url for the api
 const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
 const isPlaying = ref(false)
@@ -35,21 +35,16 @@ const sequenceData = reactive(
   }))
 )
 
-const objects = reactive({})
-
-sequenceData.forEach((obj) => {
-  objects[obj.sample] = obj.url
-})
 
 const createSampleObject = (sequenceData) => {
-  let newObjects = reactive({})
+  const newObject = reactive({})
   sequenceData.forEach((obj) => {
-    newObjects[obj.sample] = obj.url
+    newObject[obj.sample] = obj.url
   })
-  return newObjects
+  return newObject
 }
-createSampleObject(sequenceData)
-
+// createSampleObject(sequenceData)
+const highlighted = ref(-1)
 const tick = (time, col) => {
   const newSampleObject = createSampleObject(sequenceData)
   const sampler = new Tone.Sampler({
@@ -58,6 +53,12 @@ const tick = (time, col) => {
       console.log('loaded')
     }
   }).toDestination()
+
+  Tone.Draw.schedule(() => {
+    if (isPlaying.value === true) {
+      highlighted.value = col
+    }
+  }, time)
 
   for (const row of sequenceData) {
     if (row.steps[col]) {
@@ -84,12 +85,12 @@ watch(bpm, (newBpm) => {
   Tone.Transport.bpm.value = newBpm
 })
 
-function toggleStep(row, step) {
+const toggleStep = (row, step) => {
   row.steps[step] = !row.steps[step]
 }
 
 // With this function you can play or pause the sequencer
-async function togglePlay() {
+const togglePlay = () => {
   isPlaying.value = !isPlaying.value
   if (isPlaying.value) {
     Tone.Transport.start()
@@ -103,35 +104,56 @@ async function togglePlay() {
 
 <template>
   <div id="sequencer">
-    <div v-for="(row, index) in sequenceData" :key="index">
+    <div v-for="(row, index) in sequenceData" class="row" :key="index">
       <select v-model="row.url" :id="index">
         <option v-for="sample in sampleList" :key="sample" :value="BaseURL + sample">
           {{ sample }}
         </option>
       </select>
-      <div
+      <div class="step-container">
+      <button
         v-for="step in columns"
         :key="step"
         class="step"
-        :id="step"
-        :class="{ active: row.steps[step] }"
+        :class="{ active: row.steps[step], highlighted: step === highlighted }"
         @click="toggleStep(row, step)"
-      ></div>
+      ></button>
+    </div>
     </div>
   </div>
   <div>
     <label for="bpm">BPM:</label>
     <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
   </div>
-  <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button>
-  <button @click="addRow(sequenceData)">add row</button>
+  <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
+
+<button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow"/></button>
+<button @click="togglePlay" v-else><BaseIcon name="pause"/></button>
+  <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
+  <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">add row</button>
 </template>
 
 <style scoped lang="scss">
+.sequencer {
+  font-size: 1.5em;
+}
+
+.step-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: .1em;
+  margin-bottom: .1em;
+}
 .step {
-  width: 20px;
-  height: 20px;
-  border: 1px solid #000;
+  width: 3em;
+  height: 3em;
+  border: 1px solid var(--color-black);
+  transition: all 1ms ease-in-out;
+
+&.highlighted {
+  border: 4px solid var(--color-orange);
+}
+
 }
 
 #sequencer {
@@ -150,6 +172,6 @@ async function togglePlay() {
 }
 
 .active {
-  background-color: #000;
+  background-color: var(--color-black-mute);
 }
 </style>
