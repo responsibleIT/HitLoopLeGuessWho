@@ -20,6 +20,20 @@
   --color-text-light-2: rgba(60, 60, 60, 0.66);
   --color-text-dark-1: var(--color-white);
   --color-text-dark-2: rgba(235, 235, 235, 0.64);
+
+  --color-blue: #3569B7;
+  --color-purple: ##BB4F9B;
+  --color-yellow: #F8CE57;
+  --color-green: #8A9156;
+  --color-orange: #ED7648;
+
+  --color-blue-soft: #5D87C5;
+  --color-purple-soft: #C972AF;
+  --color-yellow-soft: #FBE29A;
+  --color-green-soft: #A1A778;
+  --color-orange-soft: #F1916D;
+
+
 }
 
 /* semantic color variables for this project */
