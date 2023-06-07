@@ -1,23 +1,23 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+// import { RouterLink, RouterView } from 'vue-router'
 </script>
 
 <template>
-  <header>
+  <!-- <header>
     <div>
       <img alt="Hitloop logo" class="logo" src="@/assets/Logo.svg" width="50" height="50" />
     </div>
     <nav>
       <RouterLink to="/">Home</RouterLink>
     </nav>
-  </header>
+  </header> -->
   <RouterView />
 </template>
 
 <style scoped lang="scss">
-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
+// header {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+// }
 </style>
