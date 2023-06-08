@@ -1,25 +1,17 @@
-<script async setup>
+<script setup>
 import { ref, reactive, watch } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
 import samplePackB from '@/assets/samplePackB.json'
 import BaseIcon from '@/components/BaseIcon.vue'
-import { getSampleData } from '@/composables/getSampleData.js'
 // Base url for the api
-const apiBaseURL = import.meta.env.VITE_API_BASE
 const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
 const isPlaying = ref(false)
 const bpm = ref(120)
-const columns = ref(16)
-const availableSamples = ['A3', 'B3', 'C3', 'D3']
-const activeSamples = ref(['A3', 'B3'])
+const columns = ref(8)
+const availableSamples = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']
+const activeSamples = ref(['A3'])
 const sampleList = ref(samplePackB.files)
-
-const sampleDataB = await getSampleData(apiBaseURL, 'b', 'list')
-console.log('sampleDataB')
-console.log(sampleDataB)
-
-const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
 
 // This function adds a new row to the sequencer
 function addRow() {
@@ -29,7 +21,7 @@ function addRow() {
   activeSamples.value.push(thisSample)
   sequenceData.push({
     sample: thisSample,
-    steps: Array(16).fill(false),
+    steps: Array(8).fill(false),
     url: BaseURL + sampleList.value[all]
   })
 }
@@ -38,7 +30,7 @@ function addRow() {
 const sequenceData = reactive(
   activeSamples.value.map((sample) => ({
     sample,
-    steps: Array(16).fill(false),
+    steps: Array(8).fill(false),
     url: BaseURL + sampleList.value[0]
   }))
 )
@@ -53,9 +45,9 @@ const createSampleObject = (sequenceData) => {
 // createSampleObject(sequenceData)
 const highlighted = ref(-1)
 const tick = (time, col) => {
-  const sampleObject = createSampleObject(sequenceData)
+  const newSampleObject = createSampleObject(sequenceData)
   const sampler = new Tone.Sampler({
-    urls: sampleObject,
+    urls: newSampleObject,
     onload: () => {
       console.log('loaded')
     }
@@ -113,81 +105,69 @@ const togglePlay = () => {
   <div id="sequencer">
     <div v-for="(row, index) in sequenceData" class="row" :key="index">
       <select v-model="row.url" :id="index">
-        <template v-for="(sampleType, i) in sampleTypeList" :key="i">
-          <optgroup :label="sampleType">
-            <template v-for="(sample, sIndex) in sampleDataB">
-              <option v-if="sample.type === sampleType" :key="sample" :value="BaseURL + sample.file">
-                {{ sample.version }} - {{ sample.name }}
-              </option>
-            </template>
-          </optgroup>
-        </template>
+        <option v-for="sample in sampleList" :key="sample" :value="BaseURL + sample">
+          {{ sample }}
+        </option>
       </select>
-      <div class="step-container">
-        <button
-          v-for="step in columns"
-          :key="step"
-          class="step"
-          :class="{ active: row.steps[step], highlighted: step === highlighted }"
-          @click="toggleStep(row, step)"
-        ></button>
-      </div>
+      <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <line
+          v-for="(step, stepIndex) in row.steps"
+          :key="stepIndex"
+          :x1="100 + 80 * Math.cos((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
+          :y1="100 + 80 * Math.sin((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
+          :x2="100 + 90 * Math.cos((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
+          :y2="100 + 90 * Math.sin((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
+          :class="{ active: step, highlighted: stepIndex === highlighted }"
+          @click="toggleStep(row, stepIndex)"
+          stroke-width="50"
+          stroke="#8B8B8B"
+        />
+      </svg>
     </div>
-    <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">add row</button>
   </div>
   <div>
     <label for="bpm">BPM:</label>
     <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
   </div>
-  <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
 
   <button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow" /></button>
   <button @click="togglePlay" v-else><BaseIcon name="pause" /></button>
-  <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
+  <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">add row</button>
 </template>
 
 <style scoped lang="scss">
-.sequencer {
-  font-size: 1.5em;
+svg {
+  width: 10rem;
 }
 
-.step-container {
-  display: flex;
-  flex-direction: column;
-  margin-top: 0.1em;
-  margin-bottom: 0.1em;
-}
-// .step:first-child {
-//   height: 10rem;
-// }
-.step {
-  width: 3em;
-  height: 3em;
-  border: 1px solid var(--color-black);
-  transition: all 1ms ease-in-out;
-  position: absolute;
-
-  &.highlighted {
-    border: 4px solid var(--color-orange);
-  }
-}
-
-#sequencer {
-  display: flex;
-  flex-direction: column;
-
-  div {
-    display: flex;
-    flex-wrap: wrap;
-    flex-direction: row;
-
-    div {
-      display: flex;
-    }
-  }
+.line {
+  cursor: pointer;
 }
 
 .active {
-  background-color: var(--color-black-mute);
+  stroke: #2ecd71;
+}
+
+.highlighted {
+  stroke: #acf9cc;
+}
+
+#sequencer {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* see notes below */
+  grid-gap: 1em;
+  padding: 2rem;
+}
+.row {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  overflow: hidden;
+}
+
+select {
+  width: 100%;
 }
 </style>

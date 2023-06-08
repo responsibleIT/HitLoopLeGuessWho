@@ -1,5 +1,5 @@
 <script setup>
-import HitloopSequencer from '@/components/HitloopSequencer.vue'
+import HitloopSequencer from '../components/HitloopSequencer.vue'
 </script>
 
 <template>
