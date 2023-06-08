@@ -19,7 +19,7 @@ const sampleDataB = await getSampleData(apiBaseURL, 'b', 'list')
 console.log('sampleDataB')
 console.log(sampleDataB)
 
-const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
+const sampleTypeList = ref(['Snare', 'Kick', 'Sfx', 'Crash'])
 
 // This function adds a new row to the sequencer
 function addRow() {
