@@ -3,7 +3,7 @@ import { ref, reactive, watch } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
 import samplePackB from '@/assets/samplePackB.json'
-import BaseIcon from '@/components/BaseIcon.vue';
+import BaseIcon from '@/components/BaseIcon.vue'
 // Base url for the api
 const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
 const isPlaying = ref(false)
@@ -34,7 +34,6 @@ const sequenceData = reactive(
     url: BaseURL + sampleList.value[0]
   }))
 )
-
 
 const createSampleObject = (sequenceData) => {
   const newObject = reactive({})
@@ -111,14 +110,14 @@ const togglePlay = () => {
         </option>
       </select>
       <div class="step-container">
-      <button
-        v-for="step in columns"
-        :key="step"
-        class="step"
-        :class="{ active: row.steps[step], highlighted: step === highlighted }"
-        @click="toggleStep(row, step)"
-      ></button>
-    </div>
+        <button
+          v-for="step in columns"
+          :key="step"
+          class="step"
+          :class="{ active: row.steps[step], highlighted: step === highlighted }"
+          @click="toggleStep(row, step)"
+        ></button>
+      </div>
     </div>
   </div>
   <div>
@@ -127,8 +126,8 @@ const togglePlay = () => {
   </div>
   <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
 
-<button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow"/></button>
-<button @click="togglePlay" v-else><BaseIcon name="pause"/></button>
+  <button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow" /></button>
+  <button @click="togglePlay" v-else><BaseIcon name="pause" /></button>
   <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
   <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">add row</button>
 </template>
@@ -141,19 +140,23 @@ const togglePlay = () => {
 .step-container {
   display: flex;
   flex-direction: column;
-  margin-top: .1em;
-  margin-bottom: .1em;
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+  position: relative;
 }
+// .step:first-child {
+//   height: 10rem;
+// }
 .step {
   width: 3em;
   height: 3em;
   border: 1px solid var(--color-black);
   transition: all 1ms ease-in-out;
+  position: absolute;
 
-&.highlighted {
-  border: 4px solid var(--color-orange);
-}
-
+  &.highlighted {
+    border: 4px solid var(--color-orange);
+  }
 }
 
 #sequencer {
