@@ -1,10 +1,10 @@
 <script setup>
-import HitloopSequencer from '@/components/HitloopSequencer.vue'
+import HitloopSequencerV2 from '../components/HitloopSequencerV2.vue'
 </script>
 
 <template>
   <main>
-    <HitloopSequencer />
+    <HitloopSequencerV2 />
   </main>
 </template>
 <style scoped></style>

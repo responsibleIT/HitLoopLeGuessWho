@@ -21,24 +21,22 @@
   --color-text-dark-1: var(--color-white);
   --color-text-dark-2: rgba(235, 235, 235, 0.64);
 
-  --color-blue: #3569B7;
-  --color-purple: ##BB4F9B;
-  --color-yellow: #F8CE57;
-  --color-green: #8A9156;
-  --color-orange: #ED7648;
+  --color-blue: #3569b7;
+  --color-purple: ##bb4f9b;
+  --color-yellow: #f8ce57;
+  --color-green: #8a9156;
+  --color-orange: #ed7648;
 
-  --color-blue-soft: #5D87C5;
-  --color-purple-soft: #C972AF;
-  --color-yellow-soft: #FBE29A;
-  --color-green-soft: #A1A778;
-  --color-orange-soft: #F1916D;
-
-
+  --color-blue-soft: #5d87c5;
+  --color-purple-soft: #c972af;
+  --color-yellow-soft: #fbe29a;
+  --color-green-soft: #a1a778;
+  --color-orange-soft: #f1916d;
 }
 
 /* semantic color variables for this project */
 :root {
-  --color-background: var(--color-white);
+  --color-background: var(--color-black);
   --color-background-soft: var(--color-white-soft);
   --color-background-mute: var(--color-white-mute);
 
