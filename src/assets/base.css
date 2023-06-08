@@ -36,7 +36,7 @@
 
 /* semantic color variables for this project */
 :root {
-  --color-background: var(--color-black);
+  --color-background: var(--color-white);
   --color-background-soft: var(--color-white-soft);
   --color-background-mute: var(--color-white-mute);
 

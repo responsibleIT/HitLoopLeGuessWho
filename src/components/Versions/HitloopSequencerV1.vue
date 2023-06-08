@@ -1,5 +1,5 @@
 <script async setup>
-import { ref, reactive, watch, TransitionGroup } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
 import samplePackB from '@/assets/samplePackB.json'
@@ -10,9 +10,9 @@ const apiBaseURL = import.meta.env.VITE_API_BASE
 const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
 const isPlaying = ref(false)
 const bpm = ref(120)
-const columns = ref(8)
-const availableSamples = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']
-const activeSamples = ref(['A3'])
+const columns = ref(16)
+const availableSamples = ['A3', 'B3', 'C3', 'D3']
+const activeSamples = ref(['A3', 'B3'])
 const sampleList = ref(samplePackB.files)
 
 const sampleDataB = await getSampleData(apiBaseURL, 'b', 'list')
@@ -38,7 +38,7 @@ const addRow = () => {
 const sequenceData = reactive(
   activeSamples.value.map((sample) => ({
     sample,
-    steps: Array(columns.value).fill(false),
+    steps: Array(16).fill(false),
     url: BaseURL + sampleList.value[0]
   }))
 )
@@ -111,17 +111,12 @@ const togglePlay = () => {
 
 <template>
   <div id="sequencer">
-    <TransitionGroup>
     <div v-for="(row, index) in sequenceData" class="row" :key="index">
       <select v-model="row.url" :id="index">
         <template v-for="(sampleType, i) in sampleTypeList" :key="i">
           <optgroup :label="sampleType">
             <template v-for="(sample, sIndex) in sampleDataB">
-              <option
-                v-if="sample.type === sampleType"
-                :key="sample"
-                :value="BaseURL + sample.file"
-              >
+              <option v-if="sample.type === sampleType" :key="sample" :value="BaseURL + sample.file">
                 {{ sample.version }} - {{ sample.name }}
               </option>
             </template>
@@ -129,26 +124,16 @@ const togglePlay = () => {
         </template>
       </select>
       <div class="step-container">
-        <svg viewBox="0 0 200 200">
-          <line
-            v-for="(step, stepIndex) in columns"
-            :key="stepIndex"
-            :x1="100 + 80 * Math.cos((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
-            :y1="100 + 80 * Math.sin((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
-            :x2="100 + 90 * Math.cos((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
-            :y2="100 + 90 * Math.sin((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
-            :class="{ active: row.steps[step], highlighted: step === highlighted }"
-            @click="toggleStep(row, step)"
-            stroke-width="50"
-            stroke="#8B8B8B"
-          />
-        </svg>
+        <button
+          v-for="step in columns"
+          :key="step"
+          class="step"
+          :class="{ active: row.steps[step], highlighted: step === highlighted }"
+          @click="toggleStep(row, step)"
+        ></button>
       </div>
     </div>
-  </TransitionGroup>
-    <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">
-      <BaseIcon name="add" />
-    </button>
+    <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">add row</button>
   </div>
   <div>
     <label for="bpm">BPM:</label>
@@ -180,56 +165,28 @@ const togglePlay = () => {
   height: 3em;
   border: 1px solid var(--color-black);
   transition: all 1ms ease-in-out;
-  position: absolute;
+  // position: absolute;
 
   &.highlighted {
     border: 4px solid var(--color-orange);
   }
 }
 
-svg {
-  width: 10rem;
-  line {
-    cursor: pointer;
+#sequencer {
+  display: flex;
+  flex-direction: column;
+
+  div {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+
+    div {
+      display: flex;
+    }
   }
 }
 
-.active {
-  stroke: #2ecd71;
-}
-
-.highlighted {
-  stroke: red;
-}
-
-#sequencer {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* see notes below */
-  grid-gap: 1em;
-  padding: 2rem;
-
-  // div {
-  //   display: flex;
-  //   flex-wrap: wrap;
-  //   flex-direction: row;
-
-  //   div {
-  //     display: flex;
-  //   }
-  // }
-}
-.row {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 2rem;
-  overflow: hidden;
-}
-
-select {
-  width: 100%;
-}
 .active {
   background-color: var(--color-black-mute);
 }
