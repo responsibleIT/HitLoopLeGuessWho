@@ -1,10 +1,12 @@
-<script setup>
+<script async setup>
 import { ref, reactive, watch } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
 import samplePackB from '@/assets/samplePackB.json'
 import BaseIcon from '@/components/BaseIcon.vue'
+import { getSampleData } from '@/composables/getSampleData.js'
 // Base url for the api
+const apiBaseURL = import.meta.env.VITE_API_BASE
 const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
 const isPlaying = ref(false)
 const bpm = ref(120)
@@ -12,6 +14,12 @@ const columns = ref(16)
 const availableSamples = ['A3', 'B3', 'C3', 'D3']
 const activeSamples = ref(['A3', 'B3'])
 const sampleList = ref(samplePackB.files)
+
+const sampleDataB = await getSampleData(apiBaseURL, 'b', 'list')
+console.log('sampleDataB')
+console.log(sampleDataB)
+
+const sampleTypeList = ref(['Snare', 'Kick', 'Sfx', 'Crash'])
 
 // This function adds a new row to the sequencer
 function addRow() {
@@ -45,9 +53,9 @@ const createSampleObject = (sequenceData) => {
 // createSampleObject(sequenceData)
 const highlighted = ref(-1)
 const tick = (time, col) => {
-  const newSampleObject = createSampleObject(sequenceData)
+  const sampleObject = createSampleObject(sequenceData)
   const sampler = new Tone.Sampler({
-    urls: newSampleObject,
+    urls: sampleObject,
     onload: () => {
       console.log('loaded')
     }
@@ -105,9 +113,15 @@ const togglePlay = () => {
   <div id="sequencer">
     <div v-for="(row, index) in sequenceData" class="row" :key="index">
       <select v-model="row.url" :id="index">
-        <option v-for="sample in sampleList" :key="sample" :value="BaseURL + sample">
-          {{ sample }}
-        </option>
+        <template v-for="(sampleType, i) in sampleTypeList" :key="i">
+          <optgroup :label="sampleType">
+            <template v-for="(sample) in sampleDataB">
+              <option v-if="sample.type == sampleType" :key="sample">
+                {{ sample.version }} - {{ sample.name }}
+              </option>
+            </template>
+          </optgroup>
+        </template>
       </select>
       <div class="step-container">
         <button
@@ -119,6 +133,7 @@ const togglePlay = () => {
         ></button>
       </div>
     </div>
+    <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">add row</button>
   </div>
   <div>
     <label for="bpm">BPM:</label>
@@ -129,7 +144,6 @@ const togglePlay = () => {
   <button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow" /></button>
   <button @click="togglePlay" v-else><BaseIcon name="pause" /></button>
   <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
-  <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">add row</button>
 </template>
 
 <style scoped lang="scss">
@@ -142,7 +156,6 @@ const togglePlay = () => {
   flex-direction: column;
   margin-top: 0.1em;
   margin-bottom: 0.1em;
-  position: relative;
 }
 // .step:first-child {
 //   height: 10rem;
