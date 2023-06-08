@@ -107,6 +107,54 @@ const togglePlay = () => {
     sequence.stop()
   }
 }
+
+const gapSize = Math.PI / 10;
+
+function describeArcOld(x, y, radius, startAngle, endAngle) {
+  const start = polarToCartesian(x, y, radius, endAngle);
+  const end = polarToCartesian(x, y, radius, startAngle);
+
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
+
+  const d = [
+    "M", start.x, start.y,
+    "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+  ].join(" ");
+
+  return d;
+}
+
+function describeArc(x, y, radius, startAngle, endAngle) {
+  const start = polarToCartesian(x, y, radius, endAngle);
+  const end = polarToCartesian(x, y, radius, startAngle);
+
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
+
+  const d = [
+    "M", start.x, start.y,
+    "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
+  ].join(" ");
+
+  return d;
+}
+
+
+function polarToCartesian(centerX, centerY, radius, angleInRadians) {
+  const x = centerX + radius * Math.cos(angleInRadians);
+  const y = centerY + radius * Math.sin(angleInRadians);
+  return { x, y };
+}
+
+
+function getStartAngle(index) {
+  return (2 * Math.PI * index) / columns.value + gapSize / 2;
+}
+
+function getEndAngle(index) {
+  return (2 * Math.PI * (index + 1)) / columns.value - gapSize / 2;
+}
+
+
 </script>
 
 <template>
@@ -130,19 +178,21 @@ const togglePlay = () => {
       </select>
       <div class="step-container">
         <svg viewBox="0 0 200 200">
-          <line
-            v-for="(step, stepIndex) in columns"
-            :key="stepIndex"
-            :x1="100 + 80 * Math.cos((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
-            :y1="100 + 80 * Math.sin((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
-            :x2="100 + 90 * Math.cos((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
-            :y2="100 + 90 * Math.sin((2 * Math.PI * stepIndex) / columns - Math.PI / 2)"
-            :class="{ active: row.steps[step], highlighted: step === highlighted }"
-            @click="toggleStep(row, step)"
-            stroke-width="50"
-            stroke="#8B8B8B"
-          />
-        </svg>
+      <circle cx="100" cy="100" r="80" fill="none" stroke="none" />
+      <g transform="translate(100,100)">
+        <path v-for="(step, stepIndex) in columns"
+        class="arc-item"
+          :key="stepIndex"
+          :d="describeArc(0, 0, 80, getStartAngle(stepIndex), getEndAngle(stepIndex))"
+          :class="{ active: row.steps[step], highlighted: step === highlighted }"
+          @click="toggleStep(row, step)"
+          stroke-width="15"
+          stroke="blue"
+          fill="none"
+          stroke-linecap="round"
+        />
+      </g>
+    </svg>
       </div>
     </div>
   </TransitionGroup>
@@ -193,13 +243,23 @@ svg {
     cursor: pointer;
   }
 }
-
+.arc-item {
+  stroke: #cbcbcb;
+}
 .active {
+  stroke-opacity: 50%;
   stroke: #2ecd71;
+  
 }
 
 .highlighted {
-  stroke: red;
+  stroke-opacity: 50%;
+  
+  // stroke: green;
+}
+
+.highlighted.active {
+  stroke-width: 22;
 }
 
 #sequencer {
