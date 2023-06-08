@@ -19,7 +19,7 @@ const sampleDataB = await getSampleData(apiBaseURL, 'b', 'list')
 console.log('sampleDataB')
 console.log(sampleDataB)
 
-const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
+const sampleTypeList = ref(['Snare', 'Kick', 'Sfx', 'Crash'])
 
 // This function adds a new row to the sequencer
 function addRow() {
@@ -115,8 +115,8 @@ const togglePlay = () => {
       <select v-model="row.url" :id="index">
         <template v-for="(sampleType, i) in sampleTypeList" :key="i">
           <optgroup :label="sampleType">
-            <template v-for="(sample, sIndex) in sampleDataB">
-              <option v-if="sample.type === sampleType" :key="sample" :value="BaseURL + sample.file">
+            <template v-for="(sample) in sampleDataB">
+              <option v-if="sample.type == sampleType" :key="sample">
                 {{ sample.version }} - {{ sample.name }}
               </option>
             </template>
@@ -156,7 +156,6 @@ const togglePlay = () => {
   flex-direction: column;
   margin-top: 0.1em;
   margin-bottom: 0.1em;
-  position: relative;
 }
 // .step:first-child {
 //   height: 10rem;
