@@ -156,6 +156,7 @@ const togglePlay = () => {
   flex-direction: column;
   margin-top: 0.1em;
   margin-bottom: 0.1em;
+  position: relative;
 }
 // .step:first-child {
 //   height: 10rem;
