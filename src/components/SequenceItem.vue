@@ -5,11 +5,13 @@ defineProps({
 </script>
 <template>
   <div>
-    <div class="select">
-      
-    </div>
-
-  </div>
+  <slot name="select">
+    select
+  </slot>
+  <slot name="arc">
+arc
+  </slot>
+</div>
 </template>
 
 

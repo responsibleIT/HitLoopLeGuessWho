@@ -1,18 +1,26 @@
 <script async setup>
-import { ref, reactive, watch, TransitionGroup } from 'vue'
+import { ref, reactive, watch, TransitionGroup, Transition } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
 
 import BaseIcon from '@/components/BaseIcon.vue'
 import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
-import { createSampleObject, createSequenceArraySteps, createSequenceArrayIndex } from '@/helpers/toneHelpers.js'
+import {
+  createSampleObject,
+  createSequenceArraySteps,
+  createSequenceArrayIndex
+} from '@/helpers/toneHelpers.js'
 import BaseButton from './BaseButton.vue'
+import SequenceItemSelect from './SequenceItemSelect.vue'
+import SequenceItem from './SequenceItem.vue'
+import SequenceItemArc from './SequenceItemArc.vue'
+import { createPinia } from 'pinia'
 // Base url for the api
 const apiBaseURL = import.meta.env.VITE_API_BASE
 const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
 const isPlaying = ref(false)
 const bpm = ref(120)
-const columns = ref(8)
+const columns = ref(9)
 const availableSamples = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']
 const activeSamples = ref(['A3'])
 
@@ -51,6 +59,11 @@ const sequenceData = reactive(
 const highlighted = ref(-1)
 
 const tick = (time, col) => {
+  // highlighted.value = col
+  console.log('time')
+  console.log(time)
+  console.log('col1')
+  console.log(col)
   const sampleObject = createSampleObject(sequenceData)
   const sampler = new Tone.Sampler({
     urls: sampleObject,
@@ -63,12 +76,17 @@ const tick = (time, col) => {
     console.log(time)
     if (isPlaying.value === true) {
       highlighted.value = col
+      console.log('col2')
       console.log(col)
     }
   }, time)
 
   for (const row of sequenceData) {
+    console.log('row.steps[col]')
+    console.log(row.steps[col])
     if (row.steps[col]) {
+      console.log('col3')
+      console.log(col)
       console.log('row.steps[col]')
       console.log(row.steps[col])
       Tone.loaded().then(() => {
@@ -104,15 +122,14 @@ const togglePlay = () => {
 
 const gapSize = Math.PI / 10
 
-function describeArcOld(x, y, radius, startAngle, endAngle) {
-  const start = polarToCartesian(x, y, radius, endAngle)
-  const end = polarToCartesian(x, y, radius, startAngle)
+console.log(sequenceData)
 
-  const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1'
+const updateURL = (index, newValue) => {
+  sequenceData.value[index].url = newValue
+}
 
-  const d = ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(' ')
-
-  return d
+const arcProps = {
+  columns: columns.value
 }
 
 function describeArc(x, y, radius, startAngle, endAngle) {
@@ -139,30 +156,33 @@ function getStartAngle(index) {
 function getEndAngle(index) {
   return (2 * Math.PI * (index + 1)) / columns.value - gapSize / 2
 }
-
-console.log(sequenceData)
-
 </script>
 
 <template>
   <div id="sequencer">
-    <TransitionGroup>
+    <TransitionGroup name="fade" class="container">
       <div v-for="(row, index) in sequenceData" class="row" :key="index">
-        <select v-model="row.url" :id="index">
-          <template v-for="(sampleType, i) in sampleTypeList" :key="i">
-            <optgroup :label="sampleType">
-              <template v-for="(sample, sIndex) in sampleDataB">
-                <option
-                  v-if="sample.type === sampleType"
-                  :key="sample"
-                  :value="sample.url"
-                >
-                  {{ sample.version }} - {{ sample.name }}
-                </option>
-              </template>
-            </optgroup>
+        <SequenceItem :key="index">
+          <template v-slot:select>
+            <SequenceItemSelect
+              v-model:url="row.url"
+              :selectedValue="row.url"
+              @update:="updateURL(row, $event)"
+              :item="row"
+              :id="index"
+              :sampleTypeList="sampleTypeList"
+              :sampleData="sampleDataB"
+            />
           </template>
-        </select>
+          <template v-slot:arc>
+            <SequenceItemArc
+              :columns="columns"
+              :row="row"
+              :highlighted="highlighted"
+              @toggle-step="toggleStep"
+            />
+          </template>
+        </SequenceItem>
         <div class="step-container">
           <svg viewBox="0 0 200 200">
             <circle cx="100" cy="100" r="80" fill="none" stroke="none" />
@@ -173,7 +193,7 @@ console.log(sequenceData)
                 :key="stepIndex"
                 :d="describeArc(0, 0, 80, getStartAngle(stepIndex), getEndAngle(stepIndex))"
                 :class="{ active: row.steps[step], highlighted: step === highlighted }"
-                @click="toggleStep(row, step)"
+                @click="toggleStep(row, step, $event)"
                 stroke-width="15"
                 stroke="blue"
                 fill="none"
@@ -197,8 +217,9 @@ console.log(sequenceData)
 
   <!-- <button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow" /></button>
   <button @click="togglePlay" v-else><BaseIcon name="pause" /></button> -->
-  <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow"/>
-  <BaseButton v-else @click="togglePlay" icon="pause"/>
+
+  <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
+  <BaseButton v-else @click="togglePlay" icon="pause" />
   <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
 </template>
 
@@ -282,5 +303,25 @@ select {
 }
 .active {
   background-color: var(--color-black-mute);
+}
+
+/* 1. declare transition */
+.fade-move,
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* 2. declare enter from and leave to state */
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+  transform: scaleY(0.01) translate(30px, 0);
+}
+
+/* 3. ensure leaving items are taken out of layout flow so that moving
+      animations can be calculated correctly. */
+.fade-leave-active {
+  position: absolute;
 }
 </style>

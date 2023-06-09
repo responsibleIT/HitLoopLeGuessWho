@@ -19,14 +19,15 @@ defineProps({
 
 <style lang="scss" scoped>
 .btn-icon {
-  font-size: 1.5em;
-  width: 4rem;
-  height:4rem;
+  font-size: 1em;
+  width: 3.5rem;
+  height:3.5rem;
   display: flex;
   align-items: center;
   justify-items: center;
   text-align: center;
   justify-content: center;
+  border-radius: 100%;
 
   span {
     text-align: center;
