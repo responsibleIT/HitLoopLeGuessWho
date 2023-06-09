@@ -5,18 +5,26 @@ import { createSampleObjectList } from '@/helpers/dataClean'
 import { useFetch } from '@vueuse/core'
 const url = import.meta.env.VITE_API_BASE
 
-let sampleFilePath = `test_samples?`
+let sampleFilePath = `test_samples`
 let sampleListPath = `samples_test_list`
 
 
 export const getSampleFile = (BASE_URL, samplePack, file) => {
   let samplePackQuery = `?sample_pack=${samplePack}`
-  const fileURL = ref(BASE_URL + samplePackQuery + file);
+  let fileQuery = `&file=${file}`
+  const fileURL = ref(BASE_URL + sampleFilePath + samplePackQuery + fileQuery);
   return fileURL.value
 }
 
 export const getSampleData = async (BASE_URL, samplePack, file) => {
+  let samplePackQuery = `?sample_pack=${samplePack}`
+  let samplePackQueryFile = `?sample_pack=${samplePack}&file=`
   const URL = ref(null)
+  const sampleFileURL = url+sampleFilePath+samplePackQueryFile
+
+  // https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav
+  
+  
   const result = ref(null)
   if (url !== BASE_URL) {
     console.log(BASE_URL)
@@ -24,7 +32,7 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
     console.log('url is not base url')
   }
   
-  let samplePackQuery = `?sample_pack=${samplePack}`
+  
   
   
 
@@ -44,7 +52,7 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
     const { data, isFetching, error } = await useFetch(URL).json()
     console.log('data.files')
     if (data || !isFetching) {
-      result.value = createSampleObjectList(data)
+      result.value = createSampleObjectList(data, sampleFileURL)
       console.log('result.value')
       console.log(result.value)
       return result
@@ -79,3 +87,7 @@ export default getSampleData
 // sample_list_url = Url + 'samples_list'
 // sample_url = Url+'samples?file='
 // }
+
+
+const urlone = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav'
+const urltwo = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav'

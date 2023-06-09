@@ -1,6 +1,6 @@
 import { useChangeCase } from '@vueuse/integrations/useChangeCase'
 
-export const createSampleObjectList = (sampleData) => {
+export const createSampleObjectList = (sampleData, url) => {
   /**
    * Takes an inner value and returns a reactive and mutable ref object, which
    * has a single property `.value` that points to the inner value.
@@ -24,7 +24,8 @@ export const createSampleObjectList = (sampleData) => {
           name: name.replace(/_/g, '-'),
           type: type.charAt(0).toUpperCase() + type.slice(1),
           version,
-          file: str
+          file: str,
+          url: url+str
         }
       } else {
         return null // Handle invalid file name format if needed

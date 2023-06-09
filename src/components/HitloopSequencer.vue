@@ -6,6 +6,7 @@ import * as Tone from 'tone'
 import BaseIcon from '@/components/BaseIcon.vue'
 import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
 import { createSampleObject, createSequenceArraySteps, createSequenceArrayIndex } from '@/helpers/toneHelpers.js'
+import BaseButton from './BaseButton.vue'
 // Base url for the api
 const apiBaseURL = import.meta.env.VITE_API_BASE
 const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
@@ -43,7 +44,7 @@ const sequenceData = reactive(
   activeSamples.value.map((sample) => ({
     sample,
     steps: createSequenceArraySteps(columns.value),
-    url: getSampleFile(apiBaseURL, 'b', sampleDataB.value[1])
+    url: getSampleFile(apiBaseURL, 'b', sampleDataB.value[1].file)
   }))
 )
 
@@ -154,7 +155,7 @@ console.log(sequenceData)
                 <option
                   v-if="sample.type === sampleType"
                   :key="sample"
-                  :value="BaseURL + sample.file"
+                  :value="sample.url"
                 >
                   {{ sample.version }} - {{ sample.name }}
                 </option>
@@ -194,8 +195,10 @@ console.log(sequenceData)
   </div>
   <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
 
-  <button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow" /></button>
-  <button @click="togglePlay" v-else><BaseIcon name="pause" /></button>
+  <!-- <button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow" /></button>
+  <button @click="togglePlay" v-else><BaseIcon name="pause" /></button> -->
+  <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow"/>
+  <BaseButton v-else @click="togglePlay" icon="pause"/>
   <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
 </template>
 
