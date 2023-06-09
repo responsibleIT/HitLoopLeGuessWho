@@ -50,7 +50,7 @@ const sequenceData = reactive(
   }))
 )
 
-const highlighted = ref(-1)
+const highlighted = ref(0)
 
 const tick = (time, col) => {
   timeNow.value = time
@@ -72,7 +72,7 @@ const tick = (time, col) => {
   for (const row of sequenceData) {
     if (row.steps[col]) {
       Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(row.sample, 0.1, '16n')
+        sampler.triggerAttackRelease(row.sample, '16n')
       })
     }
   }
@@ -103,9 +103,6 @@ const togglePlay = () => {
 
 const updateURL = (index, newValue) => {
   sequenceData.value[index].url = newValue
-}
-const toggleSamplePack = () => {
-
 }
 </script>
 
@@ -147,7 +144,6 @@ const toggleSamplePack = () => {
     <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
     <BaseButton v-else @click="togglePlay" icon="pause" />
   </div>
-
 </template>
 
 <style scoped lang="scss">
@@ -159,11 +155,10 @@ const toggleSamplePack = () => {
   position: fixed;
   bottom: 0;
   justify-content: center;
-  justify-items:center;
+  justify-items: center;
   // margin: 0 auto;
   left: 0;
   right: 0;
-
 }
 .sequencer {
   font-size: 1.5em;

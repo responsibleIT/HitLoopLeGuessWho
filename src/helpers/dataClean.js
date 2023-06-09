@@ -25,7 +25,7 @@ export const createSampleObjectList = (sampleData, url) => {
           type: type.charAt(0).toUpperCase() + type.slice(1),
           version,
           file: str,
-          url: url+str
+          url: url + str
         }
       } else {
         return null // Handle invalid file name format if needed

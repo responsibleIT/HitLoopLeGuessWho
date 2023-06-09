@@ -116,7 +116,11 @@ const togglePlay = () => {
         <template v-for="(sampleType, i) in sampleTypeList" :key="i">
           <optgroup :label="sampleType">
             <template v-for="(sample, sIndex) in sampleDataB">
-              <option v-if="sample.type === sampleType" :key="sample" :value="BaseURL + sample.file">
+              <option
+                v-if="sample.type === sampleType"
+                :key="sample"
+                :value="BaseURL + sample.file"
+              >
                 {{ sample.version }} - {{ sample.name }}
               </option>
             </template>

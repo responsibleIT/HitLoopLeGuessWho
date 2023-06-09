@@ -1,4 +1,4 @@
-import {ref, reactive} from 'vue';
+import { ref, reactive } from 'vue'
 export const createSequenceArrayIndex = (count) => {
   const indices = ref([])
   for (let i = 0; i < count; i++) {

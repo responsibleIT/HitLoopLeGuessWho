@@ -1,3 +1,1 @@
-export const useFetch = (url) => {
-
-}
+export const useFetch = (url) => {}
