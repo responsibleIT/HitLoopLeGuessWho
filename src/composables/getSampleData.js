@@ -49,12 +49,9 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
 
   try {
     // const { data, error } = useFetch(URL);
-    const { data, isFetching, error } = await useFetch(URL).json()
-    console.log('data.files')
+    const { data, isFetching, error } = await useFetch(URL, {refetch: true}).json()
     if (data || !isFetching) {
       result.value = createSampleObjectList(data, sampleFileURL)
-      console.log('result.value')
-      console.log(result.value)
       return result
     }
   } catch (error) {

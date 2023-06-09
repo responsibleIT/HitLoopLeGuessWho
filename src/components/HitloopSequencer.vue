@@ -2,37 +2,32 @@
 import { ref, reactive, watch, TransitionGroup, Transition } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
-
-import BaseIcon from '@/components/BaseIcon.vue'
 import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
+
 import {
   createSampleObject,
   createSequenceArraySteps,
   createSequenceArrayIndex
 } from '@/helpers/toneHelpers.js'
+
+import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from './BaseButton.vue'
 import SequenceItemSelect from './SequenceItemSelect.vue'
 import SequenceItem from './SequenceItem.vue'
 import SequenceItemArc from './SequenceItemArc.vue'
-import { createPinia } from 'pinia'
+
 // Base url for the api
 const apiBaseURL = import.meta.env.VITE_API_BASE
-const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
 const isPlaying = ref(false)
 const bpm = ref(120)
 const columns = ref(9)
 const availableSamples = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']
 const activeSamples = ref(['A3'])
-
-console.log('createSequenceArray(columns.value)')
-console.log(createSequenceArrayIndex(columns.value))
-console.log('Array(columns.value).fill(false)')
-console.log(Array(columns.value).fill(false))
-
-const sampleDataB = await getSampleData(apiBaseURL, 'b', 'list')
+const samplePack = ref('b')
+const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
 
 const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
-
+const timeNow = ref(0)
 // This function adds a new row to the sequencer
 const addRow = () => {
   let all = sequenceData.length
@@ -42,28 +37,24 @@ const addRow = () => {
   sequenceData.push({
     sample: thisSample,
     steps: createSequenceArraySteps(columns.value),
-    url: getSampleFile(apiBaseURL, 'b', sampleDataB.value[all].file)
+    url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[all].file)
   })
 }
-console.log('BaseURL + sampleDataB.value[0].file')
-console.log(BaseURL + sampleDataB.value[0].file)
+
 // In the sequenceData are the row information stored like: the sample file, steps in the row and the API url
 const sequenceData = reactive(
   activeSamples.value.map((sample) => ({
     sample,
     steps: createSequenceArraySteps(columns.value),
-    url: getSampleFile(apiBaseURL, 'b', sampleDataB.value[1].file)
+    url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
   }))
 )
 
 const highlighted = ref(-1)
 
 const tick = (time, col) => {
+  timeNow.value = time
   // highlighted.value = col
-  console.log('time')
-  console.log(time)
-  console.log('col1')
-  console.log(col)
   const sampleObject = createSampleObject(sequenceData)
   const sampler = new Tone.Sampler({
     urls: sampleObject,
@@ -73,24 +64,15 @@ const tick = (time, col) => {
   }).toDestination()
 
   Tone.Draw.schedule(() => {
-    console.log(time)
     if (isPlaying.value === true) {
       highlighted.value = col
-      console.log('col2')
-      console.log(col)
     }
   }, time)
 
   for (const row of sequenceData) {
-    console.log('row.steps[col]')
-    console.log(row.steps[col])
     if (row.steps[col]) {
-      console.log('col3')
-      console.log(col)
-      console.log('row.steps[col]')
-      console.log(row.steps[col])
       Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(row.sample, '16n')
+        sampler.triggerAttackRelease(row.sample, 0.1, '16n')
       })
     }
   }
@@ -107,7 +89,6 @@ watch(bpm, (newBpm) => {
 const toggleStep = (row, step) => {
   row.steps[step] = !row.steps[step]
 }
-
 // With this function you can play or pause the sequencer
 const togglePlay = () => {
   isPlaying.value = !isPlaying.value
@@ -120,58 +101,27 @@ const togglePlay = () => {
   }
 }
 
-const gapSize = Math.PI / 10
-
-console.log(sequenceData)
-
 const updateURL = (index, newValue) => {
   sequenceData.value[index].url = newValue
 }
+const toggleSamplePack = () => {
 
-const arcProps = {
-  columns: columns.value
-}
-
-function describeArc(x, y, radius, startAngle, endAngle) {
-  const start = polarToCartesian(x, y, radius, endAngle)
-  const end = polarToCartesian(x, y, radius, startAngle)
-
-  const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1'
-
-  const d = ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(' ')
-
-  return d
-}
-
-function polarToCartesian(centerX, centerY, radius, angleInRadians) {
-  const x = centerX + radius * Math.cos(angleInRadians)
-  const y = centerY + radius * Math.sin(angleInRadians)
-  return { x, y }
-}
-
-function getStartAngle(index) {
-  return (2 * Math.PI * index) / columns.value + gapSize / 2
-}
-
-function getEndAngle(index) {
-  return (2 * Math.PI * (index + 1)) / columns.value - gapSize / 2
 }
 </script>
 
 <template>
   <div id="sequencer">
-    <TransitionGroup name="fade" class="container">
+    <TransitionGroup name="fade">
       <div v-for="(row, index) in sequenceData" class="row" :key="index">
-        <SequenceItem :key="index">
+        <SequenceItem>
           <template v-slot:select>
             <SequenceItemSelect
               v-model:url="row.url"
               :selectedValue="row.url"
               @update:="updateURL(row, $event)"
               :item="row"
-              :id="index"
               :sampleTypeList="sampleTypeList"
-              :sampleData="sampleDataB"
+              :sampleData="sampleData"
             />
           </template>
           <template v-slot:arc>
@@ -183,47 +133,38 @@ function getEndAngle(index) {
             />
           </template>
         </SequenceItem>
-        <div class="step-container">
-          <svg viewBox="0 0 200 200">
-            <circle cx="100" cy="100" r="80" fill="none" stroke="none" />
-            <g transform="translate(100,100)">
-              <path
-                v-for="(step, stepIndex) in columns"
-                class="arc-item"
-                :key="stepIndex"
-                :d="describeArc(0, 0, 80, getStartAngle(stepIndex), getEndAngle(stepIndex))"
-                :class="{ active: row.steps[step], highlighted: step === highlighted }"
-                @click="toggleStep(row, step, $event)"
-                stroke-width="15"
-                stroke="blue"
-                fill="none"
-                stroke-linecap="round"
-                :name="stepIndex"
-              />
-            </g>
-          </svg>
-        </div>
       </div>
     </TransitionGroup>
     <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">
       <BaseIcon name="add" />
     </button>
   </div>
-  <div>
-    <label for="bpm">BPM:</label>
-    <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
+  <div class="controlls">
+    <div>
+      <label for="bpm">BPM:</label>
+      <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
+    </div>
+    <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
+    <BaseButton v-else @click="togglePlay" icon="pause" />
   </div>
-  <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
 
-  <!-- <button @click="togglePlay" v-if="!isPlaying"><BaseIcon name="play_arrow" /></button>
-  <button @click="togglePlay" v-else><BaseIcon name="pause" /></button> -->
-
-  <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
-  <BaseButton v-else @click="togglePlay" icon="pause" />
-  <!-- <button @click="togglePlay">{{ isPlaying ? 'Pause' : 'Play' }}</button> -->
 </template>
 
 <style scoped lang="scss">
+.controlls {
+  padding: 1em;
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  position: fixed;
+  bottom: 0;
+  justify-content: center;
+  justify-items:center;
+  // margin: 0 auto;
+  left: 0;
+  right: 0;
+
+}
 .sequencer {
   font-size: 1.5em;
 }

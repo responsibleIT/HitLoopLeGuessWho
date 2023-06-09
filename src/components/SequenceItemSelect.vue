@@ -1,7 +1,6 @@
 <script setup>
 // import { ref,useAttrs } from 'vue';
 defineProps({
-  id: Number,
   sampleTypeList: Array,
   sampleData: Array,
   item: Object,
@@ -11,7 +10,7 @@ defineProps({
 </script>
 
 <template>
-<select :value="url" @input="$emit('update:url', $event.target.value)">
+<select @input="$emit('update:url', $event.target.value)">
           <template v-for="(sampleType, i) in sampleTypeList" :key="i">
             <optgroup :label="sampleType">
               <template v-for="(sample) in sampleData">
