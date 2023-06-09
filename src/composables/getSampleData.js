@@ -4,7 +4,18 @@ import { ref } from 'vue'
 import { createSampleObjectList } from '@/helpers/dataClean'
 import { useFetch } from '@vueuse/core'
 const url = import.meta.env.VITE_API_BASE
-export const getSampleData = async (BASE_URL, samplePack, type) => {
+
+let sampleFilePath = `test_samples?`
+let sampleListPath = `samples_test_list`
+
+
+export const getSampleFile = (BASE_URL, samplePack, file) => {
+  let samplePackQuery = `?sample_pack=${samplePack}`
+  const fileURL = ref(BASE_URL + samplePackQuery + file);
+  return fileURL.value
+}
+
+export const getSampleData = async (BASE_URL, samplePack, file) => {
   const URL = ref(null)
   const result = ref(null)
   if (url !== BASE_URL) {
@@ -12,14 +23,21 @@ export const getSampleData = async (BASE_URL, samplePack, type) => {
     console.log(url)
     console.log('url is not base url')
   }
+  
   let samplePackQuery = `?sample_pack=${samplePack}`
-  let sampleListPath = `samples_test_list`
-  let sampleFilePath = `test_samples?`
+  
+  
 
-  if (type === 'list') {
+  if (file === 'list') {
     URL.value = BASE_URL + sampleListPath + samplePackQuery
     console.log(URL.value)
+  } else {
+    URL.value = url + sampleFilePath + samplePackQuery + file
+    return URL.value
   }
+//   if (type === 'file') {
+//   URL.value = BASE_URL + sampleFilePath
+// }
 
   try {
     // const { data, error } = useFetch(URL);

@@ -5,8 +5,8 @@ import HitloopSequencer from '../components/HitloopSequencer.vue'
 <template>
   <main>
     <Suspense>
-    <HitloopSequencer />
-  </Suspense>
+      <HitloopSequencer />
+    </Suspense>
   </main>
 </template>
 <style scoped></style>

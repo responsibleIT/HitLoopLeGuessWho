@@ -2,9 +2,10 @@
 import { ref, reactive, watch, TransitionGroup } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
-import samplePackB from '@/assets/samplePackB.json'
+
 import BaseIcon from '@/components/BaseIcon.vue'
-import { getSampleData } from '@/composables/getSampleData.js'
+import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
+import { createSampleObject, createSequenceArraySteps, createSequenceArrayIndex } from '@/helpers/toneHelpers.js'
 // Base url for the api
 const apiBaseURL = import.meta.env.VITE_API_BASE
 const BaseURL = 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file='
@@ -13,11 +14,13 @@ const bpm = ref(120)
 const columns = ref(8)
 const availableSamples = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']
 const activeSamples = ref(['A3'])
-const sampleList = ref(samplePackB.files)
+
+console.log('createSequenceArray(columns.value)')
+console.log(createSequenceArrayIndex(columns.value))
+console.log('Array(columns.value).fill(false)')
+console.log(Array(columns.value).fill(false))
 
 const sampleDataB = await getSampleData(apiBaseURL, 'b', 'list')
-console.log('sampleDataB')
-console.log(sampleDataB)
 
 const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
 
@@ -29,29 +32,23 @@ const addRow = () => {
   activeSamples.value.push(thisSample)
   sequenceData.push({
     sample: thisSample,
-    steps: Array(16).fill(false),
-    url: BaseURL + sampleList.value[all]
+    steps: createSequenceArraySteps(columns.value),
+    url: getSampleFile(apiBaseURL, 'b', sampleDataB.value[all].file)
   })
 }
-
+console.log('BaseURL + sampleDataB.value[0].file')
+console.log(BaseURL + sampleDataB.value[0].file)
 // In the sequenceData are the row information stored like: the sample file, steps in the row and the API url
 const sequenceData = reactive(
   activeSamples.value.map((sample) => ({
     sample,
-    steps: Array(columns.value).fill(false),
-    url: BaseURL + sampleList.value[0]
+    steps: createSequenceArraySteps(columns.value),
+    url: getSampleFile(apiBaseURL, 'b', sampleDataB.value[1])
   }))
 )
 
-const createSampleObject = (sequenceData) => {
-  const newObject = reactive({})
-  sequenceData.forEach((obj) => {
-    newObject[obj.sample] = obj.url
-  })
-  return newObject
-}
-// createSampleObject(sequenceData)
 const highlighted = ref(-1)
+
 const tick = (time, col) => {
   const sampleObject = createSampleObject(sequenceData)
   const sampler = new Tone.Sampler({
@@ -62,29 +59,25 @@ const tick = (time, col) => {
   }).toDestination()
 
   Tone.Draw.schedule(() => {
+    console.log(time)
     if (isPlaying.value === true) {
       highlighted.value = col
+      console.log(col)
     }
   }, time)
 
   for (const row of sequenceData) {
     if (row.steps[col]) {
-      Tone.loaded().then(async () => {
-        await sampler.triggerAttackRelease(row.sample, '16n')
+      console.log('row.steps[col]')
+      console.log(row.steps[col])
+      Tone.loaded().then(() => {
+        sampler.triggerAttackRelease(row.sample, '16n')
       })
     }
   }
 }
 
-const indexArray = (count) => {
-  const indices = ref([])
-  for (let i = 0; i < count; i++) {
-    indices.value.push(i)
-  }
-  return indices.value
-}
-
-const sequence = new Tone.Sequence(tick, indexArray(columns.value), '16n')
+const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
 
 Tone.Transport.bpm.value = bpm.value
 
@@ -108,94 +101,89 @@ const togglePlay = () => {
   }
 }
 
-const gapSize = Math.PI / 10;
+const gapSize = Math.PI / 10
 
 function describeArcOld(x, y, radius, startAngle, endAngle) {
-  const start = polarToCartesian(x, y, radius, endAngle);
-  const end = polarToCartesian(x, y, radius, startAngle);
+  const start = polarToCartesian(x, y, radius, endAngle)
+  const end = polarToCartesian(x, y, radius, startAngle)
 
-  const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1'
 
-  const d = [
-    "M", start.x, start.y,
-    "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
-  ].join(" ");
+  const d = ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(' ')
 
-  return d;
+  return d
 }
 
 function describeArc(x, y, radius, startAngle, endAngle) {
-  const start = polarToCartesian(x, y, radius, endAngle);
-  const end = polarToCartesian(x, y, radius, startAngle);
+  const start = polarToCartesian(x, y, radius, endAngle)
+  const end = polarToCartesian(x, y, radius, startAngle)
 
-  const largeArcFlag = endAngle - startAngle <= Math.PI ? "0" : "1";
+  const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1'
 
-  const d = [
-    "M", start.x, start.y,
-    "A", radius, radius, 0, largeArcFlag, 0, end.x, end.y
-  ].join(" ");
+  const d = ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(' ')
 
-  return d;
+  return d
 }
-
 
 function polarToCartesian(centerX, centerY, radius, angleInRadians) {
-  const x = centerX + radius * Math.cos(angleInRadians);
-  const y = centerY + radius * Math.sin(angleInRadians);
-  return { x, y };
+  const x = centerX + radius * Math.cos(angleInRadians)
+  const y = centerY + radius * Math.sin(angleInRadians)
+  return { x, y }
 }
 
-
 function getStartAngle(index) {
-  return (2 * Math.PI * index) / columns.value + gapSize / 2;
+  return (2 * Math.PI * index) / columns.value + gapSize / 2
 }
 
 function getEndAngle(index) {
-  return (2 * Math.PI * (index + 1)) / columns.value - gapSize / 2;
+  return (2 * Math.PI * (index + 1)) / columns.value - gapSize / 2
 }
 
+console.log(sequenceData)
 
 </script>
 
 <template>
   <div id="sequencer">
     <TransitionGroup>
-    <div v-for="(row, index) in sequenceData" class="row" :key="index">
-      <select v-model="row.url" :id="index">
-        <template v-for="(sampleType, i) in sampleTypeList" :key="i">
-          <optgroup :label="sampleType">
-            <template v-for="(sample, sIndex) in sampleDataB">
-              <option
-                v-if="sample.type === sampleType"
-                :key="sample"
-                :value="BaseURL + sample.file"
-              >
-                {{ sample.version }} - {{ sample.name }}
-              </option>
-            </template>
-          </optgroup>
-        </template>
-      </select>
-      <div class="step-container">
-        <svg viewBox="0 0 200 200">
-      <circle cx="100" cy="100" r="80" fill="none" stroke="none" />
-      <g transform="translate(100,100)">
-        <path v-for="(step, stepIndex) in columns"
-        class="arc-item"
-          :key="stepIndex"
-          :d="describeArc(0, 0, 80, getStartAngle(stepIndex), getEndAngle(stepIndex))"
-          :class="{ active: row.steps[step], highlighted: step === highlighted }"
-          @click="toggleStep(row, step)"
-          stroke-width="15"
-          stroke="blue"
-          fill="none"
-          stroke-linecap="round"
-        />
-      </g>
-    </svg>
+      <div v-for="(row, index) in sequenceData" class="row" :key="index">
+        <select v-model="row.url" :id="index">
+          <template v-for="(sampleType, i) in sampleTypeList" :key="i">
+            <optgroup :label="sampleType">
+              <template v-for="(sample, sIndex) in sampleDataB">
+                <option
+                  v-if="sample.type === sampleType"
+                  :key="sample"
+                  :value="BaseURL + sample.file"
+                >
+                  {{ sample.version }} - {{ sample.name }}
+                </option>
+              </template>
+            </optgroup>
+          </template>
+        </select>
+        <div class="step-container">
+          <svg viewBox="0 0 200 200">
+            <circle cx="100" cy="100" r="80" fill="none" stroke="none" />
+            <g transform="translate(100,100)">
+              <path
+                v-for="(step, stepIndex) in columns"
+                class="arc-item"
+                :key="stepIndex"
+                :d="describeArc(0, 0, 80, getStartAngle(stepIndex), getEndAngle(stepIndex))"
+                :class="{ active: row.steps[step], highlighted: step === highlighted }"
+                @click="toggleStep(row, step)"
+                stroke-width="15"
+                stroke="blue"
+                fill="none"
+                stroke-linecap="round"
+                :name="stepIndex"
+              />
+            </g>
+          </svg>
+        </div>
       </div>
-    </div>
-  </TransitionGroup>
+    </TransitionGroup>
     <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">
       <BaseIcon name="add" />
     </button>
@@ -229,7 +217,7 @@ function getEndAngle(index) {
   width: 3em;
   height: 3em;
   border: 1px solid var(--color-black);
-  transition: all 1ms ease-in-out;
+  // transition: all 1ms ease-in-out;
   position: absolute;
 
   &.highlighted {
@@ -249,12 +237,11 @@ svg {
 .active {
   stroke-opacity: 50%;
   stroke: #2ecd71;
-  
 }
 
 .highlighted {
   stroke-opacity: 50%;
-  
+
   // stroke: green;
 }
 
