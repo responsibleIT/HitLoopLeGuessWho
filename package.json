@@ -2,6 +2,7 @@
   "name": "hitloop",
   "version": "0.0.0",
   "private": true,
+  "homepage": "https://GiovanniDw.github.io/HitLoop",
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
