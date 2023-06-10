@@ -11,7 +11,5 @@ import HitloopSequencer from '../components/HitloopSequencer.vue'
   </main>
 </template>
 <style scoped>
-main {
-  font-size: 1em;
-}
+
 </style>
