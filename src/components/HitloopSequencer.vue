@@ -1,5 +1,5 @@
 <script async setup>
-import { ref, reactive, watch, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, watch, onMounted, onUnmounted, TransitionGroup, Transition } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
 import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
@@ -11,10 +11,10 @@ import {
 } from '@/helpers/toneHelpers.js'
 
 import BaseIcon from '@/components/BaseIcon.vue'
-import BaseButton from './BaseButton.vue'
-import SequenceItemSelect from './SequenceItemSelect.vue'
-import SequenceItem from './SequenceItem.vue'
-import SequenceItemArc from './SequenceItemArc.vue'
+import BaseButton from '@/components/BaseButton.vue'
+import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
+import SequenceItem from '@/components/SequenceItem.vue'
+import SequenceItemArc from '@/components/SequenceItemArc.vue'
 
 // Base url for the api
 const apiBaseURL = import.meta.env.VITE_API_BASE
