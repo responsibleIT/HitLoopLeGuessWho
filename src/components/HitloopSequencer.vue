@@ -1,5 +1,5 @@
 <script async setup>
-import { ref, reactive, watch, TransitionGroup, Transition } from 'vue'
+import { ref, reactive, watch, onMounted, onUnmounted } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
 import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
@@ -89,6 +89,7 @@ watch(bpm, (newBpm) => {
 const toggleStep = (row, step) => {
   row.steps[step] = !row.steps[step]
 }
+
 // With this function you can play or pause the sequencer
 const togglePlay = () => {
   isPlaying.value = !isPlaying.value
@@ -100,6 +101,21 @@ const togglePlay = () => {
     sequence.stop()
   }
 }
+
+const onKeyDown = (event) => {
+  if (event.code === 'Space') {
+    togglePlay()
+    event.preventDefault()
+  }
+}
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeyDown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeyDown)
+})
 
 const updateURL = (index, newValue) => {
   sequenceData.value[index].url = newValue
