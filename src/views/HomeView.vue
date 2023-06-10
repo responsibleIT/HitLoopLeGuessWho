@@ -10,4 +10,8 @@ import HitloopSequencer from '../components/HitloopSequencer.vue'
     </Suspense>
   </main>
 </template>
-<style scoped></style>
+<style scoped>
+main {
+  font-size: 1em;
+}
+</style>
