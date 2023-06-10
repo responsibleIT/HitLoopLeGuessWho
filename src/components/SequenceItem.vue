@@ -15,25 +15,9 @@ defineProps({
 </script>
 <template>
   <div class="sequence-item">
-    <slot name="select">
-      <SequenceItemSelect
-        :@update="$emit('update:url', $event.target.value)"
-        :selectedValue="row.url"
-        @update:="updateURL(row, $event)"
-        :item="row"
-        :id="index"
-        :sampleTypeList="sampleTypeList"
-        :sampleData="sampleDataB"
-      />
-    </slot>
-    <slot name="arc">
-      <SequenceItemArc
-        :columns="columns"
-        :row="row"
-        :highlighted="highlighted"
-        @toggle-step="toggleStep"
-      />
-    </slot>
+    <slot name="select"></slot>
+    <slot></slot>
+    <slot name="arc"></slot>
   </div>
 </template>
 
