@@ -1,12 +1,12 @@
 <script setup>
 import {Suspense} from 'vue';
-import HitloopSequencer from '../components/HitloopSequencer.vue'
+import StateSequencer from '@/components/StateSequencer.vue'
 </script>
 
 <template>
   <main>
     <Suspense>
-      <HitloopSequencer />
+      <StateSequencer />
     </Suspense>
   </main>
 </template>
