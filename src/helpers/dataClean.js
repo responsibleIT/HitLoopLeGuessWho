@@ -20,15 +20,15 @@ export const createSampleObjectList = (sampleData, url) => {
         if (type === 'hi-hat') {
           sampleType = 'Hi-Hat';
         }
-        let sampleObject = reactive({
+        
+        // const nameCaseChange = useChangeCase(nameOnly, 'capitalCase')
+        return {
           name: name.replace(/_/g, '-'),
           type: sampleType.charAt(0).toUpperCase() + sampleType.slice(1),
           version,
           file: str,
           url: url + str,
-        })
-        // const nameCaseChange = useChangeCase(nameOnly, 'capitalCase')
-        return sampleObject
+        }
       } else {
         return null // Handle invalid file name format if needed
       }

@@ -1,4 +1,6 @@
 <script setup>
+import { useSequenceStore } from '@/stores/sequence';
+import { storeToRefs } from 'pinia';
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -14,6 +16,17 @@ const props = defineProps({
 })
 
 const gapSize = Math.PI / 10
+
+const store = await useSequenceStore()
+console.log(store)
+// store values to vuejs ref
+const {
+  
+} = storeToRefs(store)
+
+const { toggleStep, updateSequenceURL, addSequence, togglePlayPause } = store
+
+
 
 function describeArcOld(x, y, radius, startAngle, endAngle) {
   const start = polarToCartesian(x, y, radius, endAngle)
@@ -47,6 +60,7 @@ function getStartAngle(index) {
 function getEndAngle(index) {
   return (2 * Math.PI * (index + 1)) / props.columns - gapSize / 2
 }
+
 </script>
 
 <template>

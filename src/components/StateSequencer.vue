@@ -1,4 +1,4 @@
-<script setup>
+<script async setup>
 import { ref, reactive, watch, onMounted, onUnmounted, TransitionGroup, Transition } from 'vue'
 import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
@@ -16,57 +16,54 @@ import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
 import SequenceItem from '@/components/SequenceItem.vue'
+import StateSequenceItem from '@/components/StateSequenceItem.vue'
 import SequenceItemArc from '@/components/SequenceItemArc.vue'
 
 // Base url for the api
 
-const store = useSequenceStore();
+const store = await useSequenceStore()
 console.log(store)
 // store values to vuejs ref
-const { isPlaying, doubleCount, sequenceData,availableSamples,
-activeSamples } = storeToRefs(store)
+const {
+  doubleCount,
+} = storeToRefs(store)
 
-const {  toggleStep,
-    updateSequenceURL,
-    addSequence,togglePlayPause, sampleData} = store
-
+const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 const apiBaseURL = import.meta.env.VITE_API_BASE
-// const isPlaying = ref(false)
+const isPlaying = ref(false)
 const bpm = ref(120)
 const columns = ref(16)
-// const availableSamples = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']
-// const activeSamples = ref(['A3'])
+const availableSamples = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']
+const activeSamples = ref(['A3'])
 const samplePack = ref('b')
 
+const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
 
-
-// const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
-console.log(sampleData)
 const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare', 'Hi-Hat'])
 
 const timeNow = ref(0)
 // This function adds a new row to the sequencer
 const addRow = () => {
   let all = sequenceData.length
-  let thisSample = availableSamples.value[all]
+  let thisSample = availableSamples[all]
 
   activeSamples.value.push(thisSample)
   sequenceData.push({
     sample: thisSample,
-    steps: createSequenceArraySteps(columns.value),
+    steps: createSequenceArraySteps(columns),
     url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[all].file)
   })
 }
 
 // In the sequenceData are the row information stored like: the sample file, steps in the row and the API url
-// const sequenceData = reactive(
-//   activeSamples.value.map((sample) => ({
-//     sample,
-//     steps: createSequenceArraySteps(columns.value),
-//     url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
-//   }))
-// )
+const sequenceData = reactive(
+  activeSamples.value.map((sample) => ({
+    sample,
+    steps: createSequenceArraySteps(columns.value),
+    url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
+  }))
+)
 
 const highlighted = ref(0)
 
@@ -74,6 +71,7 @@ const tick = (time, col) => {
   timeNow.value = time
   // highlighted.value = col
   const sampleObject = createSampleObject(sequenceData)
+  console.log(sampleObject)
   const sampler = new Tone.Sampler({
     urls: sampleObject,
     onload: () => {
@@ -84,6 +82,7 @@ const tick = (time, col) => {
   Tone.Draw.schedule(() => {
     if (isPlaying.value === true) {
       highlighted.value = col
+      setCurrentStepIndex(col)
     }
   }, time)
 
@@ -96,7 +95,7 @@ const tick = (time, col) => {
   }
 }
 
-const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
+const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns), '16n')
 
 Tone.Transport.bpm.value = bpm.value
 
@@ -110,12 +109,11 @@ watch(bpm, (newBpm) => {
 
 // With this function you can play or pause the sequencer
 const togglePlay = () => {
-  togglePlayPause()
   if (isPlaying.value) {
-    // Tone.Transport.start()
+    Tone.Transport.start()
     sequence.start()
   } else {
-    // Tone.Transport.stop()
+    Tone.Transport.stop()
     sequence.stop()
   }
 }
@@ -141,16 +139,15 @@ const updateURL = (index, newValue) => {
 </script>
 
 <template>
-  <div id="sequencer">
+  <div id="sequencer" v-if="store">
     <TransitionGroup name="fade">
-      <div v-if="sequenceData">
       <div v-for="(row, index) in sequenceData" class="row" :key="index">
-        <SequenceItem>
+        <StateSequenceItem>
           <template v-slot:select>
             <SequenceItemSelect
               v-model:url="row.url"
               :selectedValue="row.url"
-              @update:="updateURL(row, $event)"
+              @update:="updateSequenceURL(row, $event)"
               :item="row"
               :sampleTypeList="sampleTypeList"
               :sampleData="sampleData"
@@ -164,11 +161,10 @@ const updateURL = (index, newValue) => {
               @toggle-step="toggleStep"
             />
           </template>
-        </SequenceItem>
+        </StateSequenceItem>
       </div>
-    </div>
     </TransitionGroup>
-    <button v-show="availableSamples > activeSamples" @click="addRow(sequenceData)">
+    <button v-show="availableSamples > activeSamples" @click="addRow()">
       <BaseIcon name="add" />
     </button>
   </div>
@@ -177,8 +173,8 @@ const updateURL = (index, newValue) => {
       <label for="bpm">BPM:</label>
       <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
     </div>
-    <BaseButton v-if="!isPlaying" @click="togglePlayPause" icon="play_arrow" />
-    <BaseButton v-else @click="togglePlayPause" icon="pause" />
+    <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
+    <BaseButton v-else @click="togglePlay" icon="pause" />
   </div>
 </template>
 

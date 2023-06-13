@@ -5,14 +5,14 @@ import { createSampleObjectList } from '@/helpers/dataClean'
 import { useFetch, useObjectUrl } from '@vueuse/core'
 const url = import.meta.env.VITE_API_BASE
 
-let sampleFilePath = `test_samples`
-let sampleListPath = `samples_test_list`
+const sampleFilePath = `test_samples`
+const sampleListPath = `samples_test_list`
 
 export const getSampleFile = (BASE_URL, samplePack, file) => {
   let samplePackQuery = `?sample_pack=${samplePack}`
   let fileQuery = `&file=${file}`
   const fileURL = ref(BASE_URL + sampleFilePath + samplePackQuery + fileQuery)
-  return fileURL
+  return fileURL.value
 }
 
 export const getSampleData = async (BASE_URL, samplePack, file) => {
@@ -38,9 +38,9 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
   }
 
   try {
-    const { data, isFetching, error } = await useFetch(URL, { refetch: false }).json()
+    const { data, isFetching, error } = await useFetch(URL, { refetch: true }).json()
     if (data || !isFetching) {
-      result.value = createSampleObjectList(data, sampleFileURL)
+      result.value = await createSampleObjectList(data, sampleFileURL)
       console.log(result.value)
       return result
     }

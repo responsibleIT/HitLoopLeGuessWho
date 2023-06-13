@@ -1,4 +1,6 @@
 <script setup>
+import { storeToRefs } from 'pinia';
+import { useSequenceStore } from '@/stores/sequence.js'
 // import { ref,useAttrs } from 'vue';
 defineProps({
   sampleTypeList: Array,
@@ -7,6 +9,14 @@ defineProps({
   url: String,
   highlighted: Number
 })
+const store = useSequenceStore()
+const {
+  doubleCount,
+} = storeToRefs(store)
+
+const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
+
+
 </script>
 
 <template>

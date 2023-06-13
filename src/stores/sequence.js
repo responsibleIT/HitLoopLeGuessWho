@@ -17,39 +17,44 @@ export const useSequenceStore = defineStore('sequence', async () => {
   const columns = ref(9)
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
   const activeNotes = ref(['A3'])
-  const availableSamples = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
-  const activeSamples = ref(['A3'])
   const samplePack = ref('b')
   const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
   const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
-  const sequenceData = reactive(
-    activeNotes.value.map((sample) => ({
+  // const setSampleData
+  console.log(sampleData)
+  const sequenceData = activeNotes.value.map((sample) => ({
       sample,
       steps: createSequenceArraySteps(columns.value),
-      url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
+      url: getSampleFile(apiBaseURL, samplePack.value, sampleData[1].file)
     }))
-  )
+
   const currentStepIndex = ref(0)
+  function setCurrentStepIndex(i) {
+    currentStepIndex.value = i 
+  }
   // const state = reactive({
   //   bpm: bpm,
   //   isPlaying: isPlaying,
   //   columns: columns
   // })
-  const count = ref(0)
-  const doubleCount = computed(() => count.value * 2)
-  function increment() {
-    count.value++
-  }
-  const toggleStep = (row, step) => {
-    row.steps[step] = !row.steps[step]
-  }
+
+  function toggleStep(row, step) {
+    console.log(row)
+    console.log(step)
+    for (const item of sequenceData) {
+      if (row === item) {
+        console.log(`${row} is ${item}`)
+      }
+      row.steps[step] = !row.steps[step]
+    }
+}
   const updateSequenceURL = (index, newValue) => {
     sequenceData.value[index].url = newValue
   }
   const togglePlayPause = () => {
     isPlaying.value = !isPlaying.value
     if (isPlaying.value) {
-      Tone.Transport.start()  
+      Tone.Transport.start()
     } else {
       Tone.Transport.stop()
     }
@@ -71,13 +76,14 @@ export const useSequenceStore = defineStore('sequence', async () => {
     samplePack,
     sampleData,
     columns,
-    availableSamples,
-    activeSamples,
-    sequenceData,
+    availableNotes,
+    activeNotes,
     currentStepIndex,
+    addSequence,
     toggleStep,
     updateSequenceURL,
-    addSequence,
-    togglePlayPause
+    togglePlayPause,
+    sampleTypeList,
+    setCurrentStepIndex
   }
 })
