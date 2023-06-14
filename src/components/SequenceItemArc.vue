@@ -1,6 +1,6 @@
 <script setup>
-import { useSequenceStore } from '@/stores/sequence';
-import { storeToRefs } from 'pinia';
+import { useSequenceStore } from '@/stores/sequence'
+import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 
 const props = defineProps({
@@ -16,17 +16,12 @@ const props = defineProps({
 })
 
 const store = useSequenceStore()
-console.log(store)
 // store values to vuejs ref
-const {
-  doubleCount,
-  samplePack,
-} = storeToRefs(store)
+const { currentStepIndex } = storeToRefs(store)
 
 console.log(store.value)
 
-const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
-
+const { toggleStep } = store
 
 const gapSize = Math.PI / 10
 
@@ -73,7 +68,7 @@ function getEndAngle(index) {
         class="arc-item"
         :key="stepIndex"
         :d="describeArc(0, 0, 80, getStartAngle(stepIndex), getEndAngle(stepIndex))"
-        :class="{ active: row.steps[stepIndex], highlighted: stepIndex === highlighted }"
+        :class="{ active: row.steps[stepIndex], highlighted: stepIndex === currentStepIndex }"
         @click="toggleStep(row, stepIndex)"
         stroke-width="15"
         stroke="blue"

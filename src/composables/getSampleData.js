@@ -13,11 +13,10 @@ export const getSampleFile = (BASE_URL, samplePack, file) => {
     let samplePackQuery = `?sample_pack=${samplePack}`
     let fileQuery = `&file=${file}`
     const fileURL = ref(BASE_URL + sampleFilePath + samplePackQuery + fileQuery)
-    return fileURL.value  
+    return fileURL.value
   } catch (error) {
-    console.error(error);
+    console.error(error)
   }
-  
 }
 
 export const getSampleData = async (BASE_URL, samplePack, file) => {

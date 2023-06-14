@@ -1,7 +1,7 @@
 <script setup>
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from 'pinia'
 import { useSequenceStore } from '@/stores/sequence.js'
-import { ref } from 'vue';
+import { ref } from 'vue'
 // import { ref,useAttrs } from 'vue';
 defineProps({
   sampleTypeList: Array,
@@ -11,28 +11,9 @@ defineProps({
   id: Number
 })
 
-
 const store = await useSequenceStore()
-console.log(store)
-// store values to vuejs ref
-const {
-  doubleCount,
-  availableNotes,
-  activeNotes,
-  currentStepIndex,
-  sequenceData,
-  sampleData,
-  isPlaying,
-  columns
-} = storeToRefs(store)
 
-console.log(currentStepIndex)
-console.log("seiwoufhewuipgheuity89epwhtore.activeNotes")
-console.log(store.activeNotes)
-const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
-
-const urlInput = ref()
-console.log(urlInput)
+const { sampleData } = storeToRefs(store)
 </script>
 
 <template>
@@ -41,7 +22,7 @@ console.log(urlInput)
       <optgroup :label="sampleType">
         <template v-for="sample in sampleData">
           <option v-if="sample.type === sampleType" :key="sample" :value="sample.url">
-            {{ sample.version }} - {{ sample.name }}
+            {{ sample.version }} {{ sample.name }}
           </option>
         </template>
       </optgroup>
@@ -49,4 +30,12 @@ console.log(urlInput)
   </select>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+select {
+  max-width: 100%;
+  padding: 0.5em;
+}
+option {
+  font-family: monospace;
+}
+</style>

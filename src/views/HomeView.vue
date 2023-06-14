@@ -1,5 +1,5 @@
 <script setup>
-import {Suspense} from 'vue';
+import { Suspense } from 'vue'
 import StateSequencer from '@/components/StateSequencer.vue'
 </script>
 
@@ -10,6 +10,4 @@ import StateSequencer from '@/components/StateSequencer.vue'
     </Suspense>
   </main>
 </template>
-<style scoped>
-
-</style>
+<style scoped></style>
