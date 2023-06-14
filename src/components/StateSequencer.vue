@@ -87,9 +87,13 @@ const tick = (time, col) => {
 
 
 
-  const sampleObject = createSampleObject(newSequenceData)
-  console.log(sequenceData)
+  const sampleObject = createSampleObject(newSequenceData.value);
+  console.log('sampleObject')
   console.log(sampleObject)
+  
+  
+
+
   const sampler = new Tone.Sampler({
     urls: sampleObject,
     onload: () => {
@@ -98,24 +102,24 @@ const tick = (time, col) => {
   }).toDestination()
 
   Tone.Draw.schedule(() => {
-    if (isPlaying.value) {
+    if (isPlaying.value === true) {
       highlighted.value = col
       console.log('col')
       console.log(col)
-      setCurrentStepIndex(col)
+      setCurrentStepIndex(highlighted.value)
       console.log('currentStepIndex')
       console.log(currentStepIndex)
     }
   }, time)
 
 
-  newSequenceData.value.forEach(item => {
-    if (item.steps[col]) {
+  for (const row of newSequenceData.value) {
+    if (row.steps[col]) {
       Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(item.sample, '16n')
+        sampler.triggerAttackRelease(row.sample, '16n', Tone.now())
       })
     }
-  });
+  };
 
   // for (const row of newSequenceData) {
   //   if (row.steps[col]) {
@@ -125,8 +129,11 @@ const tick = (time, col) => {
   //   }
   // }
 }
+console.log('columns')
+console.log(columns.value)
 
-const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns), '16n')
+
+const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
 
 Tone.Transport.bpm.value = bpm.value
 
@@ -141,7 +148,6 @@ watch(bpm, (newBpm) => {
 // With this function you can play or pause the sequencer
 const togglePlay = () => {
   togglePlayPause()
-  
   if (isPlaying.value) {
     console.log('isPlaying.value true')
   console.log(isPlaying.value)
@@ -152,6 +158,7 @@ const togglePlay = () => {
   console.log(isPlaying.value)
     Tone.Transport.stop()
     sequence.stop()
+    
   }
 }
 
@@ -202,7 +209,7 @@ const updateURL = (index, newValue) => {
       <label for="bpm">BPM:</label>
       <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
     </div>
-    <BaseButton v-if="isPlaying" @click="togglePlay" icon="play_arrow" />
+    <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
     <BaseButton v-else @click="togglePlay" icon="pause" />
   </div>
 </template>

@@ -59,9 +59,11 @@ export const useSequenceStore = defineStore('sequence', () => {
   //   isPlaying: isPlaying,
   //   columns: columns
   // })
-  const getSequenceData = computed(() => sequenceData.value)
+  const getSequenceData = computed(() => {
+    return sequenceData.value
+  })
   console.log('getSequenceData')
-  console.log(getSequenceData)
+  console.log(getSequenceData.value)
   function toggleStep(row, step) {
       return row.steps[step] = !row.steps[step]
   }
