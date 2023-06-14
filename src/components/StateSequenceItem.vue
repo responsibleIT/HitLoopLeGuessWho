@@ -18,27 +18,29 @@ const props = defineProps({
   selectedValue: String
 })
 console.log(props)
-const sequence = useSequenceStore()
-console.log(sequence)
+const store = useSequenceStore()
+console.log(store)
 // store values to vuejs ref
 const {
   doubleCount,
-  samplePack
-} = storeToRefs(sequence)
+  samplePack,
+  currentStepIndex,
+  sequenceData
+} = storeToRefs(store)
+console.log(sequenceData)
+console.log(store.value)
 
-console.log(sequence.value)
-
-const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = sequence
+const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
-
+console.log(props)
 </script>
 <template>
   <div class="sequence-item">
     <slot name="select">
       <SequenceItemSelect
-              :selectedValue="item.url"
-              @update:="updateSequenceURL(id, $event)"
+              :selectedValue="selectedValue"
+              @update:url="updateSequenceURL(id, $event)"
               :item="item"
               :sampleTypeList="sampleTypeList"
               :sampleData="sampleData"

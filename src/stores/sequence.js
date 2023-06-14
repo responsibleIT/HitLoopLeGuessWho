@@ -14,7 +14,7 @@ const apiBaseURL = import.meta.env.VITE_API_BASE
 export const useSequenceStore = defineStore('sequence', () => {
   const isPlaying = ref(false);
   const bpm = ref(130);
-  const columns = ref(9);
+  const columns = ref(9); 
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']);
   const activeNotes = ref(['A3']);
   const samplePack = ref('b');
@@ -42,43 +42,45 @@ export const useSequenceStore = defineStore('sequence', () => {
   setSampleData()
   async function setSequenceData() {
     await setSampleData();
-    sequenceData.value = activeNotes.value.map((sample) => ({
+    return sequenceData.value = activeNotes.value.map((sample) => ({
       sample,
       steps: createSequenceArraySteps(columns.value),
-      url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
+      url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[0].file)
     }))
   }
   setSequenceData()
   console.log(sequenceData.value)
   const currentStepIndex = ref(0)
   function setCurrentStepIndex(i) {
-    currentStepIndex.value = i
+    return currentStepIndex.value = i
   }
   // const state = reactive({
   //   bpm: bpm,
   //   isPlaying: isPlaying,
   //   columns: columns
   // })
-
+  const getSequenceData = computed(() => sequenceData.value)
+  console.log('getSequenceData')
+  console.log(getSequenceData)
   function toggleStep(row, step) {
       return row.steps[step] = !row.steps[step]
   }
   const updateSequenceURL = (index, newValue) => {
-    return sequenceData.value[index].url = newValue
+    console.log(index)
+    console.log(newValue)
+    sequenceData.value[index].url = newValue
   }
-  const togglePlayPause = () => {
+
+
+  const togglePlayPause = (val) => {
     isPlaying.value = !isPlaying.value
-    if (isPlaying.value) {
-      Tone.Transport.start()
-    } else {
-      Tone.Transport.stop()
-    }
   }
   const addSequence = () => {
     if(!sequenceData.value) return
     let all = sequenceData.value.length
     let thisSample = availableNotes.value[all]
-
+    console.log('thisSample')
+console.log(thisSample)
     activeNotes.value.push(thisSample)
     sequenceData.value.push({
       sample: thisSample,
@@ -98,6 +100,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     activeNotes,
     currentStepIndex,
     addSequence,
+    getSequenceData,
     toggleStep,
     updateSequenceURL,
     togglePlayPause,

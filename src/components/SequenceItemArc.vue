@@ -15,18 +15,20 @@ const props = defineProps({
   col: Number
 })
 
-const gapSize = Math.PI / 10
-
-const store = await useSequenceStore()
+const store = useSequenceStore()
 console.log(store)
 // store values to vuejs ref
 const {
-  
+  doubleCount,
+  samplePack,
 } = storeToRefs(store)
 
-const { toggleStep, updateSequenceURL, addSequence, togglePlayPause } = store
+console.log(store.value)
+
+const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 
+const gapSize = Math.PI / 10
 
 function describeArcOld(x, y, radius, startAngle, endAngle) {
   const start = polarToCartesian(x, y, radius, endAngle)
@@ -60,7 +62,6 @@ function getStartAngle(index) {
 function getEndAngle(index) {
   return (2 * Math.PI * (index + 1)) / props.columns - gapSize / 2
 }
-
 </script>
 
 <template>
@@ -68,12 +69,12 @@ function getEndAngle(index) {
     <circle cx="100" cy="100" r="80" fill="none" stroke="none" />
     <g transform="translate(100,100)">
       <path
-        v-for="(step, stepIndex) in columns"
+        v-for="(step, stepIndex) in props.columns"
         class="arc-item"
         :key="stepIndex"
         :d="describeArc(0, 0, 80, getStartAngle(stepIndex), getEndAngle(stepIndex))"
         :class="{ active: row.steps[stepIndex], highlighted: stepIndex === highlighted }"
-        @click="$emit('toggleStep', row, stepIndex)"
+        @click="toggleStep(row, stepIndex)"
         stroke-width="15"
         stroke="blue"
         fill="none"

@@ -29,7 +29,11 @@ const {
   availableNotes,
   activeNotes,
   currentStepIndex,
-  sequenceData
+  sequenceData,
+  sampleData,
+  isPlaying,
+  columns,
+  getSequenceData
 } = storeToRefs(store)
 
 console.log(currentStepIndex)
@@ -38,14 +42,14 @@ console.log(store.activeNotes)
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 const apiBaseURL = import.meta.env.VITE_API_BASE
-const isPlaying = ref(false)
+// const isPlaying = ref(false)
 const bpm = ref(120)
-const columns = ref(16)
+// const columns = ref(16)
 const availableSamples = ['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']
 const activeSamples = ref(['A3'])
 const samplePack = ref('b')
 
-const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
+// const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
 
 const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare', 'Hi-Hat'])
 
@@ -74,10 +78,17 @@ const addRow = () => {
 
 const highlighted = ref(0)
 
+
+const newSequenceData = getSequenceData
+console.log(newSequenceData)
 const tick = (time, col) => {
-  timeNow.value = time
+  // timeNow.value = time
   // highlighted.value = col
-  const sampleObject = createSampleObject(sequenceData)
+
+
+
+  const sampleObject = createSampleObject(newSequenceData)
+  console.log(sequenceData)
   console.log(sampleObject)
   const sampler = new Tone.Sampler({
     urls: sampleObject,
@@ -87,19 +98,32 @@ const tick = (time, col) => {
   }).toDestination()
 
   Tone.Draw.schedule(() => {
-    if (isPlaying.value === true) {
+    if (isPlaying.value) {
       highlighted.value = col
+      console.log('col')
+      console.log(col)
       setCurrentStepIndex(col)
+      console.log('currentStepIndex')
+      console.log(currentStepIndex)
     }
   }, time)
 
-  for (const row of sequenceData) {
-    if (row.steps[col]) {
+
+  newSequenceData.value.forEach(item => {
+    if (item.steps[col]) {
       Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(row.sample, '16n')
+        sampler.triggerAttackRelease(item.sample, '16n')
       })
     }
-  }
+  });
+
+  // for (const row of newSequenceData) {
+  //   if (row.steps[col]) {
+  //     Tone.loaded().then(() => {
+  //       sampler.triggerAttackRelease(row.sample, '16n')
+  //     })
+  //   }
+  // }
 }
 
 const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns), '16n')
@@ -116,10 +140,16 @@ watch(bpm, (newBpm) => {
 
 // With this function you can play or pause the sequencer
 const togglePlay = () => {
+  togglePlayPause()
+  
   if (isPlaying.value) {
+    console.log('isPlaying.value true')
+  console.log(isPlaying.value)
     Tone.Transport.start()
     sequence.start()
   } else {
+    console.log('isPlaying.value false')
+  console.log(isPlaying.value)
     Tone.Transport.stop()
     sequence.stop()
   }
@@ -149,7 +179,7 @@ const updateURL = (index, newValue) => {
   <div id="sequencer" v-if="sequenceData">
     <TransitionGroup name="fade">
       <div v-for="(row, index) in sequenceData" class="row" :key="index">
-        <Suspense>
+        
         <StateSequenceItem
               v-model:url="row.url"
               :selectedValue="row.url"
@@ -160,10 +190,10 @@ const updateURL = (index, newValue) => {
               @toggle-step="toggleStep"
               :sampleTypeList="sampleTypeList"
               :sampleData="sampleData"/>
-              </Suspense>
+              
       </div>
     </TransitionGroup>
-    <button v-show="availableSamples > activeSamples" @click="addSequence()">
+    <button v-show="availableNotes > activeNotes" @click="addSequence()">
       <BaseIcon name="add" />
     </button>
   </div>
@@ -172,7 +202,7 @@ const updateURL = (index, newValue) => {
       <label for="bpm">BPM:</label>
       <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
     </div>
-    <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
+    <BaseButton v-if="isPlaying" @click="togglePlay" icon="play_arrow" />
     <BaseButton v-else @click="togglePlay" icon="pause" />
   </div>
 </template>

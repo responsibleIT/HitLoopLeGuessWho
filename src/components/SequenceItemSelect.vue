@@ -1,14 +1,38 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useSequenceStore } from '@/stores/sequence.js'
+import { ref } from 'vue';
 // import { ref,useAttrs } from 'vue';
 defineProps({
   sampleTypeList: Array,
-  sampleData: Array,
   item: Object,
   url: String,
-  highlighted: Number
+  highlighted: Number,
+  id: Number
 })
+
+
+const store = await useSequenceStore()
+console.log(store)
+// store values to vuejs ref
+const {
+  doubleCount,
+  availableNotes,
+  activeNotes,
+  currentStepIndex,
+  sequenceData,
+  sampleData,
+  isPlaying,
+  columns
+} = storeToRefs(store)
+
+console.log(currentStepIndex)
+console.log("seiwoufhewuipgheuity89epwhtore.activeNotes")
+console.log(store.activeNotes)
+const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
+
+const urlInput = ref()
+console.log(urlInput)
 </script>
 
 <template>
