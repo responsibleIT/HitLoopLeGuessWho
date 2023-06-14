@@ -26,8 +26,15 @@ console.log(store)
 // store values to vuejs ref
 const {
   doubleCount,
+  availableNotes,
+  activeNotes,
+  currentStepIndex,
+  sequenceData
 } = storeToRefs(store)
 
+console.log(currentStepIndex)
+console.log("seiwoufhewuipgheuity89epwhtore.activeNotes")
+console.log(store.activeNotes)
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 const apiBaseURL = import.meta.env.VITE_API_BASE
@@ -57,13 +64,13 @@ const addRow = () => {
 }
 
 // In the sequenceData are the row information stored like: the sample file, steps in the row and the API url
-const sequenceData = reactive(
-  activeSamples.value.map((sample) => ({
-    sample,
-    steps: createSequenceArraySteps(columns.value),
-    url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
-  }))
-)
+// const sequenceData = reactive(
+//   activeSamples.value.map((sample) => ({
+//     sample,
+//     steps: createSequenceArraySteps(columns.value),
+//     url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
+//   }))
+// )
 
 const highlighted = ref(0)
 
@@ -139,32 +146,24 @@ const updateURL = (index, newValue) => {
 </script>
 
 <template>
-  <div id="sequencer" v-if="store">
+  <div id="sequencer" v-if="sequenceData">
     <TransitionGroup name="fade">
       <div v-for="(row, index) in sequenceData" class="row" :key="index">
-        <StateSequenceItem>
-          <template v-slot:select>
-            <SequenceItemSelect
+        <Suspense>
+        <StateSequenceItem
               v-model:url="row.url"
               :selectedValue="row.url"
-              @update:="updateSequenceURL(row, $event)"
               :item="row"
-              :sampleTypeList="sampleTypeList"
-              :sampleData="sampleData"
-            />
-          </template>
-          <template v-slot:arc>
-            <SequenceItemArc
+              :id="index"
               :columns="columns"
-              :row="row"
               :highlighted="highlighted"
               @toggle-step="toggleStep"
-            />
-          </template>
-        </StateSequenceItem>
+              :sampleTypeList="sampleTypeList"
+              :sampleData="sampleData"/>
+              </Suspense>
       </div>
     </TransitionGroup>
-    <button v-show="availableSamples > activeSamples" @click="addRow()">
+    <button v-show="availableSamples > activeSamples" @click="addSequence()">
       <BaseIcon name="add" />
     </button>
   </div>

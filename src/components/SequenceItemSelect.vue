@@ -9,14 +9,6 @@ defineProps({
   url: String,
   highlighted: Number
 })
-const store = useSequenceStore()
-const {
-  doubleCount,
-} = storeToRefs(store)
-
-const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
-
-
 </script>
 
 <template>

@@ -9,16 +9,21 @@ const sampleFilePath = `test_samples`
 const sampleListPath = `samples_test_list`
 
 export const getSampleFile = (BASE_URL, samplePack, file) => {
-  let samplePackQuery = `?sample_pack=${samplePack}`
-  let fileQuery = `&file=${file}`
-  const fileURL = ref(BASE_URL + sampleFilePath + samplePackQuery + fileQuery)
-  return fileURL.value
+  try {
+    let samplePackQuery = `?sample_pack=${samplePack}`
+    let fileQuery = `&file=${file}`
+    const fileURL = ref(BASE_URL + sampleFilePath + samplePackQuery + fileQuery)
+    return fileURL.value  
+  } catch (error) {
+    console.error(error);
+  }
+  
 }
 
 export const getSampleData = async (BASE_URL, samplePack, file) => {
   let samplePackQuery = `?sample_pack=${samplePack}`
   let samplePackQueryFile = `?sample_pack=${samplePack}&file=`
-  const URL = ref(null)
+  let URL = ref(null)
   const sampleFileURL = url + sampleFilePath + samplePackQueryFile
 
   // https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav
@@ -39,6 +44,9 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
 
   try {
     const { data, isFetching, error } = await useFetch(URL, { refetch: true }).json()
+    console.log(data)
+    console.log(isFetching)
+    console.log(error)
     if (data || !isFetching) {
       result.value = await createSampleObjectList(data, sampleFileURL)
       console.log(result.value)

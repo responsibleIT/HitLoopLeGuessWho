@@ -11,26 +11,48 @@ import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
 
 const apiBaseURL = import.meta.env.VITE_API_BASE
 
-export const useSequenceStore = defineStore('sequence', async () => {
-  const isPlaying = ref(false)
-  const bpm = ref(130)
-  const columns = ref(9)
-  const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
-  const activeNotes = ref(['A3'])
-  const samplePack = ref('b')
-  const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
-  const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
+export const useSequenceStore = defineStore('sequence', () => {
+  const isPlaying = ref(false);
+  const bpm = ref(130);
+  const columns = ref(9);
+  const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4']);
+  const activeNotes = ref(['A3']);
+  const samplePack = ref('b');
+  const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare']);
+  // const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
+  const sampleData = ref();
   // const setSampleData
-  console.log(sampleData)
-  const sequenceData = activeNotes.value.map((sample) => ({
+  console.log(sampleData);
+  const sequenceData = ref();
+
+  // activeNotes.value.map((sample) => ({
+  //   sample,
+  //   steps: createSequenceArraySteps(columns.value),
+  //   url: getSampleFile(apiBaseURL, samplePack.value, sampleData[1].file)
+  // }))
+  async function setSampleData() {
+    try {
+      const data = await getSampleData(apiBaseURL, samplePack.value, 'list')
+      sampleData.value = data.value
+      // return sampleData.value
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  setSampleData()
+  async function setSequenceData() {
+    await setSampleData();
+    sequenceData.value = activeNotes.value.map((sample) => ({
       sample,
       steps: createSequenceArraySteps(columns.value),
-      url: getSampleFile(apiBaseURL, samplePack.value, sampleData[1].file)
+      url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
     }))
-
+  }
+  setSequenceData()
+  console.log(sequenceData.value)
   const currentStepIndex = ref(0)
   function setCurrentStepIndex(i) {
-    currentStepIndex.value = i 
+    currentStepIndex.value = i
   }
   // const state = reactive({
   //   bpm: bpm,
@@ -39,17 +61,10 @@ export const useSequenceStore = defineStore('sequence', async () => {
   // })
 
   function toggleStep(row, step) {
-    console.log(row)
-    console.log(step)
-    for (const item of sequenceData) {
-      if (row === item) {
-        console.log(`${row} is ${item}`)
-      }
-      row.steps[step] = !row.steps[step]
-    }
-}
+      return row.steps[step] = !row.steps[step]
+  }
   const updateSequenceURL = (index, newValue) => {
-    sequenceData.value[index].url = newValue
+    return sequenceData.value[index].url = newValue
   }
   const togglePlayPause = () => {
     isPlaying.value = !isPlaying.value
@@ -60,18 +75,21 @@ export const useSequenceStore = defineStore('sequence', async () => {
     }
   }
   const addSequence = () => {
-    let all = sequenceData.length
-    let thisSample = availableNotes[all]
+    if(!sequenceData.value) return
+    let all = sequenceData.value.length
+    let thisSample = availableNotes.value[all]
 
     activeNotes.value.push(thisSample)
-    sequenceData.push({
+    sequenceData.value.push({
       sample: thisSample,
       steps: createSequenceArraySteps(columns.value),
       url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[all].file)
     })
+    return
   }
   return {
     bpm,
+    sequenceData,
     isPlaying,
     samplePack,
     sampleData,
