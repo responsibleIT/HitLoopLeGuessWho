@@ -42,7 +42,8 @@ const {
   sampleData,
   isPlaying,
   columns,
-  getSequenceData
+  getSequenceData,
+  sampleObject
 } = storeToRefs(store)
 
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
@@ -62,13 +63,13 @@ console.log(newSequenceData)
 const tick = (time, col) => {
   // timeNow.value = time
   // highlighted.value = col
-  const sampleObject = createSampleObject(newSequenceData.value)
+  
 
   console.log('sampleObject')
   console.log(sampleObject)
 
   const sampler = new Tone.Sampler({
-    urls: sampleObject,
+    urls: store.sampleObject,
     onload: () => {
       console.log('loaded')
     }
@@ -79,7 +80,7 @@ const tick = (time, col) => {
       highlighted.value = col
       console.log('col')
       console.log(col)
-      setCurrentStepIndex(highlighted.value)
+      setCurrentStepIndex(col)
       console.log('currentStepIndex')
       console.log(currentStepIndex)
     }

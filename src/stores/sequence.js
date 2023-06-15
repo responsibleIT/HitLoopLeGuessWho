@@ -59,6 +59,13 @@ export const useSequenceStore = defineStore('sequence', () => {
   //   isPlaying: isPlaying,
   //   columns: columns
   // })
+  const sampleObject = computed(() => {
+    const newObj = reactive({})
+    sequenceData.value.forEach((obj) => {
+      newObj[obj.sample] = obj.url
+    })
+    return newObj
+  })
   const getSequenceData = computed(() => {
     return sequenceData.value
   })
@@ -105,6 +112,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     updateSequenceURL,
     togglePlayPause,
     sampleTypeList,
-    setCurrentStepIndex
+    setCurrentStepIndex,
+    sampleObject
   }
 })
