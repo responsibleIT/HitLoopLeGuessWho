@@ -17,19 +17,15 @@ const props = defineProps({
   selectedValue: String,
   empty: Boolean
 })
-console.log(props)
+
 const store = useSequenceStore()
-console.log(store)
 // store values to vuejs ref
 const { doubleCount, samplePack, currentStepIndex, sequenceData, sampleTypeList } =
   storeToRefs(store)
-console.log(sequenceData)
-console.log(store.value)
 
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
-console.log(props)
 </script>
 <template>
   <div class="sequence-item">

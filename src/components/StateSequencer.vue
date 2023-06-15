@@ -31,10 +31,8 @@ import SequenceItemArc from '@/components/SequenceItemArc.vue'
 // Base url for the api
 
 const store = await useSequenceStore()
-console.log(store)
 // store values to vuejs ref
 const {
-  doubleCount,
   availableNotes,
   activeNotes,
   currentStepIndex,
@@ -48,8 +46,6 @@ const {
 
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
-
-
 const bpm = ref(120)
 
 
@@ -58,16 +54,8 @@ const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare', 'Hi-Hat'])
 const highlighted = ref(-1)
 
 const newSequenceData = getSequenceData
-console.log(newSequenceData)
 
 const tick = (time, col) => {
-  // timeNow.value = time
-  // highlighted.value = col
-  
-
-  console.log('sampleObject')
-  console.log(sampleObject)
-
   const sampler = new Tone.Sampler({
     urls: store.sampleObject,
     onload: () => {
@@ -78,11 +66,7 @@ const tick = (time, col) => {
   Tone.Draw.schedule(() => {
     if (isPlaying.value === true) {
       highlighted.value = col
-      console.log('col')
-      console.log(col)
       setCurrentStepIndex(col)
-      console.log('currentStepIndex')
-      console.log(currentStepIndex)
     }
   }, time)
 
@@ -139,7 +123,7 @@ onUnmounted(() => {
           :item="row"
           :id="index"
           :columns="columns"
-          :highlighted="highlighted"
+          :highlighted="currentStepIndex"
           @toggle-step="toggleStep"
           :sampleTypeList="sampleTypeList"
           :sampleData="sampleData"

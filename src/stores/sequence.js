@@ -14,9 +14,9 @@ const apiBaseURL = import.meta.env.VITE_API_BASE
 export const useSequenceStore = defineStore('sequence', () => {
   const isPlaying = ref(false)
   const bpm = ref(130)
-  const columns = ref(9)
+  const columns = ref(16)
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
-  const activeNotes = ref(['A3'])
+  const activeNotes = ref(['A3', 'B3', 'C3', 'D3',])
   const samplePack = ref('b')
   const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
   // const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
@@ -33,7 +33,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   async function setSampleData() {
     try {
       const data = await getSampleData(apiBaseURL, samplePack.value, 'list')
-      sampleData.value = data.value
+      return sampleData.value = data.value
       // return sampleData.value
     } catch (error) {
       console.log(error)
@@ -41,12 +41,16 @@ export const useSequenceStore = defineStore('sequence', () => {
   }
   setSampleData()
   async function setSequenceData() {
-    await setSampleData()
-    return (sequenceData.value = activeNotes.value.map((sample) => ({
-      sample,
-      steps: createSequenceArraySteps(columns.value),
-      url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[0].file)
-    })))
+    try {
+      await setSampleData()
+      return (sequenceData.value = activeNotes.value.map((sample) => ({
+        sample,
+        steps: createSequenceArraySteps(columns.value),
+        url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[0].file)
+      })))  
+    } catch (error) {
+      console.log(error)
+    }
   }
   setSequenceData()
   console.log(sequenceData.value)
@@ -69,8 +73,9 @@ export const useSequenceStore = defineStore('sequence', () => {
   const getSequenceData = computed(() => {
     return sequenceData.value
   })
-  console.log('getSequenceData')
-  console.log(getSequenceData.value)
+  console.log('sampleObject')
+  console.log(sampleObject)
+  
   function toggleStep(row, step) {
     return (row.steps[step] = !row.steps[step])
   }
