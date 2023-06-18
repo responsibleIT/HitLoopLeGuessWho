@@ -19,8 +19,6 @@ const store = useSequenceStore()
 // store values to vuejs ref
 const { currentStepIndex } = storeToRefs(store)
 
-console.log(store.value)
-
 const { toggleStep } = store
 
 const gapSize = Math.PI / 10
@@ -36,11 +34,8 @@ function describeArcOld(x, y, radius, startAngle, endAngle) {
 function describeArc(x, y, radius, startAngle, endAngle) {
   const start = polarToCartesian(x, y, radius, endAngle)
   const end = polarToCartesian(x, y, radius, startAngle)
-
   const largeArcFlag = endAngle - startAngle <= Math.PI ? '0' : '1'
-
   const d = ['M', start.x, start.y, 'A', radius, radius, 0, largeArcFlag, 0, end.x, end.y].join(' ')
-
   return d
 }
 
