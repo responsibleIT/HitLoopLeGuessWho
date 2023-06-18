@@ -13,9 +13,23 @@ export const getSampleFile = (BASE_URL, samplePack, file) => {
     let samplePackQuery = `?sample_pack=${samplePack}`
     let fileQuery = `&file=${file}`
     const fileURL = ref(BASE_URL + sampleFilePath + samplePackQuery + fileQuery)
+    console.log(fileURL.value)
     return fileURL.value
   } catch (error) {
     console.error(error)
+  }
+}
+
+export const getSampleUrl = async (fileURL) => {
+  try {
+    const { data, error, isFetching } = await useFetch(fileURL).blob();
+    if (data || !isFetching) {
+      const sampleUrl = useObjectUrl(data)
+      console.log(sampleUrl)
+      return sampleUrl
+    }
+  } catch (error) {
+    console.log(error)
   }
 }
 
@@ -26,7 +40,6 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
   const sampleFileURL = url + sampleFilePath + samplePackQueryFile
 
   // https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav
-
   const result = ref(null)
   if (url !== BASE_URL) {
     console.log(BASE_URL)
@@ -47,8 +60,7 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
     // console.log(error)
     if (data || !isFetching) {
       result.value = await createSampleObjectList(data, sampleFileURL)
-      console.log(result.value)
-      return result
+    return result
     }
   } catch (error) {
     console.log('Error')
@@ -57,3 +69,4 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
 }
 
 export default getSampleData
+
