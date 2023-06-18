@@ -12,18 +12,20 @@ import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
 const apiBaseURL = import.meta.env.VITE_API_BASE
 
 export const useSequenceStore = defineStore('sequence', () => {
-  const isPlaying = ref(false)
+  const isStarted = ref(false);
+  function setStarted() {
+    isStarted.value = true
+  }
+
+  const isPlaying = ref(false);
   const bpm = ref(130)
-  const columns = ref(16)
+  const columns = ref(12)
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
-  const activeNotes = ref(['A3', 'B3', 'C3', 'D3',])
+  const activeNotes = ref(['A3'])
   const samplePack = ref('b')
-  const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare'])
-  // const sampleData = await getSampleData(apiBaseURL, samplePack.value, 'list')
+  const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare', 'Hi-Hat'])
   const sampleData = ref()
-  // const setSampleData
-  console.log(sampleData)
-  const sequenceData = ref()
+  const sequenceData = ref(null)
 
   // activeNotes.value.map((sample) => ({
   //   sample,
@@ -33,7 +35,8 @@ export const useSequenceStore = defineStore('sequence', () => {
   async function setSampleData() {
     try {
       const data = await getSampleData(apiBaseURL, samplePack.value, 'list')
-      return sampleData.value = data.value
+      sampleData.value = data.value
+      return
       // return sampleData.value
     } catch (error) {
       console.log(error)
@@ -64,18 +67,16 @@ export const useSequenceStore = defineStore('sequence', () => {
   //   columns: columns
   // })
   const sampleObject = computed(() => {
-    const newObj = reactive({})
-    sequenceData.value.forEach((obj) => {
-      newObj[obj.sample] = obj.url
+    const newObj = ref({})
+    getSequenceData.value.forEach((obj) => {
+      newObj.value[obj.sample] = obj.url
     })
-    return newObj
+    console.log(newObj.value)
+    return newObj.value
   })
   const getSequenceData = computed(() => {
     return sequenceData.value
   })
-  console.log('sampleObject')
-  console.log(sampleObject)
-  
   function toggleStep(row, step) {
     return (row.steps[step] = !row.steps[step])
   }
@@ -88,6 +89,16 @@ export const useSequenceStore = defineStore('sequence', () => {
   const togglePlayPause = (val) => {
     isPlaying.value = !isPlaying.value
   }
+
+  const togglePlay = (val) => {
+    togglePlayPause()
+    if (isPlaying.value) {
+      Tone.Transport.start()
+    } else {
+      Tone.Transport.stop()
+    }
+  }
+
   const addSequence = () => {
     if (!sequenceData.value) return
     let all = sequenceData.value.length
@@ -97,7 +108,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     sequenceData.value.push({
       sample: thisSample,
       steps: createSequenceArraySteps(columns.value),
-      url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[all].file)
+      url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[0].file)
     })
   }
 
@@ -118,6 +129,9 @@ export const useSequenceStore = defineStore('sequence', () => {
     togglePlayPause,
     sampleTypeList,
     setCurrentStepIndex,
-    sampleObject
+    sampleObject,
+    togglePlay,
+    isStarted,
+    setStarted
   }
 })
