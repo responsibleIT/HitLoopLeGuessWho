@@ -4,16 +4,16 @@ import { useSequenceStore } from '@/stores/sequence.js'
 import { ref } from 'vue'
 // import { ref,useAttrs } from 'vue';
 defineProps({
-  sampleTypeList: Array,
   item: Object,
   url: String,
   highlighted: Number,
   id: Number
 })
 
-const store = await useSequenceStore()
+const store = useSequenceStore()
 
-const { sampleData } = storeToRefs(store)
+const { sampleData, sampleTypeList } = storeToRefs(store)
+
 </script>
 
 <template>
