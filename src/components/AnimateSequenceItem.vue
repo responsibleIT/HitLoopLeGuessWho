@@ -27,12 +27,12 @@ const { doubleCount, samplePack, currentStepIndex, sequenceData, sampleTypeList 
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
-
 </script>
 <template>
   <div class="sequence-item">
     <slot name="select" v-if="!empty">
-      <SequenceItemSelect class="sample-select"
+      <SequenceItemSelect
+        class="sample-select"
         :selectedValue="selectedValue"
         @update:url="updateSequenceURL(id, $event)"
         :item="item"
@@ -40,7 +40,8 @@ const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
     </slot>
     <slot></slot>
     <slot name="steps">
-      <AnimateSequenceItemSteps v-if="!empty"
+      <AnimateSequenceItemSteps
+        v-if="!empty"
         :columns="columns"
         :row="item"
         :highlighted="highlighted"
@@ -65,5 +66,4 @@ const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
 .sample-select {
   width: 12em;
 }
-
 </style>

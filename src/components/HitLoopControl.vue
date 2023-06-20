@@ -32,20 +32,18 @@ const {
 } = storeToRefs(store)
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
-
-
 defineProps({
   togglePlay: Function
 })
-
 </script>
 
 <template>
   <div class="controlls">
     <div>
-      <label for="bpm">BPM:
-      <input id="bpm" type="slider" min="20" max="300" v-model.number="bpm" />
-    </label>
+      <label for="bpm"
+        >BPM:
+        <input id="bpm" type="slider" min="20" max="300" v-model.number="bpm" />
+      </label>
     </div>
     <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
     <BaseButton v-else @click="togglePlay" icon="pause" />
@@ -54,7 +52,7 @@ defineProps({
 
 <style lang="scss" scoped>
 .controlls {
-  padding: .5em;
+  padding: 0.5em;
   display: flex;
   align-items: center;
   gap: 1em;

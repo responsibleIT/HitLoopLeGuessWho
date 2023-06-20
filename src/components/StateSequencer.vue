@@ -13,7 +13,7 @@ import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
 // Pack with sample names
 import { useSequenceStore } from '@/stores/sequence.js'
-import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
+import { getSampleData, getSampleUrl } from '@/composables/getSampleData.js'
 
 import {
   createSampleObject,
@@ -47,7 +47,6 @@ const {
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 const bpm = ref(120)
-
 
 const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare', 'Hi-Hat'])
 
@@ -131,10 +130,10 @@ onUnmounted(() => {
       </template>
     </TransitionGroup>
     <StateSequenceItem empty>
-    <button v-show="availableNotes > activeNotes" @click="addSequence()">
-      <BaseIcon name="add" />
-    </button>
-  </StateSequenceItem>
+      <button v-show="availableNotes > activeNotes" @click="addSequence()">
+        <BaseIcon name="add" />
+      </button>
+    </StateSequenceItem>
   </div>
   <div class="controlls">
     <div>

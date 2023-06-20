@@ -1,9 +1,11 @@
 @import './base.css';
 
 #app {
+  min-height: 100%;
+  width: 100%;
   /* max-width: 1280px; */
   /* margin: 0 auto; */
-  padding: 1rem;
+  /* padding: 1rem; */
 
   /* font-weight: normal; */
 }
@@ -32,5 +34,5 @@ button {
   appearance: none;
   background-color: 1px solid var(--color-primary);
   border: 1px solid var(--color-background-mute);
-  padding: .2em;
+  padding: 0.2em;
 }

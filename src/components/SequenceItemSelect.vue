@@ -13,7 +13,6 @@ defineProps({
 const store = useSequenceStore()
 
 const { sampleData, sampleTypeList } = storeToRefs(store)
-
 </script>
 
 <template>

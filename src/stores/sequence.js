@@ -7,56 +7,63 @@ import {
   createSequenceArrayIndex
 } from '@/helpers/toneHelpers.js'
 
-import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
+import { getSampleData, getSampleUrl } from '@/composables/getSampleData.js'
 
 const apiBaseURL = import.meta.env.VITE_API_BASE
 
 export const useSequenceStore = defineStore('sequence', () => {
-  const isStarted = ref(false);
+  const isStarted = ref(false)
   function setStarted() {
     isStarted.value = true
   }
 
-  const isPlaying = ref(false);
+  const isPlaying = ref(false)
   const bpm = ref(130)
-  const columns = ref(12)
+  const columns = ref(16)
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
   const activeNotes = ref(['A3'])
   const samplePack = ref('b')
   const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare', 'Hi-Hat'])
-  const sampleData = ref()
-  const sequenceData = ref(null)
+  const sampleData = ref([
+    {
+      sample: 'A3',
+      steps: [false, false, false, false, false, false, false, false, false, false, false, false],
+      url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav'
+    }
+  ])
+  const sequenceData = ref({})
 
   // activeNotes.value.map((sample) => ({
   //   sample,
   //   steps: createSequenceArraySteps(columns.value),
-  //   url: getSampleFile(apiBaseURL, samplePack.value, sampleData[1].file)
+  //   url: getSampleUrl(apiBaseURL, samplePack.value, sampleData[1].file)
   // }))
   async function setSampleData() {
     try {
       const data = await getSampleData(apiBaseURL, samplePack.value, 'list')
-      sampleData.value = data.value
-      return
+      return (sampleData.value = data.value)
       // return sampleData.value
     } catch (error) {
       console.log(error)
     }
   }
-  setSampleData()
+
   async function setSequenceData() {
     try {
       await setSampleData()
       return (sequenceData.value = activeNotes.value.map((sample) => ({
         sample,
         steps: createSequenceArraySteps(columns.value),
-        url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[0].file)
-      })))  
+        url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav'
+      })))
     } catch (error) {
       console.log(error)
     }
   }
+
+  setSampleData()
   setSequenceData()
-  console.log(sequenceData.value)
+
   const currentStepIndex = ref(0)
   function setCurrentStepIndex(i) {
     return (currentStepIndex.value = i)
@@ -67,17 +74,25 @@ export const useSequenceStore = defineStore('sequence', () => {
   //   columns: columns
   // })
   const sampleObject = computed(() => {
-    const newObj = ref({})
-    getSequenceData.value.forEach((obj) => {
-      newObj.value[obj.sample] = obj.url
-    })
-    console.log(newObj.value)
-    return newObj.value
+    const newObj = {}
+
+    if (getSequenceData.value && getSequenceData.value && Array.isArray(getSequenceData.value)) {
+      getSequenceData.value.forEach((obj) => {
+        if (obj && obj.sample && obj.url) {
+          newObj[obj.sample] = obj.url
+        }
+      })
+    }
+    return newObj
   })
   const getSequenceData = computed(() => {
     return sequenceData.value
   })
   function toggleStep(row, step) {
+    console.log(row)
+    console.log('step')
+    console.log(row)
+    console.log(step)
     return (row.steps[step] = !row.steps[step])
   }
   const updateSequenceURL = (index, newValue) => {
@@ -108,7 +123,13 @@ export const useSequenceStore = defineStore('sequence', () => {
     sequenceData.value.push({
       sample: thisSample,
       steps: createSequenceArraySteps(columns.value),
-      url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[0].file)
+      url: getSampleUrl(
+        apiBaseURL,
+        samplePack.value,
+        sampleData.value.length > 0
+          ? sampleData.value[0].file
+          : 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav'
+      )
     })
   }
 

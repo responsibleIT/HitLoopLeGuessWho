@@ -1,7 +1,7 @@
-import { useChangeCase } from '@vueuse/integrations/useChangeCase'
-import { ref, reactive } from 'vue'
+import { ref } from 'vue'
+import * as Tone from 'tone'
 
-export const createSampleObjectList = (sampleData, url) => {
+export const createSampleObjectList = async (sampleData, url) => {
   const data = sampleData.value
   const sampleObjectList = data.files
     .map((str) => {
@@ -15,18 +15,49 @@ export const createSampleObjectList = (sampleData, url) => {
         if (type === 'hi-hat') {
           sampleType = 'Hi-Hat'
         }
-        // const nameCaseChange = useChangeCase(nameOnly, 'capitalCase')
-        return {
-          name: name.replace(/_/g, '-'),
-          type: sampleType.charAt(0).toUpperCase() + sampleType.slice(1),
-          version,
-          file: str,
-          url: url + str
+        try {
+          // const nameCaseChange = useChangeCase(nameOnly, 'capitalCase')
+          return {
+            name: name.replace(/_/g, '-'),
+            type: sampleType.charAt(0).toUpperCase() + sampleType.slice(1),
+            version,
+            file: str,
+            url: url + str
+          }
+        } catch (error) {
+          console.error(error)
+          // Handle any specific error if needed
+          return null
         }
       } else {
-        return null // Handle invalid file name format if needed
+        // Handle invalid file name format if needed
+        return null
       }
     })
     .filter((obj) => obj !== null)
   return sampleObjectList
+}
+
+const loadSampleBuffers = async (sampleObjectList) => {
+  const sampler = new Tone.Sampler().toDestination()
+
+  const promises = sampleObjectList.map((obj) => {
+    return new Promise((resolve, reject) => {
+      const buffer = new Tone.Buffer(
+        obj.url,
+        () => {
+          sampler.add(obj.note, buffer)
+          resolve()
+        },
+        reject
+      )
+    })
+  })
+
+  try {
+    await Promise.all(promises)
+    console.log('Samples loaded successfully')
+  } catch (error) {
+    console.error('Error loading samples:', error)
+  }
 }

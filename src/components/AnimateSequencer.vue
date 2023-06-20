@@ -13,7 +13,7 @@ import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
 // Pack with sample names
 import { useSequenceStore } from '@/stores/sequence.js'
-import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
+import { getSampleData, getSampleUrl } from '@/composables/getSampleData.js'
 import { useResizeObserver } from '@vueuse/core'
 import {
   createSampleObject,
@@ -21,6 +21,18 @@ import {
   createSequenceArrayIndex
 } from '@/helpers/toneHelpers.js'
 
+import BaseIcon from '@/components/BaseIcon.vue'
+import BaseButton from '@/components/BaseButton.vue'
+import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
+import SequenceItem from '@/components/SequenceItem.vue'
+import StateSequenceItem from '@/components/StateSequenceItem.vue'
+import SequenceItemArc from '@/components/SequenceItemArc.vue'
+import HitLoopControl from './HitLoopControl.vue'
+import AnimateSequenceItem from './AnimateSequenceItem.vue'
+
+const props = defineProps({
+  sampleObject: Object
+})
 
 const store = useSequenceStore()
 // store values to vuejs ref
@@ -33,55 +45,58 @@ const {
   isPlaying,
   columns,
   getSequenceData,
-  sampleObject,
   isStarted,
   bpm
 } = storeToRefs(store)
 
-const { toggleStep, setStarted, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
-
-
-
-import BaseIcon from '@/components/BaseIcon.vue'
-import BaseButton from '@/components/BaseButton.vue'
-import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
-import SequenceItem from '@/components/SequenceItem.vue'
-import StateSequenceItem from '@/components/StateSequenceItem.vue'
-import SequenceItemArc from '@/components/SequenceItemArc.vue'
-import HitLoopControl from './HitLoopControl.vue'
-import AnimateSequenceItem from './AnimateSequenceItem.vue'
+const {
+  toggleStep,
+  setStarted,
+  updateSequenceURL,
+  addSequence,
+  togglePlayPause,
+  setCurrentStepIndex
+} = store
 
 // Base url for the api
 
 // const bpm = ref(120)
 const playTime = ref(null)
+
 const newSequenceData = getSequenceData
 
+
 const tick = (time, col) => {
-  console.log(store.sampleObject)
-let sampler = new Tone.Sampler({
-    urls: store.sampleObject,
+console.log(props.sampleObject)
+const sampler = new Tone.Sampler({
+    urls: props.sampleObject,
     onload: () => {
       console.log('loaded')
-    }
+  },
+  onerror: (error) => {
+      console.log(error)
+  }
   }).toDestination()
 
   Tone.Draw.schedule(() => {
     if (isPlaying.value === true) {
       setCurrentStepIndex(col)
+      const getSampler = sampler.get()
+      console.log(getSampler)
     }
   }, time)
-
 
   for (const row of newSequenceData.value) {
     if (row.steps[col]) {
       Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(row.sample, '8n', Tone.now())
+        sampler.triggerAttackRelease(row.sample, '16n', Tone.now(), 3)
       })
     }
   }
 }
 const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
+
+console.log(createSequenceArrayIndex(columns.value))
 
 Tone.Transport.bpm.value = bpm.value
 
@@ -89,29 +104,29 @@ watch(bpm, (newBpm) => {
   Tone.Transport.bpm.value = newBpm
 })
 
-const togglePlay = ($event) => {
-
+const togglePlay = async ($event) => {
   console.log($event)
   console.log('isStarted.value')
   console.log(isStarted.value)
 
+  const state = Tone.Transport.state;
+  console.log(state)
+
   if (!isStarted.value) {
-    Tone.start()
+    await Tone.start()
     setStarted()
   }
   togglePlayPause()
   let now = Tone.now()
 
-console.log('ok')
+  console.log('ok')
 
-  
   if (isPlaying.value === true) {
-     Tone.Transport.start(now )
-     sequence.start(now)
+    Tone.Transport.start()
+    sequence.start()
   } else {
-    
-     Tone.Transport.stop()
-     sequence.stop()
+    Tone.Transport.stop()
+    sequence.stop()
   }
 }
 
@@ -130,45 +145,48 @@ onUnmounted(() => {
   window.removeEventListener('keydown', onKeyDown)
 })
 
+const getToneDraw = Tone.getDraw()
 
+console.log(getToneDraw)
 </script>
 
 <template>
   <div id="sequencer" v-if="newSequenceData">
     <div>
-
+      <canvas ref="canvas"></canvas>
     </div>
-<div>
-<Suspense>
-    <TransitionGroup name="fade">
-      <template v-for="(row, index) in sequenceData" :key="index">
-        <AnimateSequenceItem
-          :selectedValue="row.url"
-          :item="row"
-          :id="index"
-          :columns="columns"
-          :highlighted="currentStepIndex"
-          @toggle-step="toggleStep"
-        />
-      </template>
-    </TransitionGroup>
-  </Suspense>
-    <StateSequenceItem empty>
-    <button v-show="availableNotes > activeNotes" @click="addSequence()">
-      <BaseIcon name="add" />
-    </button>
-  </StateSequenceItem>
-  </div>
+    <div>
+      <Suspense>
+        <TransitionGroup name="fade">
+          <template v-for="(row, index) in sequenceData" :key="index">
+            <AnimateSequenceItem
+              :selectedValue="row.url"
+              :item="row"
+              :id="index"
+              :columns="columns"
+              :highlighted="currentStepIndex"
+              @toggle-step="toggleStep"
+            />
+          </template>
+        </TransitionGroup>
+      </Suspense>
+      <StateSequenceItem empty>
+        <button v-show="availableNotes > activeNotes" @click="addSequence()">
+          <BaseIcon name="add" />
+        </button>
+      </StateSequenceItem>
+    </div>
   </div>
   <div class="controlls">
     <div>
       <label for="bpm">BPM:</label>
+      
       <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
     </div>
     <Suspense>
-    <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
-    <BaseButton v-else @click="togglePlay" icon="pause" />
-  </Suspense>
+      <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
+      <BaseButton v-else @click="togglePlay" icon="pause" />
+    </Suspense>
   </div>
   <!-- <HitLoopControl :togglePlay="togglePlay" /> -->
 </template>

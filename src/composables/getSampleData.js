@@ -8,7 +8,7 @@ const url = import.meta.env.VITE_API_BASE
 const sampleFilePath = `test_samples`
 const sampleListPath = `samples_test_list`
 
-export const getSampleFile = (BASE_URL, samplePack, file) => {
+export const getSampleUrl = (BASE_URL, samplePack, file) => {
   try {
     let samplePackQuery = `?sample_pack=${samplePack}`
     let fileQuery = `&file=${file}`
@@ -20,9 +20,9 @@ export const getSampleFile = (BASE_URL, samplePack, file) => {
   }
 }
 
-export const getSampleUrl = async (fileURL) => {
+export const getSampleFile = async (fileURL) => {
   try {
-    const { data, error, isFetching } = await useFetch(fileURL).blob();
+    const { data, error, isFetching } = await useFetch(fileURL).blob()
     if (data || !isFetching) {
       const sampleUrl = useObjectUrl(data)
       console.log(sampleUrl)
@@ -60,7 +60,9 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
     // console.log(error)
     if (data || !isFetching) {
       result.value = await createSampleObjectList(data, sampleFileURL)
-    return result
+      if (result.value !== null) {
+        return result
+      }
     }
   } catch (error) {
     console.log('Error')
@@ -69,4 +71,3 @@ export const getSampleData = async (BASE_URL, samplePack, file) => {
 }
 
 export default getSampleData
-

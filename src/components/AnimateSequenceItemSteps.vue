@@ -20,7 +20,6 @@ const store = useSequenceStore()
 const { currentStepIndex } = storeToRefs(store)
 
 const { toggleStep } = store
-
 </script>
 
 <template>
@@ -37,16 +36,16 @@ const { toggleStep } = store
         fill="none"
         stroke-linecap="round"
         :name="stepIndex"
-      >
-    </button>
-  </TransitionGroup>
+      ></button>
+    </TransitionGroup>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .step-item {
-  width: 100%;
-  height: 100%;
+  width: 2.5em;
+  height: 2.5em;
+  border-radius: 100%;
   background-color: #cbcbcb;
   border: 2px solid red;
 }
@@ -71,7 +70,5 @@ const { toggleStep } = store
   // justify-content: stretch;
   align-items: stretch;
   justify-content: space-between;
-
 }
-
 </style>

@@ -2,7 +2,7 @@
 import { ref, reactive, watch, onMounted, onUnmounted, TransitionGroup, Transition } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
-import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
+import { getSampleData, getSampleUrl } from '@/composables/getSampleData.js'
 
 import {
   createSampleObject,
@@ -37,7 +37,7 @@ const addRow = () => {
   sequenceData.push({
     sample: thisSample,
     steps: createSequenceArraySteps(columns.value),
-    url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[all].file)
+    url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[all].file)
   })
 }
 
@@ -46,7 +46,7 @@ const sequenceData = reactive(
   activeSamples.value.map((sample) => ({
     sample,
     steps: createSequenceArraySteps(columns.value),
-    url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
+    url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[1].file)
   }))
 )
 

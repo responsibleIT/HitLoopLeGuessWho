@@ -40,7 +40,8 @@ const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
     </slot>
     <slot></slot>
     <slot name="arc">
-      <SequenceItemArc v-if="!empty"
+      <SequenceItemArc
+        v-if="!empty"
         :columns="columns"
         :row="item"
         :highlighted="highlighted"
