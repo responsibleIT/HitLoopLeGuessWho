@@ -13,7 +13,8 @@ const apiBaseURL = import.meta.env.VITE_API_BASE
 
 export const useSequenceStore = defineStore('sequence', () => {
   const isStarted = ref(false)
-  function setStarted() {
+  async function setStarted() {
+    await Tone.start()
     isStarted.value = true
   }
   const currentStepIndex = ref(0)
@@ -59,7 +60,7 @@ export const useSequenceStore = defineStore('sequence', () => {
       return (sequenceData.value = activeNotes.value.map((sample) => ({
         sample,
         steps: createSequenceArraySteps(columns.value),
-        url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
+        url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
         color: 'red'
       })))
     } catch (error) {

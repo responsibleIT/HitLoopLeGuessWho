@@ -57,15 +57,23 @@ const {
 
 // const bpm = ref(120)
 const playTime = ref(null)
-
+let sequence
 const sequenceData = getSequenceData
-
-
-const tick = (time, col) => {
+// const sampler = new Tone.Sampler().toDestination()
+const configSequence = () => {
+  const tick = (time, col) => {
 const sampler = new Tone.Sampler({
     urls: store.sampleObject,
     onload: () => {
       console.log('loaded')
+      for (const row of sequenceData.value) {
+    if (row.steps[col]) {
+      Tone.loaded().then(() => {
+        sampler.triggerAttackRelease(row.sample, '16n').sync( )
+      })
+    }
+  }
+
   }
   }).toDestination()
 
@@ -74,16 +82,14 @@ const sampler = new Tone.Sampler({
       setCurrentStepIndex(col)
     }
   }, time)
+  
 
-  for (const row of sequenceData.value) {
-    if (row.steps[col]) {
-      Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(row.sample, '16n')
-      })
-    }
-  }
+  sampler.toDestination()
+  
 }
-const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
+sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
+sequence
+}
 
 Tone.Transport.bpm.value = bpm.value
 
@@ -92,18 +98,21 @@ watch(bpm, (newBpm) => {
 })
 
 const togglePlay = () => {
-  let now = Tone.now();
+  
   if (!isStarted.value) {
     // Tone.start()
+    // Tone.getDestination().volume.rampTo(-10, 0.001);
     setStarted()
   }
   togglePlayPause()
   
 
   if (isPlaying.value) {
+    let now = Tone.now();
     Tone.Transport.start(now)
     sequence.start(now)
   } else {
+    let now = Tone.now();
     Tone.Transport.stop(now)
     sequence.stop(now)
   }
@@ -118,6 +127,7 @@ const onKeyDown = (event) => {
 
 onMounted(() => {
   window.addEventListener('keydown', onKeyDown)
+  configSequence()
 })
 
 onUnmounted(() => {
