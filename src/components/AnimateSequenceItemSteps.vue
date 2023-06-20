@@ -12,7 +12,8 @@ const props = defineProps({
   columns: Number,
   row: Object,
   highlighted: Number,
-  col: Number
+  col: Number,
+  color: String,
 })
 
 const store = useSequenceStore()
@@ -46,7 +47,7 @@ const { toggleStep } = store
   width: 2.5em;
   height: 2.5em;
   border-radius: 100%;
-  background-color: #cbcbcb;
+  background-color: v-bind(color);
   border: 2px solid red;
 }
 .active {

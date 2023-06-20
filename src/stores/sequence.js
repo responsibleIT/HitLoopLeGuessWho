@@ -55,7 +55,7 @@ export const useSequenceStore = defineStore('sequence', () => {
 
   async function setSequenceData() {
     try {
-      await setSampleData()
+      await setSampleData();
       return (sequenceData.value = activeNotes.value.map((sample) => ({
         sample,
         steps: createSequenceArraySteps(columns.value),

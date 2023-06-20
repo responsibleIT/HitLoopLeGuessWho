@@ -8,8 +8,8 @@ import router from './router/index.js'
 
 const app = createApp(App)
 // app.use(VueCircleSlider)
-app.use(createPinia())
-app.use(router)
 
+app.use(router)
+app.use(createPinia())
 
 app.mount('#app')

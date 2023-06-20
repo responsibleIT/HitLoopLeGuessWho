@@ -44,6 +44,7 @@ const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
         v-if="!empty"
         :columns="columns"
         :row="item"
+        :color="item.color"
         :highlighted="highlighted"
         @toggle-step="toggleStep"
       />

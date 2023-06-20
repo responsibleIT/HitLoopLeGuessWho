@@ -12,9 +12,9 @@ import {
 import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
 // Pack with sample names
-import { useSequenceStore } from '@/stores/sequence.js'
-import { getSampleData, getSampleUrl } from '@/composables/getSampleData.js'
-import { useResizeObserver } from '@vueuse/core'
+import { useSequenceStore } from '@/stores/sequence.js';
+const store = useSequenceStore()
+
 import {
   createSampleObject,
   createSequenceArraySteps,
@@ -31,13 +31,12 @@ import HitLoopControl from './HitLoopControl.vue'
 import AnimateSequenceItem from './AnimateSequenceItem.vue'
 
 
-const store = useSequenceStore()
+
 // store values to vuejs ref
 const {
   availableNotes,
   activeNotes,
   currentStepIndex,
-  sequenceData,
   sampleData,
   isPlaying,
   columns,
@@ -49,7 +48,6 @@ const {
 const {
   toggleStep,
   setStarted,
-  updateSequenceURL,
   addSequence,
   togglePlayPause,
   setCurrentStepIndex
@@ -60,7 +58,7 @@ const {
 // const bpm = ref(120)
 const playTime = ref(null)
 
-const newSequenceData = getSequenceData
+const sequenceData = getSequenceData
 
 
 const tick = (time, col) => {
@@ -68,29 +66,24 @@ const sampler = new Tone.Sampler({
     urls: store.sampleObject,
     onload: () => {
       console.log('loaded')
-  },
-  onerror: (error) => {
-      console.log(error)
   }
   }).toDestination()
 
   Tone.Draw.schedule(() => {
-    if (isPlaying.value === true) {
+    if (isPlaying.value) {
       setCurrentStepIndex(col)
     }
   }, time)
 
-  for (const row of newSequenceData.value) {
+  for (const row of sequenceData.value) {
     if (row.steps[col]) {
       Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(row.sample, '16n', Tone.now())
+        sampler.triggerAttackRelease(row.sample, '16n')
       })
     }
   }
 }
 const sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
-
-console.log(createSequenceArrayIndex(columns.value))
 
 Tone.Transport.bpm.value = bpm.value
 
@@ -99,20 +92,20 @@ watch(bpm, (newBpm) => {
 })
 
 const togglePlay = () => {
-  let now = Tone.now()
+  let now = Tone.now();
   if (!isStarted.value) {
-    Tone.start()
+    // Tone.start()
     setStarted()
   }
   togglePlayPause()
   
 
-  if (isPlaying.value === true) {
+  if (isPlaying.value) {
     Tone.Transport.start(now)
-    sequence.start()
+    sequence.start(now)
   } else {
     Tone.Transport.stop(now)
-    sequence.stop()
+    sequence.stop(now)
   }
 }
 
@@ -131,20 +124,17 @@ onUnmounted(() => {
   window.removeEventListener('keydown', onKeyDown)
 })
 
-const getToneDraw = Tone.getDraw()
-
-console.log(getToneDraw)
 </script>
 
 <template>
-  <div id="sequencer" v-if="newSequenceData">
+  <div id="sequencer" v-if="sequenceData">
     <div>
       <canvas ref="canvas"></canvas>
     </div>
-    <div>
+    <div class="item-container">
       <Suspense>
         <TransitionGroup name="fade">
-          <template v-for="(row, index) in sequenceData" :key="index">
+          <div v-for="(row, index) in sequenceData" :key="index">
             <AnimateSequenceItem
               :selectedValue="row.url"
               :item="row"
@@ -153,7 +143,7 @@ console.log(getToneDraw)
               :highlighted="currentStepIndex"
               @toggle-step="toggleStep"
             />
-          </template>
+          </div>
         </TransitionGroup>
       </Suspense>
       <StateSequenceItem empty>
@@ -178,6 +168,9 @@ console.log(getToneDraw)
 </template>
 
 <style scoped lang="scss">
+.item-container {
+  
+}
 .controlls {
   padding: 1em;
   display: flex;
