@@ -16,7 +16,7 @@
   --color-divider-dark-1: rgba(84, 84, 84, 0.65);
   --color-divider-dark-2: rgba(84, 84, 84, 0.48);
 
-  --color-text-light-1: var(--color-indigo);
+  --color-text-light-1: var(--color-black);
   --color-text-light-2: rgba(60, 60, 60, 0.66);
   --color-text-dark-1: var(--color-white);
   --color-text-dark-2: rgba(235, 235, 235, 0.64);

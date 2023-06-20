@@ -50,7 +50,7 @@ const {
 <template>
   <main>
     <Suspense>
-      <AnimateSequencer v-if="sampleObject" :sampleObject="sampleObject" />
+      <AnimateSequencer />
     </Suspense>
   </main>
 </template>

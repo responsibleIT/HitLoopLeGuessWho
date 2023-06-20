@@ -30,9 +30,6 @@ import SequenceItemArc from '@/components/SequenceItemArc.vue'
 import HitLoopControl from './HitLoopControl.vue'
 import AnimateSequenceItem from './AnimateSequenceItem.vue'
 
-const props = defineProps({
-  sampleObject: Object
-})
 
 const store = useSequenceStore()
 // store values to vuejs ref
@@ -67,9 +64,8 @@ const newSequenceData = getSequenceData
 
 
 const tick = (time, col) => {
-console.log(props.sampleObject)
 const sampler = new Tone.Sampler({
-    urls: props.sampleObject,
+    urls: store.sampleObject,
     onload: () => {
       console.log('loaded')
   },
@@ -81,15 +77,13 @@ const sampler = new Tone.Sampler({
   Tone.Draw.schedule(() => {
     if (isPlaying.value === true) {
       setCurrentStepIndex(col)
-      const getSampler = sampler.get()
-      console.log(getSampler)
     }
   }, time)
 
   for (const row of newSequenceData.value) {
     if (row.steps[col]) {
       Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(row.sample, '16n', Tone.now(), 3)
+        sampler.triggerAttackRelease(row.sample, '16n', Tone.now())
       })
     }
   }
@@ -104,28 +98,20 @@ watch(bpm, (newBpm) => {
   Tone.Transport.bpm.value = newBpm
 })
 
-const togglePlay = async ($event) => {
-  console.log($event)
-  console.log('isStarted.value')
-  console.log(isStarted.value)
-
-  const state = Tone.Transport.state;
-  console.log(state)
-
+const togglePlay = () => {
+  let now = Tone.now()
   if (!isStarted.value) {
-    await Tone.start()
+    Tone.start()
     setStarted()
   }
   togglePlayPause()
-  let now = Tone.now()
-
-  console.log('ok')
+  
 
   if (isPlaying.value === true) {
-    Tone.Transport.start()
+    Tone.Transport.start(now)
     sequence.start()
   } else {
-    Tone.Transport.stop()
+    Tone.Transport.stop(now)
     sequence.stop()
   }
 }

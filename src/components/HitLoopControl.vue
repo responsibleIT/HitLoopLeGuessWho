@@ -17,7 +17,7 @@ import { useSequenceStore } from '@/stores/sequence.js'
 import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
 
-const store = await useSequenceStore()
+const store = useSequenceStore()
 const {
   availableNotes,
   activeNotes,
