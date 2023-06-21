@@ -13,7 +13,7 @@ import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
 // Pack with sample names
 import { useSequenceStore } from '@/stores/sequence.js'
-import BaseIcon from './BaseIcon.vue';
+import BaseIcon from '@/components/BaseIcon.vue'
 const store = useSequenceStore()
 
 const { bpm } = storeToRefs(store)
@@ -23,10 +23,10 @@ const { moreBPM, lessBPM } = store
 
 <template>
   <div>
-  <button @click="lessBPM"><BaseIcon name="remove"/></button>
-  <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
-  <button @click="moreBPM"><BaseIcon name="add"/></button>
-</div>
+    <button @click="lessBPM"><BaseIcon name="remove" /></button>
+    <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
+    <button @click="moreBPM"><BaseIcon name="add" /></button>
+  </div>
 </template>
 
 <style lang="scss" scoped>

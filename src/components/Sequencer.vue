@@ -10,6 +10,7 @@ import {
   Transition,
   computed
 } from 'vue'
+
 import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
 // Pack with sample names
@@ -24,9 +25,8 @@ import {
 
 import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
-import StateSequenceItem from '@/components/Versions/StateComponents/StateSequenceItem.vue'
-import SequenceItem from './SequenceItem.vue'
-import SequenceItemControl from './SequenceItemControl.vue'
+import SequenceItem from '@/components/SequenceItem.vue'
+import SequenceItemControl from '@/components/SequenceItemControl.vue'
 
 // store values to vuejs ref
 const {
@@ -51,18 +51,18 @@ let sequence
 
 // const sampler = new Tone.Sampler().toDestination()
 const configSequence = () => {
-  let reverb = new Tone.Reverb({
-    decay: 1.5,
-    preDelay: 0.01
-  }).toDestination()
+  // let reverb = new Tone.Reverb({
+  //   decay: 1.5,
+  //   preDelay: 0.01
+  // }).toDestination()
 
-  let chorus = new Tone.Chorus({
-    frequency: 1.5,
-    delayTime: 3.5,
-    depth: 0.7,
-    type: 'sine',
-    spread: 180
-  }).toDestination()
+  // let chorus = new Tone.Chorus({
+  //   frequency: 1.5,
+  //   delayTime: 3.5,
+  //   depth: 0.7,
+  //   type: 'sine',
+  //   spread: 180
+  // }).toDestination()
 
   // tick is callback function which is runned every
   const tick = (time, col) => {
@@ -72,9 +72,8 @@ const configSequence = () => {
         for (const row of sequenceData.value) {
           if (row.steps[col]) {
             sampler
-              .triggerAttackRelease(row.sample, '16n')
+              .triggerAttackRelease(row.sample, '16n', time)
               .sync()
-              .chain(reverb, chorus, Tone.Destination)
           }
         }
       }
