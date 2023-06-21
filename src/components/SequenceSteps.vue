@@ -33,20 +33,26 @@ const { toggleStep } = store
 
 <style lang="scss" scoped>
 .step-item {
-  width: 2.5em;
-  height: 2.5em;
-  border-radius: 100%;
-  background-color: v-bind(color);
-  border: 2px solid red;
+  // width: 2.5em;
+  // height: 2.5em;
+  // border-radius: 100%;
+  // background-color: v-bind(color);
+  // border: 2px solid red;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.12);
 }
 .active {
-  stroke-opacity: 50%;
-  background-color: #2ecd71;
+  // stroke-opacity: 50%;
+  // background-color: #2ecd71;
+  background-color: var(--color-green);
+  transform: scale(2);
 }
 
 .highlighted {
-  opacity: 50%;
-
+  // opacity: 50%;
+  background-color: var(--color-white);
   // stroke: green;
 }
 
@@ -58,8 +64,9 @@ const { toggleStep } = store
   // margin-bottom: 1em;
   width: 100%;
   display: flex;
+  // gap: 2em;
   // justify-content: stretch;
-  align-items: stretch;
+  // align-items: stretch;
   justify-content: space-between;
 }
 </style>

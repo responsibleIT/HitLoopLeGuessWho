@@ -17,7 +17,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     await Tone.start()
     isStarted.value = true
   }
-  const currentStepIndex = ref(0)
+  const currentStepIndex = ref(-1)
   function setCurrentStepIndex(i) {
     return (currentStepIndex.value = i)
   }

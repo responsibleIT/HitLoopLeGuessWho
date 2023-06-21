@@ -156,7 +156,6 @@
   --color-green: #baf35b;
   --color-white: white;
 }
-
 * {
   margin: 0;
   padding: 0;

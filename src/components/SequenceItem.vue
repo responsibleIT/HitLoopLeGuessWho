@@ -37,17 +37,10 @@ const { toggleStep, updateSequenceURL } = store
 
 <style lang="scss" scoped>
 .sequence-item {
-  border: 1px solid var(--color-background-mute);
-  padding: 1em;
   display: flex;
-  // gap: 1em;
-  justify-items: center;
-  flex-direction: row;
   align-items: center;
-  align-content: center;
-
-  border-radius: 1em;
-  margin-bottom: 1em;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .sample-select {

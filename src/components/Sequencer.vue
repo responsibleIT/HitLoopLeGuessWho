@@ -94,12 +94,13 @@ const togglePlay = () => {
     // playtime is state
     playTime.value = now
     //start sequence +0.1 in the fututre
-    sequence.start('+0.1', now)
-    Tone.Transport.start('+0.1', now)
+    Tone.Transport.start()
+    sequence.start()
   } else {
     playTime.value = Tone.now()
+    Tone.Transport.stop()
     sequence.stop()
-    Tone.Transport.stop(now)
+    
   }
 }
 
@@ -125,9 +126,9 @@ onUnmounted(() => {
   <div id="sequencer" v-if="sequenceData">
     <Suspense>
       <TransitionGroup name="fade">
-        <div v-for="(row, index) in sequenceData" :key="index">
+        <template v-for="(row, index) in sequenceData" :key="index">
           <SequenceItem :item="row" :id="index" />
-        </div>
+        </template>
       </TransitionGroup>
     </Suspense>
     <SequenceItem empty>
@@ -137,10 +138,7 @@ onUnmounted(() => {
     </SequenceItem>
   </div>
   <div class="controlls">
-    <div>
-      <label for="bpm">BPM:</label>
       <InputBpm />
-    </div>
     <Suspense>
       <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
       <BaseButton v-else @click="togglePlay" icon="pause" />
@@ -151,20 +149,25 @@ onUnmounted(() => {
 
 <style scoped lang="scss">
 .controlls {
-  padding: 1em;
   display: flex;
+  justify-content: end;
   align-items: center;
+  align-content: center;
   gap: 1em;
-  position: fixed;
-  bottom: 0;
-  justify-content: center;
-  justify-items: center;
-  // margin: 0 auto;
-  left: 0;
-  right: 0;
+  width: 100%;
+  height: 7rem;
+  background-color: var(--light-color);
+  border-radius: 8px;
 }
 .sequencer {
-  font-size: 1.5em;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+
+  width: 100%;
+  height: 7rem;
+  padding: 2rem;
 }
 
 .step-container {
