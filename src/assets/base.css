@@ -86,6 +86,10 @@
   font-weight: normal;
 }
 
+html {
+  background-color: var(--color-background-dark-body);
+}
+
 body {
   max-width: 100svw;
   max-height: 100svh;
