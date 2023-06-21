@@ -5,14 +5,7 @@ import { ref, TransitionGroup } from 'vue'
 
 const props = defineProps({
   id: Number,
-  sampleTypeList: Array,
-  sampleData: Array,
   item: Object,
-  url: String,
-  columns: Number,
-  row: Object,
-  highlighted: Number,
-  col: Number,
   color: String,
 })
 
@@ -27,15 +20,11 @@ const { toggleStep } = store
   <div class="steps-container">
     <TransitionGroup>
       <button
-        v-for="(step, stepIndex) in props.columns"
+        v-for="(step, stepIndex) in item.steps"
         class="step-item"
         :key="stepIndex"
-        :class="{ active: row.steps[stepIndex], highlighted: stepIndex === currentStepIndex }"
-        @click="toggleStep(row, stepIndex)"
-        stroke-width="15"
-        stroke="blue"
-        fill="none"
-        stroke-linecap="round"
+        :class="{ active: item.steps[stepIndex], highlighted: stepIndex === currentStepIndex }"
+        @click="toggleStep(item, stepIndex)"
         :name="stepIndex"
       ></button>
     </TransitionGroup>
@@ -66,6 +55,7 @@ const { toggleStep } = store
 }
 
 .steps-container {
+  // margin-bottom: 1em;
   width: 100%;
   display: flex;
   // justify-content: stretch;

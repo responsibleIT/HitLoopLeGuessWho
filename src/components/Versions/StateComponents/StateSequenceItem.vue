@@ -1,11 +1,10 @@
 <script setup>
-import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
+import SampleSelect from '@/components/SampleSelect.vue'
 import SequenceItemArc from '@/components/SequenceItemArc.vue'
 
 import { useSequenceStore } from '@/stores/sequence.js'
 import { storeToRefs } from 'pinia'
 import getSampleData from '@/composables/getSampleData'
-import AnimateSequenceItemSteps from './AnimateSequenceItemSteps.vue'
 const apiBaseURL = import.meta.env.VITE_API_BASE
 const props = defineProps({
   item: Object,
@@ -31,20 +30,20 @@ const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
 <template>
   <div class="sequence-item">
     <slot name="select" v-if="!empty">
-      <SequenceItemSelect
-        class="sample-select"
+      <SampleSelect
         :selectedValue="selectedValue"
         @update:url="updateSequenceURL(id, $event)"
         :item="item"
+        :sampleTypeList="sampleTypeList"
+        :sampleData="sampleData"
       />
     </slot>
     <slot></slot>
-    <slot name="steps">
-      <AnimateSequenceItemSteps
+    <slot name="arc">
+      <SequenceItemArc
         v-if="!empty"
         :columns="columns"
         :row="item"
-        :color="item.color"
         :highlighted="highlighted"
         @toggle-step="toggleStep"
       />
@@ -54,17 +53,12 @@ const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
 
 <style lang="scss" scoped>
 .sequence-item {
-  // border: 1px solid var(--color-background-mute);
-  // padding: 1em;
+  border: 1px solid var(--color-background-mute);
+  padding: 1em;
   display: flex;
-  // gap: 1em;
-  justify-items: stretch;
-  flex-direction: row;
-  // align-items: center;
+  gap: 1em;
+  flex-direction: column;
+  align-items: center;
   border-radius: 1em;
-}
-
-.sample-select {
-  width: 12em;
 }
 </style>

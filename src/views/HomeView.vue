@@ -1,14 +1,13 @@
 <script setup>
 
-import AnimateSequencer from '@/components/AnimateSequencer.vue'
-
+import Sequencer from '@/components/Sequencer.vue';
 
 </script>
 
 <template>
   <main>
     <Suspense>
-      <AnimateSequencer />
+      <Sequencer />
     </Suspense>
   </main>
 </template>

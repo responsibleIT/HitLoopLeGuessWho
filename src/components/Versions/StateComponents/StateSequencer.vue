@@ -23,8 +23,8 @@ import {
 
 import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
-import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
-import SequenceItem from '@/components/SequenceItem.vue'
+import SampleSelect from '@/components/SampleSelect.vue'
+import SequenceItem from '@/components/SequenceItemRenderless.vue'
 import StateSequenceItem from '@/components/StateSequenceItem.vue'
 import SequenceItemArc from '@/components/SequenceItemArc.vue'
 

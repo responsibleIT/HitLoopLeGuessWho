@@ -28,7 +28,7 @@ defineProps({
 </script>
 
 <template>
-  <span class="material-symbols-rounded">
+  <span class="icon material-symbols-rounded">
     {{ name }}
   </span>
 </template>
@@ -40,6 +40,7 @@ span {
 
 .icon {
   // font-size: inherit;
+  color: var(--color-text);
 }
 span.icon:hover {
   // transform: scale(2);

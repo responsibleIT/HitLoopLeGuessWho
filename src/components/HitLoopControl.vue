@@ -28,12 +28,13 @@ const {
   columns,
   getSequenceData,
   sampleObject,
-  bpm
+  bpm,
 } = storeToRefs(store)
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 defineProps({
-  togglePlay: Function
+  togglePlay: Function,
+  secuence: Function
 })
 </script>
 
@@ -45,8 +46,8 @@ defineProps({
         <input id="bpm" type="slider" min="20" max="300" v-model.number="bpm" />
       </label>
     </div>
-    <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
-    <BaseButton v-else @click="togglePlay" icon="pause" />
+    <BaseButton v-if="!isPlaying" @click="togglePlay(sequence)" icon="play_arrow" />
+    <BaseButton v-else @click="togglePlay(sequence)" icon="pause" />
   </div>
 </template>
 

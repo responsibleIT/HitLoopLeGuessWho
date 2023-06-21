@@ -6,7 +6,6 @@ import { ref } from 'vue'
 defineProps({
   item: Object,
   url: String,
-  highlighted: Number,
   id: Number
 })
 
@@ -32,7 +31,11 @@ const { sampleData, sampleTypeList } = storeToRefs(store)
 <style lang="scss" scoped>
 select {
   max-width: 100%;
-  padding: 0.5em;
+  
+  padding: .3em;
+  margin-right: 1em;
+  // background: -var(--color-background-soft);
+  // color: var(--color-text);
 }
 option {
   font-family: monospace;

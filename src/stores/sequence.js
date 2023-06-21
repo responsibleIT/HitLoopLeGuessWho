@@ -23,27 +23,30 @@ export const useSequenceStore = defineStore('sequence', () => {
   }
   const isPlaying = ref(false)
   const bpm = ref(130)
+  function moreBPM() {
+    bpm.value = bpm.value + 10
+  }
+  function lessBPM() {
+    bpm.value = bpm.value - 10
+  }
   const columns = ref(16)
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
-  const availableColors = ref(['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'G3', 'A4'])
+
   const activeNotes = ref(['A3'])
+  const availableColors = ref(['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'G3', 'A4'])
   const samplePack = ref('b')
   const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare', 'Hi-Hat'])
-  const sampleData = ref([
-    {
-      sample: 'A3',
-      steps: [false, false, false, false, false, false, false, false, false, false, false, false],
-      url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
-      color: 'red'
-    }
-  ])
-  const sequenceData = ref({})
+  // sampleData is array of objects witl sample data. file name, url, type(Crash Hi-hat-Etc)
+  const sampleData = ref([])
+  // hold the sequence data.sampleNote, sampleURL, steps[false, true], color
+  const sequenceDataRef = ref({})
 
   // activeNotes.value.map((sample) => ({
   //   sample,
   //   steps: createSequenceArraySteps(columns.value),
   //   url: getSampleUrl(apiBaseURL, samplePack.value, sampleData[1].file)
   // }))
+  // sets the sample data to sampleData.value
   async function setSampleData() {
     try {
       const data = await getSampleData(apiBaseURL, samplePack.value, 'list')
@@ -53,11 +56,11 @@ export const useSequenceStore = defineStore('sequence', () => {
       console.log(error)
     }
   }
-
+  // creates sequence data array. based on active notes
   async function setSequenceData() {
     try {
-      await setSampleData();
-      return (sequenceData.value = activeNotes.value.map((sample) => ({
+      await setSampleData()
+      return (sequenceDataRef.value = activeNotes.value.map((sample) => ({
         sample,
         steps: createSequenceArraySteps(columns.value),
         url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
@@ -70,14 +73,14 @@ export const useSequenceStore = defineStore('sequence', () => {
 
   setSampleData()
   setSequenceData()
-
+  // adds a sequence to sequenceData array
   const addSequence = () => {
-    if (!sequenceData.value) return
-    let all = sequenceData.value.length
+    if (!sequenceDataRef.value) return
+    let all = sequenceDataRef.value.length
     let thisSample = availableNotes.value[all]
     let thisColor = availableColors.value[all]
     activeNotes.value.push(thisSample)
-    sequenceData.value.push({
+    sequenceDataRef.value.push({
       sample: thisSample,
       steps: createSequenceArraySteps(columns.value),
       url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
@@ -85,16 +88,17 @@ export const useSequenceStore = defineStore('sequence', () => {
     })
   }
 
-  // const state = reactive({
-  //   bpm: bpm,
-  //   isPlaying: isPlaying,
-  //   columns: columns
-  // })
+
+  //creates a sample object for toneJS to use in sequencer
+
+  // sampleObject.value {
+  //   A3: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
+  //   B3: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav'
+  // }
   const sampleObject = computed(() => {
     const newObj = {}
-
-    if (getSequenceData.value && getSequenceData.value && Array.isArray(getSequenceData.value)) {
-      getSequenceData.value.forEach((obj) => {
+    if (sequenceData.value && sequenceData.value && Array.isArray(sequenceData.value)) {
+      sequenceData.value.forEach((obj) => {
         if (obj && obj.sample && obj.url) {
           newObj[obj.sample] = obj.url
         }
@@ -102,8 +106,9 @@ export const useSequenceStore = defineStore('sequence', () => {
     }
     return newObj
   })
-  const getSequenceData = computed(() => {
-    return sequenceData.value
+  
+  const sequenceData = computed(() => {
+    return sequenceDataRef.value
   })
   function toggleStep(row, step) {
     return (row.steps[step] = !row.steps[step])
@@ -136,7 +141,6 @@ export const useSequenceStore = defineStore('sequence', () => {
     activeNotes,
     currentStepIndex,
     addSequence,
-    getSequenceData,
     toggleStep,
     updateSequenceURL,
     togglePlayPause,

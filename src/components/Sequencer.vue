@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <script async setup>
 import {
   ref,
@@ -12,7 +13,7 @@ import {
 import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
 // Pack with sample names
-import { useSequenceStore } from '@/stores/sequence.js';
+import { useSequenceStore } from '@/stores/sequence.js'
 const store = useSequenceStore()
 
 import {
@@ -23,14 +24,8 @@ import {
 
 import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
-import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
-import SequenceItem from '@/components/SequenceItem.vue'
-import StateSequenceItem from '@/components/StateSequenceItem.vue'
-import SequenceItemArc from '@/components/SequenceItemArc.vue'
-import HitLoopControl from './HitLoopControl.vue'
-import AnimateSequenceItem from './AnimateSequenceItem.vue'
-
-
+import StateSequenceItem from '@/components/Versions/StateComponents/StateSequenceItem.vue'
+import SequenceItem from './SequenceItem.vue'
 
 // store values to vuejs ref
 const {
@@ -40,55 +35,43 @@ const {
   sampleData,
   isPlaying,
   columns,
-  getSequenceData,
+  sequenceData,
   isStarted,
   bpm
 } = storeToRefs(store)
 
-const {
-  toggleStep,
-  setStarted,
-  addSequence,
-  togglePlayPause,
-  setCurrentStepIndex
-} = store
+const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
 // Base url for the api
 
 // const bpm = ref(120)
 const playTime = ref(null)
 let sequence
-const sequenceData = getSequenceData
+
 // const sampler = new Tone.Sampler().toDestination()
 const configSequence = () => {
+  // tick is callback function which is runned every
   const tick = (time, col) => {
-const sampler = new Tone.Sampler({
-    urls: store.sampleObject,
-    onload: () => {
-      console.log('loaded')
-      for (const row of sequenceData.value) {
-    if (row.steps[col]) {
-      Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(row.sample, '16n').sync( )
-      })
-    }
+    const sampler = new Tone.Sampler({
+      urls: store.sampleObject,
+      onload: () => {
+        for (const row of sequenceData.value) {
+          if (row.steps[col]) {
+              sampler.triggerAttackRelease(row.sample, '16n').sync()
+          }
+        }
+      }
+    })
+    sampler.toDestination()
+    Tone.Draw.schedule(() => {
+      if (isPlaying.value) {
+        setCurrentStepIndex(col)
+      }
+    }, time)
+
+    
   }
-
-  }
-  }).toDestination()
-
-  Tone.Draw.schedule(() => {
-    if (isPlaying.value) {
-      setCurrentStepIndex(col)
-    }
-  }, time)
-  
-
-  sampler.toDestination()
-  
-}
-sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
-sequence
+  sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
 }
 
 Tone.Transport.bpm.value = bpm.value
@@ -101,20 +84,27 @@ const togglePlay = () => {
   
   if (!isStarted.value) {
     // Tone.start()
-    // Tone.getDestination().volume.rampTo(-10, 0.001);
+    Tone.getDestination().volume.rampTo(-10, 0.001);
     setStarted()
   }
-  togglePlayPause()
-  
 
+  let now = Tone.now()
+  togglePlayPause()
   if (isPlaying.value) {
-    let now = Tone.now();
-    Tone.Transport.start(now)
-    sequence.start(now)
+    // get current time
+    let now = Tone.now()
+    //set playtime to current time
+    // playtime is state
+    playTime.value = now
+    //start sequence +0.1 in the fututre
+    sequence.start('+0.1', now)
+    Tone.Transport.start('+0.1', now)
+    
   } else {
-    let now = Tone.now();
+    playTime.value = Tone.now()
+    sequence.stop()
     Tone.Transport.stop(now)
-    sequence.stop(now)
+    
   }
 }
 
@@ -126,47 +116,39 @@ const onKeyDown = (event) => {
 }
 
 onMounted(() => {
-  window.addEventListener('keydown', onKeyDown)
+  // Tone.start()
   configSequence()
+  window.addEventListener('keydown', onKeyDown)
+  
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeyDown)
 })
-
 </script>
 
 <template>
   <div id="sequencer" v-if="sequenceData">
-    <div>
-      <canvas ref="canvas"></canvas>
-    </div>
-    <div class="item-container">
       <Suspense>
         <TransitionGroup name="fade">
           <div v-for="(row, index) in sequenceData" :key="index">
-            <AnimateSequenceItem
-              :selectedValue="row.url"
+            <SequenceItem
               :item="row"
               :id="index"
-              :columns="columns"
-              :highlighted="currentStepIndex"
-              @toggle-step="toggleStep"
             />
           </div>
         </TransitionGroup>
       </Suspense>
-      <StateSequenceItem empty>
+      <SequenceItem empty>
         <button v-show="availableNotes > activeNotes" @click="addSequence()">
           <BaseIcon name="add" />
         </button>
-      </StateSequenceItem>
+      </SequenceItem>
     </div>
-  </div>
   <div class="controlls">
     <div>
       <label for="bpm">BPM:</label>
-      
+
       <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
     </div>
     <Suspense>
@@ -178,9 +160,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-.item-container {
-  
-}
+
 .controlls {
   padding: 1em;
   display: flex;

@@ -12,8 +12,8 @@ import {
 
 import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
-import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
-import SequenceItem from '@/components/SequenceItem.vue'
+import SampleSelect from '@/components/SampleSelect.vue'
+import SequenceItem from '@/components/SequenceItemRenderless.vue'
 import SequenceItemArc from '@/components/SequenceItemArc.vue'
 
 // Base url for the api
@@ -128,7 +128,7 @@ const updateURL = (index, newValue) => {
       <div v-for="(row, index) in sequenceData" class="row" :key="index">
         <SequenceItem>
           <template v-slot:select>
-            <SequenceItemSelect
+            <SampleSelect
               v-model:url="row.url"
               :selectedValue="row.url"
               @update:="updateURL(row, $event)"
