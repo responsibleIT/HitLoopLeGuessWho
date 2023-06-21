@@ -24,8 +24,8 @@ import {
 import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import SampleSelect from '@/components/SampleSelect.vue'
-import SequenceItem from '@/components/SequenceItemRenderless.vue'
-import StateSequenceItem from '@/components/StateSequenceItem.vue'
+import SequenceItem from '@/components/Versions/HitLoopSequencerV/SequenceItemRenderless.vue'
+import StateSequenceItem from '@/components/Versions/StateComponents/StateSequenceItem.vue'
 import SequenceItemArc from '@/components/SequenceItemArc.vue'
 
 // Base url for the api
