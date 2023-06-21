@@ -64,7 +64,7 @@ export const useSequenceStore = defineStore('sequence', () => {
         sample,
         steps: createSequenceArraySteps(columns.value),
         url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
-        color: 'red'
+        color: 'red',
       })))
     } catch (error) {
       console.log(error)

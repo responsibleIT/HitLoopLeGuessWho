@@ -26,6 +26,7 @@ import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
 import StateSequenceItem from '@/components/Versions/StateComponents/StateSequenceItem.vue'
 import SequenceItem from './SequenceItem.vue'
+import SequenceItemControl from './SequenceItemControl.vue'
 
 // store values to vuejs ref
 const {
@@ -50,6 +51,19 @@ let sequence
 
 // const sampler = new Tone.Sampler().toDestination()
 const configSequence = () => {
+  let reverb = new Tone.Reverb({
+    decay: 1.5,
+    preDelay: 0.01
+  }).toDestination()
+
+  let chorus = new Tone.Chorus({
+    frequency: 1.5,
+    delayTime: 3.5,
+    depth: 0.7,
+    type: 'sine',
+    spread: 180
+  }).toDestination()
+
   // tick is callback function which is runned every
   const tick = (time, col) => {
     const sampler = new Tone.Sampler({
@@ -57,7 +71,10 @@ const configSequence = () => {
       onload: () => {
         for (const row of sequenceData.value) {
           if (row.steps[col]) {
-            sampler.triggerAttackRelease(row.sample, '16n').sync()
+            sampler
+              .triggerAttackRelease(row.sample, '16n')
+              .sync()
+              .chain(reverb, chorus, Tone.Destination)
           }
         }
       }
@@ -100,7 +117,6 @@ const togglePlay = () => {
     playTime.value = Tone.now()
     Tone.Transport.stop()
     sequence.stop()
-    
   }
 }
 
@@ -138,13 +154,15 @@ onUnmounted(() => {
     </SequenceItem>
   </div>
   <div class="controlls">
-      <InputBpm />
+    <InputBpm />
     <Suspense>
       <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
       <BaseButton v-else @click="togglePlay" icon="pause" />
     </Suspense>
   </div>
-  <!-- <HitLoopControl :togglePlay="togglePlay" /> -->
+  
+    <SequenceItemControl />
+  
 </template>
 
 <style scoped lang="scss">
@@ -160,7 +178,6 @@ onUnmounted(() => {
   border-radius: 8px;
 }
 .sequencer {
-  
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
