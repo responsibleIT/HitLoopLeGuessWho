@@ -33,7 +33,6 @@ export const getSampleFile = async (fileURL) => {
   }
 }
 
-
 //get all sample data and create objects from array.
 export const getSampleData = async (BASE_URL, samplePack, file) => {
   let samplePackQuery = `?sample_pack=${samplePack}`

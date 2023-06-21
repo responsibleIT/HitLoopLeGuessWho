@@ -88,7 +88,6 @@ export const useSequenceStore = defineStore('sequence', () => {
     })
   }
 
-
   //creates a sample object for toneJS to use in sequencer
 
   // sampleObject.value {
@@ -106,7 +105,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     }
     return newObj
   })
-  
+
   const sequenceData = computed(() => {
     return sequenceDataRef.value
   })

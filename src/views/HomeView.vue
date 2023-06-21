@@ -1,7 +1,5 @@
 <script setup>
-
-import Sequencer from '@/components/Sequencer.vue';
-
+import Sequencer from '@/components/Sequencer.vue'
 </script>
 
 <template>

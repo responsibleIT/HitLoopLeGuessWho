@@ -28,7 +28,7 @@ const {
   columns,
   getSequenceData,
   sampleObject,
-  bpm,
+  bpm
 } = storeToRefs(store)
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 

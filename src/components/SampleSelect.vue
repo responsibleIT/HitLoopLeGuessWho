@@ -31,8 +31,8 @@ const { sampleData, sampleTypeList } = storeToRefs(store)
 <style lang="scss" scoped>
 select {
   max-width: 100%;
-  
-  padding: .3em;
+
+  padding: 0.3em;
   margin-right: 1em;
   // background: -var(--color-background-soft);
   // color: var(--color-text);

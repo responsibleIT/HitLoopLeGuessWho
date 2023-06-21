@@ -15,7 +15,7 @@ import * as Tone from 'tone'
 // Pack with sample names
 import { useSequenceStore } from '@/stores/sequence.js'
 const store = useSequenceStore()
-import InputBpm from '@/components/InputBpm.vue';
+import InputBpm from '@/components/InputBpm.vue'
 import {
   createSampleObject,
   createSequenceArraySteps,
@@ -57,7 +57,7 @@ const configSequence = () => {
       onload: () => {
         for (const row of sequenceData.value) {
           if (row.steps[col]) {
-              sampler.triggerAttackRelease(row.sample, '16n').sync()
+            sampler.triggerAttackRelease(row.sample, '16n').sync()
           }
         }
       }
@@ -68,8 +68,6 @@ const configSequence = () => {
         setCurrentStepIndex(col)
       }
     }, time)
-
-    
   }
   sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
 }
@@ -81,10 +79,9 @@ watch(bpm, (newBpm) => {
 })
 
 const togglePlay = () => {
-  
   if (!isStarted.value) {
     // Tone.start()
-    Tone.getDestination().volume.rampTo(-10, 0.001);
+    Tone.getDestination().volume.rampTo(-10, 0.001)
     setStarted()
   }
 
@@ -99,12 +96,10 @@ const togglePlay = () => {
     //start sequence +0.1 in the fututre
     sequence.start('+0.1', now)
     Tone.Transport.start('+0.1', now)
-    
   } else {
     playTime.value = Tone.now()
     sequence.stop()
     Tone.Transport.stop(now)
-    
   }
 }
 
@@ -119,7 +114,6 @@ onMounted(() => {
   // Tone.start()
   configSequence()
   window.addEventListener('keydown', onKeyDown)
-  
 })
 
 onUnmounted(() => {
@@ -129,27 +123,23 @@ onUnmounted(() => {
 
 <template>
   <div id="sequencer" v-if="sequenceData">
-      <Suspense>
-        <TransitionGroup name="fade">
-          <div v-for="(row, index) in sequenceData" :key="index">
-            <SequenceItem
-              :item="row"
-              :id="index"
-            />
-          </div>
-        </TransitionGroup>
-      </Suspense>
-      <SequenceItem empty>
-        <button v-show="availableNotes > activeNotes" @click="addSequence()">
-          <BaseIcon name="add" />
-        </button>
-      </SequenceItem>
-    </div>
+    <Suspense>
+      <TransitionGroup name="fade">
+        <div v-for="(row, index) in sequenceData" :key="index">
+          <SequenceItem :item="row" :id="index" />
+        </div>
+      </TransitionGroup>
+    </Suspense>
+    <SequenceItem empty>
+      <button v-show="availableNotes > activeNotes" @click="addSequence()">
+        <BaseIcon name="add" />
+      </button>
+    </SequenceItem>
+  </div>
   <div class="controlls">
     <div>
       <label for="bpm">BPM:</label>
-<InputBpm/>
-      
+      <InputBpm />
     </div>
     <Suspense>
       <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
@@ -160,7 +150,6 @@ onUnmounted(() => {
 </template>
 
 <style scoped lang="scss">
-
 .controlls {
   padding: 1em;
   display: flex;
