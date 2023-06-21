@@ -12,8 +12,10 @@ export const createSequenceArraySteps = (count) => {
 }
 export const createSampleObject = (sequenceData) => {
   const sampleObject = reactive({})
-  sequenceData.forEach((obj) => {
-    sampleObject[obj.sample] = obj.url
-  })
+  if (sequenceData) {
+    sequenceData.forEach((obj) => {
+      sampleObject[obj.sample] = obj.url
+    })
+  }
   return sampleObject
 }

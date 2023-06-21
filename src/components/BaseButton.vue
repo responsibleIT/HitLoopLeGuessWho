@@ -28,12 +28,14 @@ defineProps({
   text-align: center;
   justify-content: center;
   border-radius: 100%;
+  color: var(--color-text);
 
   span {
     text-align: center;
     font-size: 2em;
     // display: block;
     align-self: center;
+    // color: var(--color-text);
   }
 }
 </style>

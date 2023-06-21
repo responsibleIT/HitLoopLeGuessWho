@@ -2,7 +2,7 @@
 import { ref, reactive, watch, onMounted, onUnmounted, TransitionGroup, Transition } from 'vue'
 import * as Tone from 'tone'
 // Pack with sample names
-import { getSampleData, getSampleFile } from '@/composables/getSampleData.js'
+import { getSampleData, getSampleUrl } from '@/composables/getSampleData.js'
 
 import {
   createSampleObject,
@@ -12,8 +12,8 @@ import {
 
 import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
-import SequenceItemSelect from '@/components/SequenceItemSelect.vue'
-import SequenceItem from '@/components/SequenceItem.vue'
+import SampleSelect from '@/components/SampleSelect.vue'
+import SequenceItem from '@/components/SequenceItemRenderless.vue'
 import SequenceItemArc from '@/components/SequenceItemArc.vue'
 
 // Base url for the api
@@ -37,7 +37,7 @@ const addRow = () => {
   sequenceData.push({
     sample: thisSample,
     steps: createSequenceArraySteps(columns.value),
-    url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[all].file)
+    url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[all].file)
   })
 }
 
@@ -46,7 +46,7 @@ const sequenceData = reactive(
   activeSamples.value.map((sample) => ({
     sample,
     steps: createSequenceArraySteps(columns.value),
-    url: getSampleFile(apiBaseURL, samplePack.value, sampleData.value[1].file)
+    url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[1].file)
   }))
 )
 
@@ -128,7 +128,7 @@ const updateURL = (index, newValue) => {
       <div v-for="(row, index) in sequenceData" class="row" :key="index">
         <SequenceItem>
           <template v-slot:select>
-            <SequenceItemSelect
+            <SampleSelect
               v-model:url="row.url"
               :selectedValue="row.url"
               @update:="updateURL(row, $event)"

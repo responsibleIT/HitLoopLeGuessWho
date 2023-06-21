@@ -4,39 +4,48 @@ import SequenceItemArc from '@/components/SequenceItemArc.vue'
 
 import { useSequenceStore } from '@/stores/sequence.js'
 import { storeToRefs } from 'pinia'
-import SequenceSteps from '@/components/SequenceSteps.vue'
+import getSampleData from '@/composables/getSampleData'
 const apiBaseURL = import.meta.env.VITE_API_BASE
 const props = defineProps({
   item: Object,
+  url: String,
+  highlighted: Number,
   id: Number,
+  columns: Number,
+  row: Object,
+  col: Number,
+  selectedValue: String,
   empty: Boolean
 })
 
 const store = useSequenceStore()
 // store values to vuejs ref
-const { samplePack, currentStepIndex, sequenceData, sampleTypeList } =
+const { doubleCount, samplePack, currentStepIndex, sequenceData, sampleTypeList } =
   storeToRefs(store)
 
-const { toggleStep, updateSequenceURL } = store
+const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
+const sampleData = await getSampleData(apiBaseURL, 'b', 'list')
 </script>
 <template>
   <div class="sequence-item">
     <slot name="select" v-if="!empty">
       <SampleSelect
-        class="sample-select"
+        :selectedValue="selectedValue"
         @update:url="updateSequenceURL(id, $event)"
         :item="item"
-        :id="id"
+        :sampleTypeList="sampleTypeList"
+        :sampleData="sampleData"
       />
     </slot>
     <slot></slot>
-    <slot name="steps">
-      <SequenceSteps
+    <slot name="arc">
+      <SequenceItemArc
         v-if="!empty"
-        :id="id"
-        :item="item"
-        :color="item.color"
+        :columns="columns"
+        :row="item"
+        :highlighted="highlighted"
+        @toggle-step="toggleStep"
       />
     </slot>
   </div>
@@ -47,19 +56,9 @@ const { toggleStep, updateSequenceURL } = store
   border: 1px solid var(--color-background-mute);
   padding: 1em;
   display: flex;
-  // gap: 1em;
-  justify-items: center;
-  flex-direction: row;
+  gap: 1em;
+  flex-direction: column;
   align-items: center;
-  align-content: center;
-
   border-radius: 1em;
-  margin-bottom: 1em;
-}
-
-.sample-select {
-  width: 12em;
-  
-  background: -var(--color-background-mute);
 }
 </style>
