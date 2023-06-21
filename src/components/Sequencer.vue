@@ -15,7 +15,7 @@ import * as Tone from 'tone'
 // Pack with sample names
 import { useSequenceStore } from '@/stores/sequence.js'
 const store = useSequenceStore()
-
+import InputBpm from '@/components/InputBpm.vue';
 import {
   createSampleObject,
   createSequenceArraySteps,
@@ -148,8 +148,8 @@ onUnmounted(() => {
   <div class="controlls">
     <div>
       <label for="bpm">BPM:</label>
-
-      <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
+<InputBpm/>
+      
     </div>
     <Suspense>
       <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />

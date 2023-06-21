@@ -149,6 +149,8 @@ export const useSequenceStore = defineStore('sequence', () => {
     sampleObject,
     togglePlay,
     isStarted,
-    setStarted
+    setStarted,
+    moreBPM,
+    lessBPM
   }
 })
