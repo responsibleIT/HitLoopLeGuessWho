@@ -8,6 +8,7 @@ import {
 } from '@/helpers/toneHelpers.js'
 
 import { getSampleData, getSampleUrl } from '@/composables/getSampleData.js'
+import { useCycleList } from '@vueuse/core'
 
 const apiBaseURL = import.meta.env.VITE_API_BASE
 
@@ -30,22 +31,37 @@ export const useSequenceStore = defineStore('sequence', () => {
     bpm.value = bpm.value - 10
   }
   const reverb = ref({
-    decay: 1,
+    decay: 10,
     preDelay: 0.01
   })
+
+
+  const chorusTypeList = useCycleList(['sine', 'square', 'sawtooth', 'triangle'], {
+    initialValue: 'sine',
+    fallbackIndex: 0,
+  })
+
+  const chorusType = computed(() => {
+    return chorusTypeList.state.value
+  })
+
+
   const chorus = ref({
     frequency: 1.5,
     delayTime: 3.5,
     depth: 0.7,
-    type: 'sine',
+    type: chorusType,
     spread: 180
   })
+
+  
+
   const columns = ref(16)
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
 
   const activeNotes = ref(['A3'])
   const availableColors = ref(['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'G3', 'A4'])
-  const samplePack = ref('b')
+  const samplePack = ref('a')
   const sampleTypeList = ref(['Crash', 'Kick', 'Sfx', 'Snare', 'Hi-Hat'])
   // sampleData is array of objects witl sample data. file name, url, type(Crash Hi-hat-Etc)
   const sampleData = ref([])
@@ -163,6 +179,8 @@ export const useSequenceStore = defineStore('sequence', () => {
     moreBPM,
     lessBPM,
     reverb,
-    chorus
+    chorus,
+    chorusTypeList,
+    chorusType
   }
 })

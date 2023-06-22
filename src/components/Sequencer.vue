@@ -41,7 +41,9 @@ const {
   isStarted,
   bpm,
   reverb,
-  chorus
+  chorus,
+  chorusTypeList,
+  chorusType
 } = storeToRefs(store)
 
 const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepIndex } = store
@@ -58,12 +60,17 @@ let sequence
 
 const configSequence = () => {
 
-let rev = new Tone.Reverb(store.reverb.value).toDestination()
-console.log()
-let chor = new Tone.Chorus(store.reverb.value).toDestination()
+
+// let chor = new Tone.Chorus(chorus.value).toDestination()
+
+
+
 
   // tick is callback function which is runned every
   const tick = (time, col) => {
+    let rev = new Tone.Reverb(reverb.value).toDestination()
+    // console.log(reverb.value)
+    // console.log(chorus.value)
     const sampler = new Tone.Sampler({
       urls: store.sampleObject,
       onload: () => {
@@ -75,8 +82,10 @@ let chor = new Tone.Chorus(store.reverb.value).toDestination()
           }
         }
       }
-    })
-    sampler.toDestination().chain(rev, chor, Tone.Destination)
+    }).toDestination()
+
+    sampler.chain(rev, Tone.Destination)
+    
     Tone.Draw.schedule(() => {
       if (isPlaying.value) {
         setCurrentStepIndex(col)
@@ -85,6 +94,7 @@ let chor = new Tone.Chorus(store.reverb.value).toDestination()
   }
   sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
   sequence.humanize = true
+  sequence.toDestination
   console.log(sequence.get())
 }
 
@@ -167,16 +177,19 @@ onUnmounted(() => {
   </div>
   <div class="controlls">
     <InputBpm />
+    <div>
+      <!-- <button @click="store.chorusTypeList.prev()">prev</button>
+        <p>{{ chorusType }}</p>
+        <button @click="store.chorusTypeList.next()">next</button> -->
+    </div>
+
     <label for='reverb'>reverb</label>
-    <input id="reverb" type='range' v-model.number="reverb.decay" step=".01">
+    <input id="reverb" type='number' min="0" max="10" v-model.number="reverb.decay" step="0.5">
     <Suspense>
       <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
       <BaseButton v-else @click="togglePlay" icon="pause" />
     </Suspense>
   </div>
-  
-    <SequenceItemControl v-show="false"/>
-  
 </template>
 
 <style scoped lang="scss">

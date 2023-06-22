@@ -18,7 +18,8 @@ main {
   justify-content: space-between;
   position: relative;
   width: 100%;
-  height: 85vh;
+  min-height: 85vh;
+  max-height: 100svh;
 
   border-radius: 8px;
   padding: 8px;
@@ -26,3 +27,5 @@ main {
   box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 </style>
+
+
