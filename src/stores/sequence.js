@@ -29,6 +29,17 @@ export const useSequenceStore = defineStore('sequence', () => {
   function lessBPM() {
     bpm.value = bpm.value - 10
   }
+  const reverb = ref({
+    decay: 1,
+    preDelay: 0.01
+  })
+  const chorus = ref({
+    frequency: 1.5,
+    delayTime: 3.5,
+    depth: 0.7,
+    type: 'sine',
+    spread: 180
+  })
   const columns = ref(16)
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
 
@@ -150,6 +161,8 @@ export const useSequenceStore = defineStore('sequence', () => {
     isStarted,
     setStarted,
     moreBPM,
-    lessBPM
+    lessBPM,
+    reverb,
+    chorus
   }
 })

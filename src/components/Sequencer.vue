@@ -8,7 +8,8 @@ import {
   onUnmounted,
   TransitionGroup,
   Transition,
-  computed
+  computed,
+watchEffect
 } from 'vue'
 
 import { storeToRefs } from 'pinia'
@@ -38,7 +39,9 @@ const {
   columns,
   sequenceData,
   isStarted,
-  bpm
+  bpm,
+  reverb,
+  chorus
 } = storeToRefs(store)
 
 const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepIndex } = store
@@ -47,22 +50,17 @@ const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepInde
 
 // const bpm = ref(120)
 const playTime = ref(null)
-let sequence
+// let sequence
 
 // const sampler = new Tone.Sampler().toDestination()
-const configSequence = () => {
-  // let reverb = new Tone.Reverb({
-  //   decay: 1.5,
-  //   preDelay: 0.01
-  // }).toDestination()
+let sequence
 
-  // let chorus = new Tone.Chorus({
-  //   frequency: 1.5,
-  //   delayTime: 3.5,
-  //   depth: 0.7,
-  //   type: 'sine',
-  //   spread: 180
-  // }).toDestination()
+
+const configSequence = () => {
+
+let rev = new Tone.Reverb(store.reverb.value).toDestination()
+console.log()
+let chor = new Tone.Chorus(store.reverb.value).toDestination()
 
   // tick is callback function which is runned every
   const tick = (time, col) => {
@@ -78,7 +76,7 @@ const configSequence = () => {
         }
       }
     })
-    sampler.toDestination()
+    sampler.toDestination().chain(rev, chor, Tone.Destination)
     Tone.Draw.schedule(() => {
       if (isPlaying.value) {
         setCurrentStepIndex(col)
@@ -86,12 +84,15 @@ const configSequence = () => {
     }, time)
   }
   sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
+  sequence.humanize = true
+  console.log(sequence.get())
 }
 
 Tone.Transport.bpm.value = bpm.value
 
 watch(bpm, (newBpm) => {
   Tone.Transport.bpm.value = newBpm
+  configSequence()
 })
 
 const togglePlay = () => {
@@ -114,8 +115,8 @@ const togglePlay = () => {
     sequence.start()
   } else {
     playTime.value = Tone.now()
-    Tone.Transport.stop()
-    sequence.stop()
+    Tone.Transport.pause()
+    // sequence.stop()
   }
 }
 
@@ -125,6 +126,18 @@ const onKeyDown = (event) => {
     event.preventDefault()
   }
 }
+
+// watchEffect(() => {
+//   bpm.value
+//   chorus.value
+//   reverb.value
+//   // rev = new Tone.Reverb(reactiveReverb).toDestination()
+// console.log(reverb.value)
+//   // sequence.chain(rev)
+//   configSequence()
+// })
+
+
 
 onMounted(() => {
   // Tone.start()
@@ -154,13 +167,15 @@ onUnmounted(() => {
   </div>
   <div class="controlls">
     <InputBpm />
+    <label for='reverb'>reverb</label>
+    <input id="reverb" type='range' v-model.number="reverb.decay" step=".01">
     <Suspense>
       <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
       <BaseButton v-else @click="togglePlay" icon="pause" />
     </Suspense>
   </div>
   
-    <SequenceItemControl />
+    <SequenceItemControl v-show="false"/>
   
 </template>
 
