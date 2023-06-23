@@ -11,7 +11,7 @@ export default defineConfig(({ command, mode }) => {
   return {
     // vite config
     plugins: [vue()],
-    base: '/HitLoop/',
+    base: '/HitLoop',
     server: {
       port: 3000,
       hmr: true

@@ -3,6 +3,7 @@ import * as Tone from 'tone'
 
 export const createSampleObjectList = async (sampleData, url) => {
   const data = sampleData.value
+  let id = 1
   const sampleObjectList = data.files
     .map((str) => {
       const regex = /^(hi-hat|.+)[-_\s](\d+)_(\d+)_(.+)\.wav$/
@@ -18,6 +19,7 @@ export const createSampleObjectList = async (sampleData, url) => {
         try {
           // const nameCaseChange = useChangeCase(nameOnly, 'capitalCase')
           return {
+            id: id++,
             name: name.replace(/_/g, '-'),
             type: sampleType.charAt(0).toUpperCase() + sampleType.slice(1),
             version,
@@ -35,6 +37,7 @@ export const createSampleObjectList = async (sampleData, url) => {
       }
     })
     .filter((obj) => obj !== null)
+    console.log(sampleObjectList)
   return sampleObjectList
 }
 

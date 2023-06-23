@@ -1,11 +1,36 @@
 <script setup>
 import Sequencer from '@/components/Sequencer.vue'
+
+import { useSequenceStore } from '@/stores/sequence.js'
+
+import { storeToRefs } from 'pinia'
+const store = useSequenceStore()
+
+const {
+  availableNotes,
+  activeNotes,
+  currentStepIndex,
+  sampleData,
+  isPlaying,
+  columns,
+  sequenceData,
+  isStarted,
+  bpm,
+  reverb,
+  chorus,
+  chorusTypeList,
+  chorusType,
+  isSampleDataReady
+} = storeToRefs(store)
+
+const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepIndex } = store
+
 </script>
 
 <template>
   <main>
     <Suspense>
-      <Sequencer />
+      <Sequencer v-if="isSampleDataReady"/>
     </Suspense>
   </main>
 </template>
