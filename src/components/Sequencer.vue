@@ -92,18 +92,19 @@ const configSequence = () => {
             notesToPlay.value.push(row.sample)
           }
         }
-        sampler.triggerAttackRelease(notesToPlay.value, '16n', time).sync()
+        sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now())
       }
-    }).toDestination()
+    })
 
   
     let rev = new Tone.Reverb(reverb.value).toDestination()
+    sampler.chain(rev, Tone.Destination)
     // console.log(reverb.value)
     // console.log(chorus.value)
 
     Tone.loaded().then(() => {
-      sampler.chain(rev, Tone.Destination)
-      // sampler.toDestination()
+      sampler.sync()
+      sampler.toDestination()
     })
     // sampler.triggerAttackRelease(notesToPlay.value, '16n', time).sync()
     
@@ -131,11 +132,11 @@ watch(bpm, (newBpm) => {
 const togglePlay = () => {
   // Tone.Transport.stop()
   if (!isStarted.value) {
-    Tone.loaded().then(() => {
+    
       Tone.start()
     Tone.getDestination().volume.rampTo(-10, 0.001)
     setStarted()
-    })
+  
 
 
     
