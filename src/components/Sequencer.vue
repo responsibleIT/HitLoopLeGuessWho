@@ -92,9 +92,9 @@ const configSequence = () => {
             notesToPlay.value.push(row.sample)
           }
         }
-        sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now())
+        sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now()).sync()
       }
-    })
+    }).toDestination()
 
   
     let rev = new Tone.Reverb(reverb.value).toDestination()
@@ -102,10 +102,10 @@ const configSequence = () => {
     // console.log(reverb.value)
     // console.log(chorus.value)
 
-    Tone.loaded().then(() => {
-      sampler.sync()
-      sampler.toDestination()
-    })
+    // Tone.loaded().then(() => {
+    //   sampler.sync()
+    //   sampler.toDestination()
+    // })
     // sampler.triggerAttackRelease(notesToPlay.value, '16n', time).sync()
     
   }
@@ -129,18 +129,20 @@ watch(bpm, (newBpm) => {
   configSequence()
 })
 
+
+const setToneStart = async () => {
+  if (!isStarted.value) {
+    await Tone.start()
+  Tone.getDestination().volume.rampTo(-10, 0.001)
+    setStarted()
+   togglePlay()
+}
+}
+
 const togglePlay = () => {
   // Tone.Transport.stop()
-  if (!isStarted.value) {
-    
-      Tone.start()
-    Tone.getDestination().volume.rampTo(-10, 0.001)
-    setStarted()
   
-
-
-    
-  }
+  // if (!isStarted.value) return
 
   let now = Tone.now()
   togglePlayPause()
@@ -177,8 +179,10 @@ watchEffect(() => {
   configSequence()
 })
 
+
+
 onMounted(() => {
-  Tone.start()
+  // Tone.start()
   configSequence()
   window.addEventListener('keydown', onKeyDown)
 })
@@ -193,7 +197,7 @@ onUnmounted(() => {
     <Suspense>
       <TransitionGroup name="fade">
         
-          <SequenceItem  v-for="(row, index) in sequenceData" :key="row.id" :item="row" :id="row.id" />
+          <SequenceItem  v-for="row in sequenceData" :key="row.id" :item="row" :id="row.id" />
         
       </TransitionGroup>
     </Suspense>
@@ -214,7 +218,7 @@ onUnmounted(() => {
     <label for="reverb">reverb</label>
     <input id="reverb" type="number" min="0" max="10" v-model.number="reverb.decay" step="0.5" />
     <Suspense>
-      <BaseButton @click="togglePlay" :icon="isPlaying ? 'pause' : 'play_arrow'" />
+      <BaseButton @click="togglePlay" @click.once="setToneStart" :icon="isPlaying ? 'pause' : 'play_arrow'" />
       <!-- <BaseButton v-else @click="togglePlay" icon="pause" /> -->
     </Suspense>
   </div>
