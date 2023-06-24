@@ -38,26 +38,31 @@ const { toggleStep } = store
   // border-radius: 100%;
   // background-color: v-bind(color);
   // border: 2px solid red;
-  width: 1rem;
-  height: 1rem;
-  border-radius: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 100%;
   background: rgba(255, 255, 255, 0.12);
 }
 .active {
   // stroke-opacity: 50%;
   // background-color: #2ecd71;
   background-color: var(--color-green);
-  transform: scale(2);
+  transform: scale(1.25);
+  // opacity: 1;
 }
 
 .highlighted {
   // opacity: 50%;
   background-color: var(--color-white);
+  // transform: scale(2);
+  // transition-duration: 0.3s;
   // stroke: green;
 }
 
 .highlighted.active {
   border: 2px solid black;
+  transform: scale(1.75);
+  transition-duration: 0.2s;
 }
 
 .steps-container {

@@ -8,20 +8,19 @@ import {
   onUnmounted,
   TransitionGroup,
   Transition,
-  computed
+  computed,
+  watchEffect
 } from 'vue'
+
+import { useSequenceStore } from '@/stores/sequence.js'
 
 import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
 // Pack with sample names
-import { useSequenceStore } from '@/stores/sequence.js'
+
 const store = useSequenceStore()
 import InputBpm from '@/components/InputBpm.vue'
-import {
-  createSampleObject,
-  createSequenceArraySteps,
-  createSequenceArrayIndex
-} from '@/helpers/toneHelpers.js'
+import { createSequenceArrayIndex } from '@/helpers/toneHelpers.js'
 
 import BaseIcon from '@/components/BaseIcon.vue'
 import BaseButton from '@/components/BaseButton.vue'
@@ -38,7 +37,11 @@ const {
   columns,
   sequenceData,
   isStarted,
-  bpm
+  bpm,
+  reverb,
+  chorus,
+  chorusTypeList,
+  chorusType
 } = storeToRefs(store)
 
 const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepIndex } = store
@@ -47,58 +50,96 @@ const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepInde
 
 // const bpm = ref(120)
 const playTime = ref(null)
-let sequence
+// let sequence
 
 // const sampler = new Tone.Sampler().toDestination()
-const configSequence = () => {
-  // let reverb = new Tone.Reverb({
-  //   decay: 1.5,
-  //   preDelay: 0.01
-  // }).toDestination()
+let sequence = null
+let sampler = null
+const isBlobReady = ref(false)
 
-  // let chorus = new Tone.Chorus({
-  //   frequency: 1.5,
-  //   delayTime: 3.5,
-  //   depth: 0.7,
-  //   type: 'sine',
-  //   spread: 180
-  // }).toDestination()
+
+sampler = new Tone.Sampler({
+      urls: store.sampleObject,
+      onload: () => {
+        // for (const row of sequenceData.value) {
+        //   if (row.steps[col]) {
+        //     notesToPlay.value.push(row.sample)
+        //   }
+        // }
+        // sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now()).sync()
+      }
+    })
+
+
+const configSequence = () => {
+  // let chor = new Tone.Chorus(chorus.value).toDestination()
 
   // tick is callback function which is runned every
   const tick = (time, col) => {
-    const sampler = new Tone.Sampler({
-      urls: store.sampleObject,
-      onload: () => {
-        for (const row of sequenceData.value) {
-          if (row.steps[col]) {
-            sampler
-              .triggerAttackRelease(row.sample, '16n', time)
-              .sync()
-          }
-        }
-      }
-    })
-    sampler.toDestination()
+    // console.log(col)
     Tone.Draw.schedule(() => {
       if (isPlaying.value) {
         setCurrentStepIndex(col)
       }
     }, time)
+    let notesToPlay = ref([])
+    notesToPlay.value = []
+    sampler = new Tone.Sampler({
+      urls: store.sampleObject,
+      onload: () => {
+        for (const row of sequenceData.value) {
+          if (row.steps[col]) {
+            notesToPlay.value.push(row.sample)
+          }
+        }
+        sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now())
+      }
+    })
+
+  
+    let rev = new Tone.Reverb(reverb.value).toDestination()
+    sampler.chain(rev, Tone.Destination)
+    // console.log(reverb.value)
+    // console.log(chorus.value)
+
+    Tone.loaded().then(() => {
+      sampler.sync()
+      sampler.toDestination()
+    })
+    // sampler.triggerAttackRelease(notesToPlay.value, '16n', time).sync()
+    
   }
   sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
+  sequence.humanize = true
+  
+  console.log(sequence.get())
+
+  // watchEffect(() => {
+  //   if (sequence) {
+  //     sequence.dispose();
+  //   }
+  //   sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
+  // });
 }
 
 Tone.Transport.bpm.value = bpm.value
 
 watch(bpm, (newBpm) => {
   Tone.Transport.bpm.value = newBpm
+  configSequence()
 })
 
 const togglePlay = () => {
+  // Tone.Transport.stop()
   if (!isStarted.value) {
-    // Tone.start()
+    
+      Tone.start()
     Tone.getDestination().volume.rampTo(-10, 0.001)
     setStarted()
+  
+
+
+    
   }
 
   let now = Tone.now()
@@ -111,11 +152,11 @@ const togglePlay = () => {
     playTime.value = now
     //start sequence +0.1 in the fututre
     Tone.Transport.start()
-    sequence.start()
+    sequence.start(0)
   } else {
     playTime.value = Tone.now()
-    Tone.Transport.stop()
-    sequence.stop()
+    Tone.Transport.pause()
+    // sequence.stop()
   }
 }
 
@@ -126,8 +167,18 @@ const onKeyDown = (event) => {
   }
 }
 
+watchEffect(() => {
+  bpm.value
+  chorus.value
+  reverb.value
+  // rev = new Tone.Reverb(reactiveReverb).toDestination()
+  console.log(reverb.value)
+  // sequence.chain(rev)
+  configSequence()
+})
+
 onMounted(() => {
-  // Tone.start()
+  Tone.start()
   configSequence()
   window.addEventListener('keydown', onKeyDown)
 })
@@ -141,30 +192,39 @@ onUnmounted(() => {
   <div id="sequencer" v-if="sequenceData">
     <Suspense>
       <TransitionGroup name="fade">
-        <template v-for="(row, index) in sequenceData" :key="index">
-          <SequenceItem :item="row" :id="index" />
-        </template>
+        
+          <SequenceItem  v-for="(row, index) in sequenceData" :key="row.id" :item="row" :id="row.id" />
+        
       </TransitionGroup>
     </Suspense>
-    <SequenceItem empty>
-      <button v-show="availableNotes > activeNotes" @click="addSequence()">
-        <BaseIcon name="add" />
-      </button>
+    <SequenceItem class="add-sequence" empty>
+      <BaseButton icon="add" v-show="sequenceData.length !== availableNotes.length" @click="addSequence()">
+        <!-- <BaseIcon name="add" /> -->
+      </BaseButton>
     </SequenceItem>
   </div>
   <div class="controlls">
     <InputBpm />
+    <div>
+      <!-- <button @click="store.chorusTypeList.prev()">prev</button>
+        <p>{{ chorusType }}</p>
+        <button @click="store.chorusTypeList.next()">next</button> -->
+    </div>
+
+    <label for="reverb">reverb</label>
+    <input id="reverb" type="number" min="0" max="10" v-model.number="reverb.decay" step="0.5" />
     <Suspense>
-      <BaseButton v-if="!isPlaying" @click="togglePlay" icon="play_arrow" />
-      <BaseButton v-else @click="togglePlay" icon="pause" />
+      <BaseButton @click="togglePlay" :icon="isPlaying ? 'pause' : 'play_arrow'" />
+      <!-- <BaseButton v-else @click="togglePlay" icon="pause" /> -->
     </Suspense>
   </div>
-  
-    <SequenceItemControl />
-  
 </template>
 
 <style scoped lang="scss">
+.add-sequence {
+  margin-inline: auto;
+}
+
 .controlls {
   display: flex;
   justify-content: end;
@@ -177,6 +237,7 @@ onUnmounted(() => {
   border-radius: 8px;
 }
 .sequencer {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 2.5rem;
@@ -232,6 +293,7 @@ svg {
 }
 
 #sequencer {
+  position: relative;
   display: flex;
   flex-direction: column;
   // grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* see notes below */
@@ -268,19 +330,20 @@ select {
 .fade-move,
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
+  transition: all 0.3s cubic-bezier(0.55, 0, 0.1, 1);
 }
 
 /* 2. declare enter from and leave to state */
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-  transform: scaleY(0.01) translate(30px, 0);
+  transform: scaleX(0.01) translate(30px, 0);
 }
 
 /* 3. ensure leaving items are taken out of layout flow so that moving
       animations can be calculated correctly. */
 .fade-leave-active {
-  position: absolute;
+  opacity: 0;
+  position: fixed;
 }
 </style>

@@ -24,7 +24,7 @@ const { moreBPM, lessBPM } = store
 <template>
   <div>
     <button @click="lessBPM"><BaseIcon name="remove" /></button>
-    <input id="bpm" type="number" min="20" max="300" v-model.number="bpm" />
+    <input id="bpm" type="number" min="20" max="300" step=".01" v-model.number="bpm" />
     <button @click="moreBPM"><BaseIcon name="add" /></button>
   </div>
 </template>

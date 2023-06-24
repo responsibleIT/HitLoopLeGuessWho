@@ -26,6 +26,7 @@ export const getSampleFile = async (fileURL) => {
     if (data || !isFetching) {
       const sampleUrl = useObjectUrl(data)
       console.log(sampleUrl)
+      console.log(data)
       return sampleUrl
     }
   } catch (error) {

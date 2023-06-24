@@ -32,7 +32,7 @@ defineProps({
 
   span {
     text-align: center;
-    font-size: 2em;
+    font-size: 1.5em;
     // display: block;
     align-self: center;
     // color: var(--color-text);

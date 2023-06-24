@@ -19,7 +19,7 @@ const { sampleData, sampleTypeList } = storeToRefs(store)
     <template v-for="(sampleType, i) in sampleTypeList" :key="i">
       <optgroup :label="sampleType">
         <template v-for="sample in sampleData">
-          <option v-if="sample.type === sampleType" :key="sample" :value="sample.url">
+          <option v-if="sample.type === sampleType" :key="sample.file" :value="sample.blob">
             {{ sample.version }} {{ sample.name }}
           </option>
         </template>
