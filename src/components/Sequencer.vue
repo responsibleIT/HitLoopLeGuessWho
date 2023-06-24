@@ -54,11 +54,14 @@ const playTime = ref(null)
 
 // const sampler = new Tone.Sampler().toDestination()
 let sequence = null
-let sampler = null
+// let sampler = null
+let samples = new Tone.Players({
+  urls: store.playersObject
+})
 const isBlobReady = ref(false)
 
 
-sampler = new Tone.Sampler({
+let sampler = new Tone.Sampler({
       urls: store.sampleObject,
       onload: () => {
         // for (const row of sequenceData.value) {
@@ -89,7 +92,13 @@ const configSequence = () => {
       onload: () => {
         for (const row of sequenceData.value) {
           if (row.steps[col]) {
-            notesToPlay.value.push(row.sample)
+            // notesToPlay.value.push(row.sample)
+            playNote({
+              detail: {
+                item: row,
+                time: time
+            }})
+
           }
         }
         sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now()).sync()
@@ -121,6 +130,13 @@ const configSequence = () => {
   //   sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
   // });
 }
+
+function playNote({ detail }) {
+
+  sampler.triggerAttackRelease(detail.item.sample, '16n', detail.time).sync()
+  
+}
+
 
 Tone.Transport.bpm.value = bpm.value
 
@@ -197,7 +213,7 @@ onUnmounted(() => {
     <Suspense>
       <TransitionGroup name="fade">
         
-          <SequenceItem  v-for="row in sequenceData" :key="row.id" :item="row" :id="row.id" />
+          <SequenceItem  v-for="item in sequenceData" :key="item.id" :item="item" :id="item.id" />
         
       </TransitionGroup>
     </Suspense>
@@ -348,6 +364,6 @@ select {
       animations can be calculated correctly. */
 .fade-leave-active {
   opacity: 0;
-  position: fixed;
+  position: absolute;
 }
 </style>
