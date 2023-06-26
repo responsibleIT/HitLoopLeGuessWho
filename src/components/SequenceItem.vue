@@ -43,14 +43,17 @@ const { toggleStep, updateSequenceURL, removeSequence } = store
 
 <style lang="scss" scoped>
 .sequence-item {
+  // grid-template-columns:auto 1fr auto;
   display: flex;
+  // overflow-x: visible;
+  // overflow-y: scroll;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  // justify-content: space-between;
+  gap: 1em;
 }
 
 .sample-select {
-  width: 12em;
+  max-width: 12em;
 
   background: -var(--color-background-mute);
 }

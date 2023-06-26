@@ -37,14 +37,14 @@ const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepInde
 <style scoped>
 main {
   overflow: hidden;
-  background-color: var(--color-background-dark);
+  background-color: var(--color-background);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   width: 100%;
   min-height: 85vh;
-  max-height: 100svh;
+  max-height: 100cqh;
 
   border-radius: 8px;
   padding: 8px;
