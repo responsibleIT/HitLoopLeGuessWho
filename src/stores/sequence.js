@@ -35,16 +35,14 @@ export const useSequenceStore = defineStore('sequence', () => {
     preDelay: 0.01
   })
 
-
   const chorusTypeList = useCycleList(['sine', 'square', 'sawtooth', 'triangle'], {
     initialValue: 'sine',
-    fallbackIndex: 0,
+    fallbackIndex: 0
   })
 
   const chorusType = computed(() => {
     return chorusTypeList.state.value
   })
-
 
   const chorus = ref({
     frequency: 1.5,
@@ -53,8 +51,6 @@ export const useSequenceStore = defineStore('sequence', () => {
     type: chorusType,
     spread: 180
   })
-
-  
 
   const columns = ref(16)
   const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
@@ -67,20 +63,21 @@ export const useSequenceStore = defineStore('sequence', () => {
   // sampleData is array of objects witl sample data. file name, url, type(Crash Hi-hat-Etc)
   const sampleData = ref([])
   // hold the sequence data.sampleNote, sampleURL, steps[false, true], color
-  
 
   const getInitialSequence = () => {
     const sample = availableNotes.value[0]
-    return [{
-    id: 0,
-    sample: 'A3',
-    steps: createSequenceArraySteps(columns.value),
-    url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
-    color: 'red'
-  }]
-}
+    return [
+      {
+        id: 0,
+        sample: 'A3',
+        steps: createSequenceArraySteps(columns.value),
+        url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
+        color: 'red'
+      }
+    ]
+  }
 
-const sequenceData = ref(getInitialSequence())
+  const sequenceData = ref(getInitialSequence())
   // activeNotes.value.map((sample) => ({
   //   sample,
   //   steps: createSequenceArraySteps(columns.value),
@@ -88,7 +85,7 @@ const sequenceData = ref(getInitialSequence())
   // }))
   // sets the sample data to sampleData.value
 
-  const isSampleDataReady = ref(false);
+  const isSampleDataReady = ref(false)
 
   async function setSampleData() {
     try {
@@ -98,7 +95,7 @@ const sequenceData = ref(getInitialSequence())
       await data.value.forEach(async (sample, i) => {
         let blob = await getSampleFile(sample.url)
         sample.blob = blob.value
-      });
+      })
       console.log(data.value)
 
       return (sampleData.value = data.value)
@@ -110,8 +107,7 @@ const sequenceData = ref(getInitialSequence())
     }
   }
   // creates sequence data array. based on active notes
-setSampleData()
-  
+  setSampleData()
 
   // async function setSequenceData() {
   //   try {
@@ -132,18 +128,17 @@ setSampleData()
   // setSequenceData()
   // adds a sequence to sequenceData array
   const addSequence = () => {
-
-    const uniqueNote = availableNotes.value[sequenceData.value.length % availableNotes.value.length];
+    const uniqueNote = availableNotes.value[sequenceData.value.length % availableNotes.value.length]
     if (sequenceData.value.length === availableNotes.value.length) {
       // All available notes are used, disable the function or handle the case as needed
-      return;
+      return
     }
     if (!sequenceData.value) return
 
     let currentMaxId = sequenceData.value.reduce((maxId, item) => {
-      return item.id > maxId ? item.id : maxId;
-    }, 0);
-    const newId = currentMaxId + 1;
+      return item.id > maxId ? item.id : maxId
+    }, 0)
+    const newId = currentMaxId + 1
     let all = sequenceData.value.length
     console.log(all)
     let thisSample = availableNotes.value[all]
@@ -158,12 +153,11 @@ setSampleData()
     })
   }
   const removeSequence = (id, e) => {
-    const index = sequenceData.value.findIndex((item) => item.id === id);
+    const index = sequenceData.value.findIndex((item) => item.id === id)
     if (index !== -1) {
-      sequenceData.value.splice(index, 1);
+      sequenceData.value.splice(index, 1)
     }
   }
-  
 
   //creates a sample object for toneJS to use in sequencer
 
@@ -200,9 +194,8 @@ setSampleData()
     return (row.steps[step] = !row.steps[step])
   }
   const updateSequenceURL = async (index, newUrl) => {
-
-console.log(newUrl)
-  return  sequenceData.value[index].url = newUrl
+    console.log(newUrl)
+    return (sequenceData.value[index].url = newUrl)
   }
 
   const togglePlayPause = (val) => {

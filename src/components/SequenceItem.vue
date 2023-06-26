@@ -23,20 +23,20 @@ const { toggleStep, updateSequenceURL, removeSequence } = store
   <div class="sequence-item">
     <slot name="select" v-if="!empty">
       <Suspense>
-      <SampleSelect
-        class="sample-select"
-        @update:url="updateSequenceURL(id, $event)"
-        :item="item"
-        :id="id"
-      />
-    </Suspense>
+        <SampleSelect
+          class="sample-select"
+          @update:url="updateSequenceURL(id, $event)"
+          :item="item"
+          :id="id"
+        />
+      </Suspense>
     </slot>
     <slot></slot>
     <slot name="steps">
       <SequenceSteps v-if="!empty" :id="id" :item="item" :color="item.color" />
     </slot>
     <div v-if="!empty">
-      <BaseButton @click="removeSequence(id)" icon="delete"/>
+      <BaseButton @click="removeSequence(id)" icon="delete" />
     </div>
   </div>
 </template>

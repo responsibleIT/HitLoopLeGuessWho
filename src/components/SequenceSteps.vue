@@ -41,7 +41,7 @@ const { toggleStep } = store
   width: 2rem;
   height: 2rem;
   border-radius: 100%;
-  background:var(--color-background-transparent);
+  background: var(--color-background-transparent);
 }
 .active {
   // stroke-opacity: 50%;

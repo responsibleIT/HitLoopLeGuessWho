@@ -24,13 +24,12 @@ const {
 } = storeToRefs(store)
 
 const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepIndex } = store
-
 </script>
 
 <template>
   <main>
     <Suspense>
-      <Sequencer v-if="isSampleDataReady"/>
+      <Sequencer v-if="isSampleDataReady" />
     </Suspense>
   </main>
 </template>
@@ -52,5 +51,3 @@ main {
   box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
 </style>
-
-

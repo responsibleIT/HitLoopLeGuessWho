@@ -60,19 +60,17 @@ let samples = new Tone.Players({
 })
 const isBlobReady = ref(false)
 
-
 let sampler = new Tone.Sampler({
-      urls: store.sampleObject,
-      onload: () => {
-        // for (const row of sequenceData.value) {
-        //   if (row.steps[col]) {
-        //     notesToPlay.value.push(row.sample)
-        //   }
-        // }
-        // sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now()).sync()
-      }
-    })
-
+  urls: store.sampleObject,
+  onload: () => {
+    // for (const row of sequenceData.value) {
+    //   if (row.steps[col]) {
+    //     notesToPlay.value.push(row.sample)
+    //   }
+    // }
+    // sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now()).sync()
+  }
+})
 
 const configSequence = () => {
   // let chor = new Tone.Chorus(chorus.value).toDestination()
@@ -97,15 +95,14 @@ const configSequence = () => {
               detail: {
                 item: row,
                 time: time
-            }})
-
+              }
+            })
           }
         }
         // sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now()).sync()
       }
     }).toDestination()
 
-  
     // let rev = new Tone.Reverb(reverb.value).toDestination()
     // sampler.chain(rev, Tone.Destination)
     // console.log(reverb.value)
@@ -116,11 +113,10 @@ const configSequence = () => {
     //   sampler.toDestination()
     // })
     // sampler.triggerAttackRelease(notesToPlay.value, '16n', time).sync()
-    
   }
   sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
   sequence.humanize = true
-  
+
   console.log(sequence.get())
 
   // watchEffect(() => {
@@ -138,7 +134,6 @@ function playNote({ detail }) {
   sampler.chain(rev, Tone.Destination)
 }
 
-
 Tone.Transport.bpm.value = bpm.value
 
 watch(bpm, (newBpm) => {
@@ -146,20 +141,19 @@ watch(bpm, (newBpm) => {
   configSequence()
 })
 
-
 const setToneStart = async () => {
   if (!isStarted.value) {
     await Tone.start()
     Tone.getDestination().volume.rampTo(-10, 0.001)
     setStarted()
     // togglePlay()
-}
+  }
 }
 
 const togglePlay = (e) => {
   setToneStart(e)
   // Tone.Transport.stop()
-  
+
   // if (!isStarted.value) return
 
   let now = Tone.now()
@@ -197,8 +191,6 @@ watchEffect(() => {
   configSequence()
 })
 
-
-
 onMounted(() => {
   // Tone.start()
   configSequence()
@@ -214,11 +206,15 @@ onUnmounted(() => {
   <div id="sequencer" v-if="sequenceData">
     <Suspense>
       <TransitionGroup name="fade">
-          <SequenceItem  v-for="item in sequenceData" :key="item.id" :item="item" :id="item.id" />
+        <SequenceItem v-for="item in sequenceData" :key="item.id" :item="item" :id="item.id" />
       </TransitionGroup>
     </Suspense>
     <SequenceItem class="add-sequence" empty>
-      <BaseButton icon="add" v-show="sequenceData.length !== availableNotes.length" @click="addSequence()">
+      <BaseButton
+        icon="add"
+        v-show="sequenceData.length !== availableNotes.length"
+        @click="addSequence()"
+      >
         <!-- <BaseIcon name="add" /> -->
       </BaseButton>
     </SequenceItem>
@@ -259,7 +255,6 @@ onUnmounted(() => {
   background-color: var(--color-background);
   border-radius: 8px;
   padding: 2em;
- 
 }
 .sequencer {
   position: relative;

@@ -39,10 +39,9 @@
   --color-background-dark-body: #343434;
   --color-green: #baf35b;
 
-  --padding-s: .5em;
+  --padding-s: 0.5em;
   --padding-m: 1em;
   --padding-l: 1.5em;
-
 
   /* --color-white: white; */
 }
@@ -61,12 +60,11 @@
   --color-text-alt: var(--color-text-dark-1);
   --color-background-alt: var(--color-dark); */
 
-
   --color-background-body: var(--color-background-dark-body);
   --color-background: var(--color-dark);
   --color-background-soft: var(--color-black-soft);
   --color-background-mute: var(--color-black-mute);
-  --color-background-transparent:rgba(255, 255, 255, 0.12);
+  --color-background-transparent: rgba(255, 255, 255, 0.12);
 
   --color-border: var(--color-divider-dark-2);
   --color-border-hover: var(--color-divider-dark-1);
@@ -112,7 +110,7 @@ body {
   font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
     Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   font-size: 16px;
-  padding: .5em;
+  padding: 0.5em;
   background-color: var(--color-background-body);
   text-rendering: optimizeSpeed;
   -webkit-font-smoothing: antialiased;

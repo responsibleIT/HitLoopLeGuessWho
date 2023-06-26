@@ -37,7 +37,7 @@ export const createSampleObjectList = async (sampleData, url) => {
       }
     })
     .filter((obj) => obj !== null)
-    console.log(sampleObjectList)
+  console.log(sampleObjectList)
   return sampleObjectList
 }
 
