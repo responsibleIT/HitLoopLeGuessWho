@@ -182,12 +182,12 @@ setSampleData()
     }
     return newObj
   })
-  const playerObject = computed(() => {
+  const playersObject = computed(() => {
     const newObj = {}
     if (sequenceData.value && sequenceData.value && Array.isArray(sequenceData.value)) {
       sequenceData.value.forEach((obj) => {
         if (obj && obj.sample && obj.url) {
-          newObj[obj.sample] = obj.url
+          newObj[obj.id] = obj.url
         }
       })
     }
@@ -245,6 +245,7 @@ console.log(newUrl)
     chorusTypeList,
     chorusType,
     isSampleDataReady,
-    removeSequence
+    removeSequence,
+    playersObject
   }
 })

@@ -3,7 +3,7 @@ import * as Tone from 'tone'
 
 export const createSampleObjectList = async (sampleData, url) => {
   const data = sampleData.value
-  let id = 1
+  let id = 0
   const sampleObjectList = data.files
     .map((str) => {
       const regex = /^(hi-hat|.+)[-_\s](\d+)_(\d+)_(.+)\.wav$/

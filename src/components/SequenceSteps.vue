@@ -41,7 +41,7 @@ const { toggleStep } = store
   width: 2rem;
   height: 2rem;
   border-radius: 100%;
-  background: rgba(255, 255, 255, 0.12);
+  background:var(--color-background-transparent);
 }
 .active {
   // stroke-opacity: 50%;
@@ -53,7 +53,7 @@ const { toggleStep } = store
 
 .highlighted {
   // opacity: 50%;
-  background-color: var(--color-white);
+  background-color: var(--color-text);
   // transform: scale(2);
   // transition-duration: 0.3s;
   // stroke: green;

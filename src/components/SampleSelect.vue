@@ -16,7 +16,7 @@ const { sampleData, sampleTypeList } = storeToRefs(store)
 
 <template>
   <select @input="$emit('update:url', $event.target.value)">
-    <template v-for="(sampleType, i) in sampleTypeList" :key="i">
+    <template v-for="sampleType in sampleTypeList" :key="sampleType">
       <optgroup :label="sampleType">
         <template v-for="sample in sampleData">
           <option v-if="sample.type === sampleType" :key="sample.file" :value="sample.blob">
