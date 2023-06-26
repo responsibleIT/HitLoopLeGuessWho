@@ -243,7 +243,7 @@ onUnmounted(() => {
 
 .controlls {
   display: flex;
-  position: sticky;
+  // position: sticky;
   bottom: 1em;
   z-index: 2;
   justify-content: end;
@@ -251,10 +251,9 @@ onUnmounted(() => {
   align-content: center;
   gap: 1em;
   width: 100%;
-  height: 7rem;
-  background-color: var(--color-background);
+  background-color: #343434;
   border-radius: 8px;
-  padding: 2em;
+  padding: 1em 2em;
 }
 .sequencer {
   position: relative;
