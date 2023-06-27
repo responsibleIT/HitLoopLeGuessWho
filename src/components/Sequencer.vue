@@ -156,28 +156,22 @@ sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n
 sequence.humanize = true
 
 function playNote({ detail }) {
-  let rev = new Tone.Reverb(reverb.value).toDestination()
-  let pitchShift = new Tone.PitchShift().toDestination()
+  let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
+  console.log(pitchShiftValue.value)
+  // samples.sync()
 
-  sampler.sync()
-  sampler.triggerAttackRelease(detail.item.sample, '16n', detail.time)
-  sampler.chain(pitchShift, rev, Tone.Destination)
-  
   if (reverb.value.decay !== 0) {
-    let rev = new Tone.Reverb(reverb.value)
+    let rev = new Tone.Reverb(reverb.value).toDestination()
     rev.toDestination()
     samples.connect(rev)
     samples.set({
-  // samples.toDestination()
-
-  if (reverb.value.decay !== 0) {
-    const rev = new Tone.Reverb().toDestination()
-    rev.set(reverb.value)
-    samples.chain(rev, Tone.Destination)
-
-    // samples.player(detail.item.sampleId)
+      // samples.toDestination()
+    })
+    samples.chain(pitchShift, rev, Tone.Destination)
+  } else {
+    samples.chain(pitchShift, Tone.Destination)
   }
-  samples.triggerAttackRelease(detail.item.sampleId, '16n', detail.time).toDestination()
+  samples.triggerAttackRelease(detail.item.sampleId, '16n', detail.time)
   //  samples.player(detail.item.sampleId, 0, detail.time, 0.5)
   // samples.player(detail.item.sampleId).start(detail.time, '+0.001', '16n')
 }
@@ -189,9 +183,9 @@ watch(bpm, (newBpm) => {
   // configSequence()
 })
 
-watch(pitchShiftValue, (newPitchShift) => {
-  pitchShift.pitch = newPitchShift
-})
+// watch(pitchShiftValue.value, (newPitchShift) => {
+//   pitchShift.pitch = newPitchShift
+// })
 
 const setToneStart = async () => {
   if (!isStarted.value) {

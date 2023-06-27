@@ -1,7 +1,8 @@
 <script setup>
+import { ref } from 'vue'
 import SampleSelect from '@/components/SampleSelect.vue'
 import SequenceItemArc from '@/components/SequenceItemArc.vue'
-
+import Modal from '@/components/Modal.vue'
 import { useSequenceStore } from '@/stores/sequence.js'
 import { storeToRefs } from 'pinia'
 import SequenceSteps from '@/components/SequenceSteps.vue'
@@ -18,19 +19,13 @@ const store = useSequenceStore()
 const { samplePack, currentStepIndex, sequenceData, sampleTypeList } = storeToRefs(store)
 
 const { toggleStep, updateSequenceURL, removeSequence, updateSequenceByValue } = store
+
+const showModal = ref(false)
 </script>
 <template>
   <div class="sequence-item">
     <slot name="select" v-if="!empty">
-      <Suspense>
-        <SampleSelect
-          class="sample-select"
-          @update:url="updateSequenceURL(id, $event)"
-          @update:id="updateSequenceByValue(id, $event)"
-          :item="item"
-          :id="id"
-        />
-      </Suspense>
+      <button class="btn-icon" id="show-modal" @click="showModal = true">Edit Sound</button>
     </slot>
     <slot></slot>
     <slot name="steps">
@@ -39,6 +34,29 @@ const { toggleStep, updateSequenceURL, removeSequence, updateSequenceByValue } =
     <div v-if="!empty">
       <BaseButton @click="removeSequence(id)" icon="delete" />
     </div>
+    <KeepAlive>
+    <Teleport to="body" v-if="!empty">
+      <!-- use the modal component, pass in the prop -->
+      <Modal :show="showModal" @close="showModal = false">
+        
+        <template #header>
+          <h3>Sound</h3>
+        </template>
+        <template #body>
+          <Suspense>
+            <SampleSelect
+              class="sample-select"
+              @update:url="updateSequenceURL(id, $event)"
+              @update:id="updateSequenceByValue(id, $event)"
+              :item="item"
+              :id="id"
+            />
+            <!-- @update:url="updateSequenceURL(id, $event)" -->
+          </Suspense>
+        </template>
+      </Modal>
+    </Teleport>
+    </KeepAlive>
   </div>
 </template>
 

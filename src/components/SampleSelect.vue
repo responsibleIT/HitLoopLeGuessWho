@@ -13,32 +13,9 @@ defineProps({
 const store = useSequenceStore()
 
 const { sampleData, sampleTypeList } = storeToRefs(store)
-
-const showModal = ref(false)
 </script>
 
 <template>
-  <button class="btn-icon" id="show-modal" @click="showModal = true">Edit Sound</button>
-
-  <Teleport to="body">
-    <!-- use the modal component, pass in the prop -->
-    <modal :show="showModal" @close="showModal = false">
-      <template #header>
-        <h3>Sound</h3>
-        <select @input="$emit('update:url', $event.target.value)">
-          <template v-for="sampleType in sampleTypeList" :key="sampleType">
-            <optgroup :label="sampleType">
-              <template v-for="sample in sampleData">
-                <option v-if="sample.type === sampleType" :key="sample.file" :value="sample.blob">
-                  {{ sample.version }} {{ sample.name }}
-                </option>
-              </template>
-            </optgroup>
-          </template>
-        </select>
-      </template>
-    </modal>
-  </Teleport>
   <select @input="$emit('update:id', $event.target.value)">
     <template v-for="sampleType in sampleTypeList" :key="sampleType">
       <optgroup :label="sampleType">

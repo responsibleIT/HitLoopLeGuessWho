@@ -53,7 +53,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     decay: 0.0,
     preDelay: 0.01
   })
-
+  const pitchShiftValue = ref(0)
   const chorusTypeList = useCycleList(['sine', 'square', 'sawtooth', 'triangle'], {
     initialValue: 'sine',
     fallbackIndex: 0
@@ -210,7 +210,7 @@ export const useSequenceStore = defineStore('sequence', () => {
 
   const updateSequenceByValue = async (id, newValue) => {
     let newNum = useToNumber(newValue)
-    return (sequenceData.value[id].sampleId = newNum)
+    return (sequenceData.value[id].sampleId = newNum.value)
   }
 
   const togglePlayPause = (val) => {
@@ -259,6 +259,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     isSamplesLoaded,
     updateSequenceByValue,
     samplesIsLoaded,
-    playersMidiObject
+    playersMidiObject,
+    pitchShiftValue
   }
 })
