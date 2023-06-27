@@ -46,7 +46,7 @@ span.icon:hover {
   // transform: scale(2);
 }
 .material-symbols-rounded {
-  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 200, 'opsz' 24;
 }
 
 // .material-symbols-rounded {

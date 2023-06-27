@@ -93,6 +93,7 @@ export const useSequenceStore = defineStore('sequence', () => {
       {
         id: 0,
         sampleId: 31,
+        sampleDataId: 0,
         sample: 'A3',
         steps: createSequenceArraySteps(columns.value),
         url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
@@ -154,6 +155,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     let newSequenceData = {
       id: sequenceID++,
       sampleId: 31,
+      sampleDataId: 0,
       sample: uniqueNote,
       steps: createSequenceArraySteps(columns.value),
       url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
@@ -187,7 +189,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     return newObj
   })
 
-  const playersMidiObject = computed(() => {
+  const sampleObjectMidi = computed(() => {
     const newObj = reactive({})
     if (sampleData.value) {
       sampleData.value.forEach((obj) => {
@@ -211,7 +213,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     return newObj
   })
 
-  function toggleStep(item, step) {
+  const toggleStep = (item, step) => {
     return (item.steps[step] = !item.steps[step])
   }
 
@@ -219,84 +221,26 @@ export const useSequenceStore = defineStore('sequence', () => {
     return (sequenceData.value[id].url = newUrl)
   }
 
-  const updateSequenceByValue = async (sequenceDataId, sampleDataId) => {
-    console.log(sequenceDataId)
-    console.log(sampleDataId)
-
-
-
+  const updateSequenceData = async (sequenceDataId, sampleDataId) => {
+    try {
+      if (!sequenceData.value[sequenceDataId]) return console.log('nodata') 
+      let setSequence = sequenceData.value[sequenceDataId]
+      let toSample = sampleData.value[sampleDataId]
+      
+      setSequence.sampleId = toSample.sampleId
+      setSequence.sampleDataId = useToNumber(sampleDataId).value
+      setSequence.type = toSample.type
+      setSequence.blob = toSample.blob
+      setSequence.url = toSample.url
+      setSequence.note = toSample.note
+      return setSequence  
+    } catch (error) {
+      console.log(error)
+    }
     
-    if (!sequenceData.value[sequenceDataId]) return console.log('nodata') 
-
-
-    let setSequence = sequenceData.value[sequenceDataId]
-    let toSample = sampleData.value[sampleDataId]
-
-    
-
-    console.log('setSequence')
-    console.log(setSequence)
-    console.log('toSample')
-    console.log(toSample)
-    
-    // let newNum = useToNumber(newValue)
-    setSequence.sampleId = toSample.sampleId
-
-    setSequence.type = toSample.type
-    setSequence.blob = toSample.blob
-    setSequence.url = toSample.url
-    setSequence.note = toSample.note
-
-    console.log('setSequence')
-    console.log(setSequence)
-    console.log('toSample')
-    console.log(toSample)
-    
-
-    return setSequence
   }
-  const sequenceDataItem = {
-    "id": 0,
-    "sample": "A3",
-    "steps": [
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false,
-        false
-    ],
-    "url": "https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav",
-    "color": "red",
-    "volume": -30
-}
-
-const sampleDataItem = {
-  "id": 5,
-  "name": "Tramhalte-Amsterdam",
-  "type": "Crash",
-  "version": "1.4",
-  "file": "crash_1_4_Tramhalte_Amsterdam.wav",
-  "url": "https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_4_Tramhalte_Amsterdam.wav",
-  "sampleId": 48,
-  "blob": "blob:http://localhost:3000/51c0dc9b-b68c-42a6-a2f8-45226014c424"
-}
-
   
-  const togglePlayPause = (val) => {
-    isPlaying.value = !isPlaying.value
-  }
-
+  const togglePlayPause = (val) => isPlaying.value = !isPlaying.value
   const togglePlay = (val) => {
     togglePlayPause()
     if (isPlaying.value) {
@@ -337,9 +281,9 @@ const sampleDataItem = {
     playersObject,
     setSamplesLoaded,
     isSamplesLoaded,
-    updateSequenceByValue,
+    updateSequenceData,
     samplesIsLoaded,
-    playersMidiObject,
+    sampleObjectMidi,
     pitchShiftValue
   }
 })

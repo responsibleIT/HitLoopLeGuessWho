@@ -2,6 +2,8 @@
 const props = defineProps({
   show: Boolean
 })
+
+import BaseButton from '@/components/BaseButton.vue';
 </script>
 
 <template>
@@ -10,15 +12,13 @@ const props = defineProps({
       <div class="modal-container">
         <div class="modal-header">
           <slot name="header">default header</slot>
+          <BaseButton icon="close" class="modal-default-button" @click="$emit('close')"></BaseButton>
         </div>
-
         <div class="modal-body">
           <slot name="body"></slot>
         </div>
-
         <div class="modal-footer">
           <slot name="footer">
-            <button class="modal-default-button" @click="$emit('close')">OK</button>
           </slot>
         </div>
       </div>
@@ -30,10 +30,11 @@ const props = defineProps({
 .modal-mask {
   position: fixed;
   z-index: 9998;
-  top: 0;
+  /* top: 0; */
   left: 0;
+  bottom: 0;
   width: 100%;
-  height: 100%;
+  height: 50%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   transition: opacity 0.3s ease;
@@ -43,7 +44,7 @@ const props = defineProps({
   width: 100%;
   height: 100%;
   margin: auto;
-  padding: 20px 30px;
+  padding: 2em 2em;
   background-color: var(--color-background);
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -60,7 +61,9 @@ const props = defineProps({
 }
 
 .modal-default-button {
-  float: right;
+  position: absolute;
+  top: 2em;
+  right: 2em;
 }
 
 /*

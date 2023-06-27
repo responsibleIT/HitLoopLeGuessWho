@@ -4,10 +4,11 @@ import Modal from './Modal.vue'
 import { useSequenceStore } from '@/stores/sequence.js'
 import { ref } from 'vue'
 // import { ref,useAttrs } from 'vue';
-defineProps({
+const props = defineProps({
   item: Object,
   url: String,
-  id: Number
+  id: Number,
+  sampleDataId: Number
 })
 
 const store = useSequenceStore()
@@ -16,14 +17,15 @@ const { sampleData, sampleTypeList } = storeToRefs(store)
 
 
 
+console.log(props.item)
 </script>
 
 <template>
-  <select @input="$emit('update', id, $event.target.value)">
+  <select :v-model="item.sampleDataId" @change="$emit('change:sampleDataId', id, $event.target.value)">
     <template v-for="sampleType in sampleTypeList" :key="sampleType">
       <optgroup :label="sampleType">
         <template v-for="sample in sampleData">
-          <option v-if="sample.type === sampleType" :key="sample.file" :value="sample.id">
+          <option v-if="sample.type === sampleType" :key="sample.id" :value="sample.id">
             {{ sample.version }} {{ sample.name }} {{ sample.id }}
           </option>
         </template>

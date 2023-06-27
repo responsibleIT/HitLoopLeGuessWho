@@ -18,14 +18,14 @@ const store = useSequenceStore()
 // store values to vuejs ref
 // const { samplePack, currentStepIndex, sequenceData, sampleTypeList } = storeToRefs(store)
 
-const { toggleStep, updateSequenceURL, removeSequence, updateSequenceByValue } = store
+const { toggleStep, updateSequenceURL, removeSequence, updateSequenceData } = store
 
 const showModal = ref(false)
 </script>
 <template>
   <div class="sequence-item">
     <slot name="select" v-if="!empty">
-      <button class="btn-icon" id="show-modal" @click="showModal = true">{{id}}</button>
+      <BaseButton icon="notes" class="btn-icon" id="show-modal" @click="showModal = true"></BaseButton>
     </slot>
     <slot></slot>
     <slot name="steps">
@@ -34,11 +34,10 @@ const showModal = ref(false)
     <div v-if="!empty">
       <BaseButton @click="removeSequence(id)" icon="delete" />
     </div>
-    <KeepAlive>
+    
     <Teleport to="main" v-if="!empty">
       <!-- use the modal component, pass in the prop -->
       <Modal :show="showModal" @close="showModal = false">
-        
         <template #header>
           <h3>Sound</h3>
         </template>
@@ -46,8 +45,10 @@ const showModal = ref(false)
           <Suspense>
             <SampleSelect
               class="sample-select"
+              
+              :value="item.sampleDataId"
               @update:url="updateSequenceURL(id, $event)"
-              @update="updateSequenceByValue"
+              @change:sampleDataId="updateSequenceData"
               :item="item"
               :id="id"
             />
@@ -58,7 +59,7 @@ const showModal = ref(false)
         </template>
       </Modal>
     </Teleport>
-    </KeepAlive>
+
   </div>
 </template>
 

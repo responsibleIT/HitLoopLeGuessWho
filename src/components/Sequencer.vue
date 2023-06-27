@@ -58,7 +58,7 @@ const playTime = ref(null)
 let sequence = null
 // let sampler = null
 let samples = new Tone.Sampler({
-  urls: store.playersMidiObject,
+  urls: store.sampleObjectMidi,
   onload: () => {
     console.log('onload players')
     setSamplesLoaded(true)
@@ -152,7 +152,7 @@ const tick = (time, col) => {
   }
 }
 
-sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start('+0.001')
+sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start('+0.001', 0)
 sequence.humanize = true
 
 function playNote({ detail }) {
@@ -242,7 +242,7 @@ watch(
     if (samples) {
       samples.dispose()
       samples = new Tone.Sampler({
-        urls: store.playersMidiObject,
+        urls: store.sampleObjectMidi,
         onload: () => {
           console.log('2st sampler done')
         }
