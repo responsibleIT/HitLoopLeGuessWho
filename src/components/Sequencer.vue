@@ -63,7 +63,7 @@ let samples = new Tone.Sampler({
     console.log('onload players')
     setSamplesLoaded(true)
   }
-})
+}).toDestination()
 // let sampler
 
 let sampler = new Tone.Sampler({
@@ -156,21 +156,21 @@ sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n
 sequence.humanize = true
 
 function playNote({ detail }) {
-  let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
+  // let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
   console.log(pitchShiftValue.value)
   // samples.sync()
 
   if (reverb.value.decay !== 0) {
-    let rev = new Tone.Reverb(reverb.value).toDestination()
-    rev.toDestination()
-    samples.connect(rev)
-    samples.set({
-      // samples.toDestination()
-    })
-    samples.chain(pitchShift, rev, Tone.Destination)
+    // let rev = new Tone.Reverb(reverb.value).toDestination()
+    // samples.connect(rev)
+    // samples.chain(pitchShift, rev, Tone.Destination)
   } else {
-    samples.chain(pitchShift, Tone.Destination)
+    // samples.chain(pitchShift, Tone.Destination)
   }
+
+  console.log(detail.item.volume)
+
+  samples.volume.value = 0
   samples.triggerAttackRelease(detail.item.sampleId, '16n', detail.time)
   //  samples.player(detail.item.sampleId, 0, detail.time, 0.5)
   // samples.player(detail.item.sampleId).start(detail.time, '+0.001', '16n')
@@ -249,6 +249,15 @@ watch(
       }).toDestination()
 
       // sampler.sync()
+    }
+    if (sampler) {
+      sampler.dispose()
+      sampler = new Tone.Sampler({
+  urls: store.sampleObject,
+  onload: () => {
+    console.log('1st sampler done')
+  }
+}).toDestination()
     }
   }
 )

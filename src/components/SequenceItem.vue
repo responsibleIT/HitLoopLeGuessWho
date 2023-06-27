@@ -53,6 +53,8 @@ const showModal = ref(false)
             />
             <!-- @update:url="updateSequenceURL(id, $event)" -->
           </Suspense>
+          <label for="volume">Volume:</label>
+        <input id="volume" type="range" min="-60" max="0" v-model="props.item.volume" step="1" />
         </template>
       </Modal>
     </Teleport>

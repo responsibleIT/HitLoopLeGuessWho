@@ -92,7 +92,8 @@ export const useSequenceStore = defineStore('sequence', () => {
         sample: 'A3',
         steps: createSequenceArraySteps(columns.value),
         url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
-        color: 'red'
+        color: 'red',
+        volume: 1
       }
     ]
   }
@@ -132,7 +133,7 @@ export const useSequenceStore = defineStore('sequence', () => {
       // All available notes are used, disable the function or handle the case as needed
       return
     }
-    if (!sequenceData.value) return
+    // if (!sequenceData.value) return
 
     let currentMaxId = sequenceData.value.reduce((maxId, item) => {
       return item.id > maxId ? item.id : maxId
@@ -149,7 +150,8 @@ export const useSequenceStore = defineStore('sequence', () => {
       sample: uniqueNote,
       steps: createSequenceArraySteps(columns.value),
       url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
-      color: thisColor
+      color: thisColor,
+      volume: 1
     })
   }
   const removeSequence = (id, e) => {
@@ -209,6 +211,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   }
 
   const updateSequenceByValue = async (id, newValue) => {
+    if (!sequenceData.value[id]) return console.log('nodata') 
     let newNum = useToNumber(newValue)
     return (sequenceData.value[id].sampleId = newNum.value)
   }
