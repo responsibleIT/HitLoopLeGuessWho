@@ -32,7 +32,8 @@ export const createSampleObjectList = async (sampleData, url) => {
             version,
             file: str,
             url: url + encodedStr,
-            note: note
+            sampleId: note.midiNote,
+            note: note.normalNote
           }
           id++
           currentNote = currentNote % 12 === 7 ? currentNote + 1 : currentNote + 2
@@ -84,11 +85,23 @@ const getValidMidiNoteFromId = (id) => {
   const noteIndex = (id - 1) % 7 // Determine the index within the octave based on the ID
   const noteMap = ['A', 'B', 'C', 'D', 'E', 'F', 'G']
   const note = noteMap[noteIndex]
+  console.log('note')
+  console.log(note)
   const midiNote = octave * 12 + noteToMidiOffset(note)
+  console.log('midiNote')
+  console.log(midiNote)
+  console.log('noteToMidiOffset(note)')
+  console.log(noteToMidiOffset(note))
+
+  console.log('note + noteToMidiOffset(note)')
+  console.log(note + noteToMidiOffset(note))
+
+const normalNote = note + noteToMidiOffset(note)
+
 
   // Check if the MIDI note is within the valid range (0-127)
   if (midiNote >= 0 && midiNote <= 127) {
-    return midiNote
+    return {midiNote, normalNote}
   } else {
     return null // Return null if the MIDI note is out of range
   }

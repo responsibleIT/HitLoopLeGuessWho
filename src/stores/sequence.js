@@ -26,12 +26,16 @@ export const useSequenceStore = defineStore('sequence', () => {
 
   async function setStarted(value) {
     try {
-      await Tone.start()
+      
       console.log('context started')
       if (value === true) {
+        await Tone.start()
         return (isStarted.value = true)
       } else if (value === false) {
+        await Tone.stop()
         return (isStarted.value = false)
+      } else {
+        await Tone.start()
       }
     } catch (error) {
       console.log(error)
@@ -82,7 +86,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   // sampleData is array of objects witl sample data. file name, url, type(Crash Hi-hat-Etc)
   const sampleData = ref([])
   // hold the sequence data.sampleNote, sampleURL, steps[false, true], color
-
+  
   const getInitialSequence = () => {
     const sample = availableNotes.value[0]
     return [
@@ -93,12 +97,13 @@ export const useSequenceStore = defineStore('sequence', () => {
         steps: createSequenceArraySteps(columns.value),
         url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
         color: 'red',
-        volume: 1
+        volume: -30
       }
     ]
   }
 
   const sequenceData = ref(getInitialSequence())
+  let sequenceID = sequenceData.value.length
   // activeNotes.value.map((sample) => ({
   //   sample,
   //   steps: createSequenceArraySteps(columns.value),
@@ -143,17 +148,21 @@ export const useSequenceStore = defineStore('sequence', () => {
     console.log(all)
     let thisSample = availableNotes.value[all]
     let thisColor = availableColors.value[all]
+    const i = Math.round(Math.random() * sequenceData.value.length)
+    
     // activeNotes.value.push(thisSample)
-    sequenceData.value.push({
-      id: newId,
+    let newSequenceData = {
+      id: sequenceID++,
       sampleId: 31,
       sample: uniqueNote,
       steps: createSequenceArraySteps(columns.value),
       url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
       color: thisColor,
-      volume: 1
-    })
+      volume: -30
+    }
+    return sequenceData.value.splice(sequenceID, 0, newSequenceData)
   }
+
   const removeSequence = (id, e) => {
     const index = sequenceData.value.findIndex((item) => item.id === id)
     if (index !== -1) {
@@ -183,7 +192,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     if (sampleData.value) {
       sampleData.value.forEach((obj) => {
         if (obj && obj.url) {
-          newObj[obj.note] = obj.url
+          newObj[obj.sampleId] = obj.url
         }
       })
     }
@@ -210,12 +219,80 @@ export const useSequenceStore = defineStore('sequence', () => {
     return (sequenceData.value[id].url = newUrl)
   }
 
-  const updateSequenceByValue = async (id, newValue) => {
-    if (!sequenceData.value[id]) return console.log('nodata') 
-    let newNum = useToNumber(newValue)
-    return (sequenceData.value[id].sampleId = newNum.value)
-  }
+  const updateSequenceByValue = async (sequenceDataId, sampleDataId) => {
+    console.log(sequenceDataId)
+    console.log(sampleDataId)
 
+
+
+    
+    if (!sequenceData.value[sequenceDataId]) return console.log('nodata') 
+
+
+    let setSequence = sequenceData.value[sequenceDataId]
+    let toSample = sampleData.value[sampleDataId]
+
+    
+
+    console.log('setSequence')
+    console.log(setSequence)
+    console.log('toSample')
+    console.log(toSample)
+    
+    // let newNum = useToNumber(newValue)
+    setSequence.sampleId = toSample.sampleId
+
+    setSequence.type = toSample.type
+    setSequence.blob = toSample.blob
+    setSequence.url = toSample.url
+    setSequence.note = toSample.note
+
+    console.log('setSequence')
+    console.log(setSequence)
+    console.log('toSample')
+    console.log(toSample)
+    
+
+    return setSequence
+  }
+  const sequenceDataItem = {
+    "id": 0,
+    "sample": "A3",
+    "steps": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false
+    ],
+    "url": "https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav",
+    "color": "red",
+    "volume": -30
+}
+
+const sampleDataItem = {
+  "id": 5,
+  "name": "Tramhalte-Amsterdam",
+  "type": "Crash",
+  "version": "1.4",
+  "file": "crash_1_4_Tramhalte_Amsterdam.wav",
+  "url": "https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_4_Tramhalte_Amsterdam.wav",
+  "sampleId": 48,
+  "blob": "blob:http://localhost:3000/51c0dc9b-b68c-42a6-a2f8-45226014c424"
+}
+
+  
   const togglePlayPause = (val) => {
     isPlaying.value = !isPlaying.value
   }

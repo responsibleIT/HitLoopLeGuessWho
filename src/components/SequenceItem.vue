@@ -16,7 +16,7 @@ const props = defineProps({
 
 const store = useSequenceStore()
 // store values to vuejs ref
-const { samplePack, currentStepIndex, sequenceData, sampleTypeList } = storeToRefs(store)
+// const { samplePack, currentStepIndex, sequenceData, sampleTypeList } = storeToRefs(store)
 
 const { toggleStep, updateSequenceURL, removeSequence, updateSequenceByValue } = store
 
@@ -25,7 +25,7 @@ const showModal = ref(false)
 <template>
   <div class="sequence-item">
     <slot name="select" v-if="!empty">
-      <button class="btn-icon" id="show-modal" @click="showModal = true">Edit Sound</button>
+      <button class="btn-icon" id="show-modal" @click="showModal = true">{{id}}</button>
     </slot>
     <slot></slot>
     <slot name="steps">
@@ -35,7 +35,7 @@ const showModal = ref(false)
       <BaseButton @click="removeSequence(id)" icon="delete" />
     </div>
     <KeepAlive>
-    <Teleport to="body" v-if="!empty">
+    <Teleport to="main" v-if="!empty">
       <!-- use the modal component, pass in the prop -->
       <Modal :show="showModal" @close="showModal = false">
         
@@ -47,14 +47,14 @@ const showModal = ref(false)
             <SampleSelect
               class="sample-select"
               @update:url="updateSequenceURL(id, $event)"
-              @update:id="updateSequenceByValue(id, $event)"
+              @update="updateSequenceByValue"
               :item="item"
               :id="id"
             />
             <!-- @update:url="updateSequenceURL(id, $event)" -->
           </Suspense>
           <label for="volume">Volume:</label>
-        <input id="volume" type="range" min="-60" max="0" v-model="props.item.volume" step="1" />
+        <input id="volume" type="range" min="-60" max="0" :v-model="props.item.volume" step="1" />
         </template>
       </Modal>
     </Teleport>
