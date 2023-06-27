@@ -221,7 +221,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     return (sequenceData.value[id].url = newUrl)
   }
 
-  const updateSequenceData = async (sequenceDataId, sampleDataId) => {
+  const updateSequenceSample = async (sequenceDataId, sampleDataId) => {
     try {
       if (!sequenceData.value[sequenceDataId]) return console.log('nodata') 
       let setSequence = sequenceData.value[sequenceDataId]
@@ -233,7 +233,7 @@ export const useSequenceStore = defineStore('sequence', () => {
       setSequence.blob = toSample.blob
       setSequence.url = toSample.url
       setSequence.note = toSample.note
-      return setSequence  
+      return setSequence
     } catch (error) {
       console.log(error)
     }
@@ -281,7 +281,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     playersObject,
     setSamplesLoaded,
     isSamplesLoaded,
-    updateSequenceData,
+    updateSequenceSample,
     samplesIsLoaded,
     sampleObjectMidi,
     pitchShiftValue

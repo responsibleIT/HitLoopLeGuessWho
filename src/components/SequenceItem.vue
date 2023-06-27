@@ -18,7 +18,7 @@ const store = useSequenceStore()
 // store values to vuejs ref
 // const { samplePack, currentStepIndex, sequenceData, sampleTypeList } = storeToRefs(store)
 
-const { toggleStep, updateSequenceURL, removeSequence, updateSequenceData } = store
+const { toggleStep, updateSequenceURL, removeSequence, updateSequenceSample } = store
 
 const showModal = ref(false)
 </script>
@@ -48,7 +48,7 @@ const showModal = ref(false)
               
               :value="item.sampleDataId"
               @update:url="updateSequenceURL(id, $event)"
-              @change:sampleDataId="updateSequenceData"
+              @change:sampleDataId="updateSequenceSample"
               :item="item"
               :id="id"
             />
