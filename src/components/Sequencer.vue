@@ -41,7 +41,9 @@ const {
   reverb,
   chorus,
   chorusTypeList,
-  chorusType
+  chorusType,
+  pitchShiftValue,
+  pitchShift
 } = storeToRefs(store)
 
 const { toggleStep, setStarted, addSequence, togglePlayPause, setCurrentStepIndex } = store
@@ -129,9 +131,11 @@ const configSequence = () => {
 
 function playNote({ detail }) {
   let rev = new Tone.Reverb(reverb.value).toDestination()
+  let pitchShift = new Tone.PitchShift().toDestination()
+
   sampler.sync()
   sampler.triggerAttackRelease(detail.item.sample, '16n', detail.time)
-  sampler.chain(rev, Tone.Destination)
+  sampler.chain(pitchShift, rev, Tone.Destination)
 }
 
 Tone.Transport.bpm.value = bpm.value
@@ -139,6 +143,10 @@ Tone.Transport.bpm.value = bpm.value
 watch(bpm, (newBpm) => {
   Tone.Transport.bpm.value = newBpm
   configSequence()
+})
+
+watch(pitchShiftValue, (newPitchShift) => {
+  pitchShift.pitch = newPitchShift
 })
 
 const setToneStart = async () => {
@@ -226,6 +234,16 @@ onUnmounted(() => {
         <p>{{ chorusType }}</p>
         <button @click="store.chorusTypeList.next()">next</button> -->
     </div>
+
+    <label for="pitch-shift">Pitch Shift:</label>
+    <input
+      id="pitch-shift"
+      type="range"
+      min="-12"
+      max="12"
+      v-model.number="pitchShiftValue"
+      step="1"
+    />
 
     <label for="reverb">reverb</label>
     <input id="reverb" type="number" min="0" max="10" v-model.number="reverb.decay" step="0.5" />

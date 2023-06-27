@@ -40,7 +40,8 @@ const props = defineProps({
 }
 
 .modal-container {
-  width: 300px;
+  width: 100%;
+  height: 100%;
   margin: auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -51,7 +52,7 @@ const props = defineProps({
 
 .modal-header h3 {
   margin-top: 0;
-  color: #42b983;
+  color: black;
 }
 
 .modal-body {
