@@ -26,10 +26,10 @@ export const useSequenceStore = defineStore('sequence', () => {
 
   async function setStarted(value) {
     try {
-      
       console.log('context started')
       if (value === true) {
         await Tone.start()
+        // Tone.setContext(new Tone.Context({ latencyHint: 'playback' }), false)
         return (isStarted.value = true)
       } else if (value === false) {
         await Tone.stop()
@@ -53,7 +53,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   function lessBPM() {
     if (bpm.value > 10) bpm.value = bpm.value - 10
   }
-  const reverb = ref({
+  const reverb = reactive({
     decay: 0.0,
     preDelay: 0.01
   })
@@ -86,7 +86,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   // sampleData is array of objects witl sample data. file name, url, type(Crash Hi-hat-Etc)
   const sampleData = ref([])
   // hold the sequence data.sampleNote, sampleURL, steps[false, true], color
-  
+
   const getInitialSequence = () => {
     const sample = availableNotes.value[0]
     return [
@@ -98,7 +98,11 @@ export const useSequenceStore = defineStore('sequence', () => {
         steps: createSequenceArraySteps(columns.value),
         url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
         color: 'red',
-        volume: -30
+        volume: -30,
+        type: 'Crash',
+        blob: null,
+        note: 'G7',
+        sampleName: 'IJ pont varen'
       }
     ]
   }
@@ -150,7 +154,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     let thisSample = availableNotes.value[all]
     let thisColor = availableColors.value[all]
     const i = Math.round(Math.random() * sequenceData.value.length)
-    
+
     // activeNotes.value.push(thisSample)
     let newSequenceData = {
       id: sequenceID++,
@@ -221,30 +225,35 @@ export const useSequenceStore = defineStore('sequence', () => {
     return (sequenceData.value[id].url = newUrl)
   }
 
-  const updateSequenceSample = async (sequenceDataId, sampleDataId) => {
+  const updateSequenceSample = (sequenceDataId, sampleDataId) => {
+    console.log('sequenceDataId')
+    console.log(sequenceDataId)
+    console.log('sampleDataId')
+    console.log(sampleDataId)
     try {
-      if (!sequenceData.value[sequenceDataId]) return console.log('nodata') 
+      if (!sequenceData.value[sequenceDataId]) return console.log('nodata')
       let setSequence = sequenceData.value[sequenceDataId]
       let toSample = sampleData.value[sampleDataId]
-      
+
       setSequence.sampleId = toSample.sampleId
       setSequence.sampleDataId = useToNumber(sampleDataId).value
       setSequence.type = toSample.type
       setSequence.blob = toSample.blob
       setSequence.url = toSample.url
-      setSequence.note = toSample.note
-      return setSequence
+      setSequence.note = toSample.note,
+      setSequence.sampleName = toSample.name
     } catch (error) {
       console.log(error)
     }
-    
   }
+
+  updateSequenceSample(0, 0)
   
-  const togglePlayPause = (val) => isPlaying.value = !isPlaying.value
+  const togglePlayPause = (val) => (isPlaying.value = !isPlaying.value)
   const togglePlay = (val) => {
     togglePlayPause()
     if (isPlaying.value) {
-      Tone.Transport.start()
+      Tone.Transport.start('+0.001')
     } else {
       Tone.Transport.stop()
     }

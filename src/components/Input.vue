@@ -35,7 +35,7 @@ const { moreBPM, lessBPM } = store
 </script>
 
 <template>
-  <div> 
+  <div>
     {{ name }}
   </div>
   <div class="input-group">
