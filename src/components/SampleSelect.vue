@@ -39,6 +39,17 @@ const showModal = ref(false)
       </template>
     </modal>
   </Teleport>
+  <select @input="$emit('update:id', $event.target.value)">
+    <template v-for="sampleType in sampleTypeList" :key="sampleType">
+      <optgroup :label="sampleType">
+        <template v-for="sample in sampleData">
+          <option v-if="sample.type === sampleType" :key="sample.file" :value="sample.note">
+            {{ sample.version }} {{ sample.name }}
+          </option>
+        </template>
+      </optgroup>
+    </template>
+  </select>
 </template>
 
 <style lang="scss" scoped>
