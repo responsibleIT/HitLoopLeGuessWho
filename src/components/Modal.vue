@@ -4,6 +4,8 @@ const props = defineProps({
 })
 
 import BaseButton from '@/components/BaseButton.vue';
+
+
 </script>
 
 <template>
@@ -30,11 +32,11 @@ import BaseButton from '@/components/BaseButton.vue';
 .modal-mask {
   position: fixed;
   z-index: 9998;
-  /* top: 0; */
+  top: 0; 
   left: 0;
   bottom: 0;
   width: 100%;
-  height: 50%;
+  height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   transition: opacity 0.3s ease;
@@ -42,9 +44,12 @@ import BaseButton from '@/components/BaseButton.vue';
 
 .modal-container {
   width: 100%;
-  height: 100%;
-  margin: auto;
+  height: 50%;
+  z-index: 9999;
+  margin-top: auto;
   padding: 2em 2em;
+  bottom: 0;
+  position: relative;
   background-color: var(--color-background);
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
@@ -86,6 +91,7 @@ import BaseButton from '@/components/BaseButton.vue';
 .modal-enter-from .modal-container,
 .modal-leave-to .modal-container {
   -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+  transform: scale(1.1) translateY(+50%);
+
 }
 </style>

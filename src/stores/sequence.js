@@ -1,4 +1,4 @@
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watchEffect } from 'vue'
 import { defineStore } from 'pinia'
 import * as Tone from 'tone'
 import {
@@ -8,7 +8,7 @@ import {
 } from '@/helpers/toneHelpers.js'
 
 import { getSampleData, getSampleFile, getSampleUrl } from '@/composables/getSampleData.js'
-import { useCycleList, useToNumber } from '@vueuse/core'
+import { useCycleList, useToNumber, useToString, watchArray, watchOnce } from '@vueuse/core'
 
 const apiBaseURL = import.meta.env.VITE_API_BASE
 
@@ -19,6 +19,12 @@ export const useSequenceStore = defineStore('sequence', () => {
   })
 
   const samplesIsLoaded = ref(false)
+  const playersLoaded = reactive({
+    isLoaded: false,
+    setLoaded() {
+      this.isLoaded = true
+    }
+  })
 
   function setSamplesLoaded(value) {
     return (samplesIsLoaded.value = value)
@@ -182,7 +188,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   //   B3: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav'
   // }
   const sampleObject = computed(() => {
-    const newObj = {}
+    let newObj = {}
     if (sequenceData.value) {
       sequenceData.value.forEach((obj) => {
         if (obj && obj.sample && obj.url) {
@@ -194,7 +200,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   })
 
   const sampleObjectMidi = computed(() => {
-    const newObj = reactive({})
+    let newObj = {}
     if (sampleData.value) {
       sampleData.value.forEach((obj) => {
         if (obj && obj.url) {
@@ -204,13 +210,24 @@ export const useSequenceStore = defineStore('sequence', () => {
     }
     return newObj
   })
-
-  const playersObject = computed(() => {
-    const newObj = reactive({})
+  const sampleObjectNote = computed(() => {
+    let newObj = {}
     if (sampleData.value) {
       sampleData.value.forEach((obj) => {
         if (obj && obj.url) {
-          newObj[obj.id] = obj.url
+          newObj[obj.note] = obj.url
+        }
+      })
+    }
+    return newObj
+  })
+
+  const playersObject = computed(() => {
+    let newObj = {}
+    if (sequenceData.value) {
+      sequenceData.value.forEach((obj) => {
+        if (obj && obj.sampleId && obj.url) {
+          newObj[obj.sampleId] = obj.url
         }
       })
     }
@@ -225,30 +242,38 @@ export const useSequenceStore = defineStore('sequence', () => {
     return (sequenceData.value[id].url = newUrl)
   }
 
-  const updateSequenceSample = (sequenceDataId, sampleDataId) => {
-    console.log('sequenceDataId')
-    console.log(sequenceDataId)
-    console.log('sampleDataId')
-    console.log(sampleDataId)
+  const updateSequenceSample = async (sequenceDataId, sampleDataId) => {
     try {
-      if (!sequenceData.value[sequenceDataId]) return console.log('nodata')
-      let setSequence = sequenceData.value[sequenceDataId]
-      let toSample = sampleData.value[sampleDataId]
-
-      setSequence.sampleId = toSample.sampleId
-      setSequence.sampleDataId = useToNumber(sampleDataId).value
-      setSequence.type = toSample.type
-      setSequence.blob = toSample.blob
-      setSequence.url = toSample.url
-      setSequence.note = toSample.note,
-      setSequence.sampleName = toSample.name
+      const setSequence = sequenceData.value[sequenceDataId]
+      const toSample = sampleData.value[sampleDataId]
+      if (!setSequence || toSample === undefined) return console.log('nodata')
+      // let setSequence = sequenceData.value[sequenceDataId]
+      // let toSample = sampleData.value[sampleDataId]
+    return Object.assign(setSequence, {
+        sampleId: useToNumber(toSample.sampleId).value,
+        sampleDataId: useToNumber(sampleDataId).value,
+        type: toSample.type,
+        blob: toSample.blob,
+        url: toSample.url,
+        note: toSample.note,
+        sampleName: toSample.name,
+      })
     } catch (error) {
       console.log(error)
     }
   }
 
-  updateSequenceSample(0, 0)
-  
+  watchArray(sequenceData.value, (newList, oldList, added, removed) => {
+    console.log('added[0]')
+    console.log(added[0])
+    if (added[0]) {
+      let id = added[0].id
+      let sampleDataId = added[0].sampleDataId
+    return updateSequenceSample(id, sampleDataId)      
+    }
+
+})
+
   const togglePlayPause = (val) => (isPlaying.value = !isPlaying.value)
   const togglePlay = (val) => {
     togglePlayPause()
@@ -259,7 +284,15 @@ export const useSequenceStore = defineStore('sequence', () => {
     }
   }
 
+  // const toneState = reactive({
+  //   isStarted: isStarted.value,
+  //   isPlaying: isPlaying.value,
+  //   isSamplesLoaded: isSamplesLoaded,
+
+  // })
+
   return {
+    sampleObjectNote,
     bpm,
     sequenceData,
     isPlaying,
@@ -293,6 +326,8 @@ export const useSequenceStore = defineStore('sequence', () => {
     updateSequenceSample,
     samplesIsLoaded,
     sampleObjectMidi,
-    pitchShiftValue
+    pitchShiftValue,
+    playersLoaded,
+    
   }
 })

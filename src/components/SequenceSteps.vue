@@ -6,7 +6,8 @@ import { ref, TransitionGroup } from 'vue'
 const props = defineProps({
   id: Number,
   item: Object,
-  color: String
+  color: String,
+  highlighted: Number
 })
 
 const store = useSequenceStore()

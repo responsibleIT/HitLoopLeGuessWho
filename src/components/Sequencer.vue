@@ -63,6 +63,17 @@ let samples = new Tone.Sampler({
 }).toDestination()
 // let sampler
 
+
+let keys = new Tone.Players({
+  urls: store.playersObject,
+  onload: () => {
+    console.log('onload players')
+    store.playersLoaded.setLoaded()
+    setSamplesLoaded(true)
+  }
+}).toDestination()
+
+
 let sampler = new Tone.Sampler({
   urls: store.sampleObject,
   onload: () => {
@@ -129,6 +140,10 @@ const configSequence = () => {
   console.log(sequence.get())
 }
 
+function playPlayer({ detail }) {
+    keys.player(detail.item.note).start(detail.time + 0.00001 , 0, "16t");
+}
+
 const tick = (time, col) => {
   Tone.Draw.schedule(() => {
     if (isPlaying.value) {
@@ -137,28 +152,28 @@ const tick = (time, col) => {
   }, time)
   // samples.sync()
 
-  for (const row of sequenceData.value) {
-    if (row.steps[col]) {
-      playNote({
-        detail: {
-          item: row,
-          time: time
-        }
-      })
-    }
-  }
+  // for (const row of sequenceData.value) {
+  //   if (row.steps[col]) {
+  //     console.log(row)
+  //     console.log(row)
+  //     let detail = {
+  //       item: row,
+  //       time: time
+  //     }
+  //     // playSampler({detail})
+  //     // playPlayer({detail})
+  //   }
+  // }
 }
 
 
 
-sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(0)
+sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(Tone.now())
 
 
 
 
-
-
-function playNote({ detail }) {
+function playSampler({ detail }) {
   let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
   console.log(pitchShiftValue.value)
   // samples.sync()
@@ -201,7 +216,7 @@ const setToneStart = async () => {
 }
 
 const togglePlay = (e) => {
-  let now = Tone.now()
+  // let now = Tone.now()
   // Tone.Transport.stop()
   console.log('isStarted.value')
 console.log(isStarted.value)
@@ -216,10 +231,10 @@ console.log(isStarted.value)
     // get current time
     //set playtime to current time
     // playtime is state
-    playTime.value = now
+    // playTime.value = now
     //start sequence +0.1 in the fututre
 
-    Tone.Transport.start('+0.01')
+    Tone.Transport.start(Tone.now())
     // sequence.start()
   } else {
     Tone.Transport.pause()
@@ -268,9 +283,16 @@ const onKeyDown = (event) => {
 // )
 
 
+watch(
+  () => store.sequenceData,
+  () => {
+    // resetPlayers()
+  })
+
+    // fires only when state.someObject is replaced
 const resetSequence = () => {
   // fires only when state.someObject is replaced
-  if (sequence) {
+  if (sequence === "fenuiwf") {
     sequence.dispose()
     sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(
       Tone.now()
@@ -292,6 +314,22 @@ const resetSamples = () => {
       // sampler.sync()
     }
 }
+
+
+const resetPlayers = () => {
+  // fires only when state.someObject is replaced
+  if (keys) {
+      keys.dispose()
+      keys = new Tone.Player({
+        urls: store.playersObject,
+        onload: () => {
+          console.log('2st player done')
+          setSamplesLoaded(true)
+        }
+      }).toDestination()
+    }
+}
+
 watchEffect(() => {
   bpm.value
   chorus.value
@@ -303,6 +341,7 @@ watchEffect(() => {
   // configSequence()
   resetSamples()
   resetSequence()
+  // resetPlayers()
 })
 
 onMounted(() => {
@@ -324,13 +363,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div id="sequencer" v-if="sequenceData">
+  <div id="sequencer" v-if="sequenceData && store.sampleData">
     <Suspense>
       <TransitionGroup name="fade">
         <SequenceItem v-for="item in sequenceData" :key="item.id" :item="item" :id="item.id" />
       </TransitionGroup>
     </Suspense>
-    <SequenceItem class="add-sequence" empty>
+    <div class="add-sequence">
       <BaseButton
         icon="add"
         v-show="sequenceData.length !== availableNotes.length"
@@ -338,7 +377,7 @@ onUnmounted(() => {
       >
         <!-- <BaseIcon name="add" /> -->
       </BaseButton>
-    </SequenceItem>
+    </div>
   </div>
   <div class="controlls">
     <InputBpm />
