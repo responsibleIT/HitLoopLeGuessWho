@@ -18,7 +18,7 @@ const props = defineProps({
 
 const store = useSequenceStore()
 // store values to vuejs ref
-const { toneS, currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns } =
+const { toneS, currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns, reverb } =
   storeToRefs(store)
 
 const { toggleStep, updateSequenceURL, removeSequence, updateSequenceSample, setCurrentStepIndex } =
@@ -56,7 +56,7 @@ sampler = new Tone.Sampler({
 }).toDestination().sync()
 
 const currentStep = ref(currentStepIndex.value)
-
+const rev = new Tone.Reverb().toDestination()
 const tick = (time, col) => {
   Tone.Draw.schedule(() => {
     if (isPlaying.value) {
@@ -65,11 +65,24 @@ const tick = (time, col) => {
     }
   }, time)
   
+  sampler.connect(rev)
+  if (reverb.value.decay !== 0) {
+    rev.set({ decay: reverb.value.decay })
+    console.log(rev.get())
+    sampler.connect(rev)
+    // sampler.chain(rev, Tone.Destination)
+  } else {
+    // sampler.chain(pitchShift, Tone.Destination)
+  }
+
+  
+
+
   if (props.item.steps[col] === true) {
     console.log('element')
     console.log(col)
     Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(props.item.sample, '16n', time)  
+        sampler.triggerAttackRelease(props.item.sample, '16n', time)
       })
 
     
@@ -117,8 +130,7 @@ onMounted(() => {
       Tone.now()
     )
   }
-
-  Tone.Transport.start(Tone.now())
+  if (isPlaying.value) return Tone.Transport.start(Tone.now())
 
 })
 
