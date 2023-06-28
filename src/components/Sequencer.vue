@@ -57,7 +57,7 @@ let sequence = null
 let samples = new Tone.Sampler({
   urls: store.sampleObjectMidi,
   onload: () => {
-    console.log('onload players')
+    console.log('onload Mini players')
     setSamplesLoaded(true)
   }
 }).toDestination()
@@ -67,7 +67,7 @@ let samples = new Tone.Sampler({
 let keys = new Tone.Players({
   urls: store.playersObject,
   onload: () => {
-    console.log('onload players')
+    console.log('onload keyPlayer')
     store.playersLoaded.setLoaded()
     setSamplesLoaded(true)
   }
@@ -175,7 +175,7 @@ sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n
 
 function playSampler({ detail }) {
   let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
-  console.log(pitchShiftValue.value)
+  // console.log(pitchShiftValue.value)
   // samples.sync()
 
   if (reverb.value.decay !== 0) {
@@ -186,7 +186,7 @@ function playSampler({ detail }) {
     samples.chain(pitchShift, Tone.Destination)
   }
 
-  console.log(detail.item.volume)
+  // console.log(detail.item.volume)
 
   samples.volume.value = 0
   samples.triggerAttackRelease(detail.item.sampleId, '16n', detail.time, 0.5)
@@ -307,7 +307,7 @@ const resetSamples = () => {
       samples = new Tone.Sampler({
         urls: store.sampleObjectMidi,
         onload: () => {
-          console.log('2st sampler done')
+          console.log('resetted sampler done')
         }
       }).toDestination()
 
@@ -335,7 +335,7 @@ watchEffect(() => {
   chorus.value
   reverb.value
   // rev = new Tone.Reverb(reactiveReverb).toDestination()
-  console.log(reverb.value)
+  
   // sequence.chain(rev)
   // sequenceData.value
   // configSequence()
@@ -366,7 +366,7 @@ onUnmounted(() => {
   <div id="sequencer" v-if="sequenceData && store.sampleData">
     <Suspense>
       <TransitionGroup name="fade">
-        <SequenceItem v-for="item in sequenceData" :key="item.id" :item="item" :id="item.id" />
+        <SequenceItem v-for="item in sequenceData" :key="item.id" :item="item" :id="item.id" v-model:reverb.number="item.reverb" v-model:volume.number="item.volume"  />
       </TransitionGroup>
     </Suspense>
     <div class="add-sequence">

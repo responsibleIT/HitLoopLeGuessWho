@@ -9,22 +9,27 @@ import SequenceSteps from '@/components/SequenceSteps.vue'
 import BaseButton from './BaseButton.vue'
 import * as Tone from 'tone'
 import { createSequenceArrayIndex } from '@/helpers/toneHelpers'
+import { toReactive } from '@vueuse/core'
 const apiBaseURL = import.meta.env.VITE_API_BASE
 const props = defineProps({
   item: Object,
   id: Number,
-  empty: Boolean
+  empty: Boolean,
+  reverb: Number,
+  volume: Number
 })
 
 const store = useSequenceStore()
 // store values to vuejs ref
-const { toneS, currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns, reverb } =
+const { currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns } =
   storeToRefs(store)
 
 const { toggleStep, updateSequenceURL, removeSequence, updateSequenceSample, setCurrentStepIndex } =
   store
 
-let itemData = sequenceData.value[props.id]
+const itemData = toReactive(sequenceData.value[props.id])
+
+defineEmits(['update:volume', 'update:reverb'])
 
 let sequence = null
 const showModal = ref(false)
@@ -54,8 +59,27 @@ sampler = new Tone.Sampler({
 }).toDestination().sync()
 
 const currentStep = ref(currentStepIndex.value)
+const vol = new Tone.Volume(itemData.volume).toDestination();
+let rev = new Tone.Reverb({
+      ready: () => {
+        rev.set({
+      reverb: itemData.reverb
+        })
+        console.log('rev.get()')
+    console.log(rev.get())
+    sampler.connect(rev)
+      }
+    }).toDestination()
+
+
+
 
 const tick = (time, col) => {
+
+console.log(rev.get())
+
+  
+
   Tone.Draw.schedule(() => {
     if (isPlaying.value) {
       console.log(currentStep.value)
@@ -64,26 +88,31 @@ const tick = (time, col) => {
   }, time)
   
   console.log(itemData)
-  if (itemData.reverb) {
-    const rev = new Tone.Reverb().toDestination()
-    rev.set({
-      reverb: itemData.reverb
-      })
-    console.log(rev.get())
-    sampler.connect(rev)
+  if (itemData.reverb !== 0) {
+  
+    
     // sampler.chain(rev, Tone.Destination)
   } else {
+    if (rev) {
+      // rev.dispose()
+    }
+    
     // sampler.chain(pitchShift, Tone.Destination)
   }
 
+
+// vol.set(itemData.volume)
+
+  sampler.connect(vol)
+  sampler.connect(rev)
   
 
 
   if (props.item.steps[col] === true) {
-    console.log('element')
-    console.log(col)
+    
+    
     Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(props.item.sample, '16n', time)
+        sampler.triggerAttackRelease(props.item.sample, '8n', time)
       })
 
     
@@ -115,6 +144,27 @@ const resetSamples = () => {
 watch(sampleObject, () => {
 return  resetSamples()
 })
+
+
+watch(
+  () => props.volume,
+  (nVol) => {
+    console.log(`vol is: ${nVol}`)
+    if (vol) {
+      vol.set({volume: nVol})
+    }
+  }
+)
+
+watch(
+  () => props.reverb,
+  (newRev) => {
+    if (rev) {
+      rev.set({decay: newRev })
+    }
+  }
+)
+
 
 onMounted(() => {
 
@@ -188,9 +238,9 @@ onUnmounted(() => {
             <!-- @update:url="updateSequenceURL(id, $event)" -->
           </Suspense>
           <label for="reverb">Reverb:</label>
-          <input id="reverb" type="number" min="0" max="10" v-model.number="itemData.reverb" step="0.5" />
+          <input id="reverb" type="number" min="0" max="10" @input="$emit('update:reverb', $event.target.value)" :value="reverb" step="0.1" />
           <label for="volume">Volume:</label>
-          <input id="volume" type="range" min="-60" max="0" :v-model="itemData.volume" step="1" />
+          <input id="volume" type="range" min="-60" max="0" @input="$emit('update:volume', $event.target.value)" :value="volume" step="1" />
         </template>
       </Modal>
     </Teleport>

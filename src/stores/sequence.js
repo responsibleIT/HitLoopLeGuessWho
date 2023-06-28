@@ -269,9 +269,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     }
   }
 
-  watchArray(sequenceData.value, (newList, oldList, added, removed) => {
-    console.log('added[0]')
-    console.log(added[0])
+  watchArray(sequenceData.value, (added) => {
     if (added[0]) {
       let id = added[0].id
       let sampleDataId = added[0].sampleDataId
