@@ -23,6 +23,9 @@ const { toneS, currentStepIndex, sequenceData, sampleTypeList, isPlaying, column
 
 const { toggleStep, updateSequenceURL, removeSequence, updateSequenceSample, setCurrentStepIndex } =
   store
+
+let itemData = sequenceData.value[props.id]
+
 let sequence = null
 const showModal = ref(false)
 const isThisLoaded = ref(false)
@@ -31,16 +34,11 @@ console.log(props.item)
 const sampleObject = computed(() => {
   let newObj = {}
   if (props.item) {
-    console.log('props.item')
-    console.log(props.item)
     let obj = props.item
-
     if (obj && obj.sample && obj.url) {
       newObj[obj.sample] = obj.url
     }
   }
-  console.log('newObj')
-  console.log(newObj)
   return newObj
 })
 console.log('sampleObject.value')
@@ -56,7 +54,7 @@ sampler = new Tone.Sampler({
 }).toDestination().sync()
 
 const currentStep = ref(currentStepIndex.value)
-const rev = new Tone.Reverb().toDestination()
+
 const tick = (time, col) => {
   Tone.Draw.schedule(() => {
     if (isPlaying.value) {
@@ -65,9 +63,12 @@ const tick = (time, col) => {
     }
   }, time)
   
-  sampler.connect(rev)
-  if (reverb.value.decay !== 0) {
-    rev.set({ decay: reverb.value.decay })
+  console.log(itemData)
+  if (itemData.reverb) {
+    const rev = new Tone.Reverb().toDestination()
+    rev.set({
+      reverb: itemData.reverb
+      })
     console.log(rev.get())
     sampler.connect(rev)
     // sampler.chain(rev, Tone.Destination)
@@ -91,7 +92,7 @@ const tick = (time, col) => {
 
 sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
 sequence.humanize = true
-sequence.start(Tone.now())
+sequence.start(0)
 
 const resetSequence = () => {
   // fires only when state.someObject is replaced
@@ -127,10 +128,10 @@ onMounted(() => {
   if (sequence) {
     sequence.dispose()
     sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(
-      Tone.now()
+      0
     )
   }
-  if (isPlaying.value) return Tone.Transport.start(Tone.now())
+  // if (isPlaying.value) return Tone.Transport.start(Tone.now())
 
 })
 
@@ -186,8 +187,10 @@ onUnmounted(() => {
             />
             <!-- @update:url="updateSequenceURL(id, $event)" -->
           </Suspense>
+          <label for="reverb">Reverb:</label>
+          <input id="reverb" type="number" min="0" max="10" v-model.number="itemData.reverb" step="0.5" />
           <label for="volume">Volume:</label>
-          <input id="volume" type="range" min="-60" max="0" :v-model="props.item.volume" step="1" />
+          <input id="volume" type="range" min="-60" max="0" :v-model="itemData.volume" step="1" />
         </template>
       </Modal>
     </Teleport>

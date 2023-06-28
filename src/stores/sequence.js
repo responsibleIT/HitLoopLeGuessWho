@@ -108,7 +108,8 @@ export const useSequenceStore = defineStore('sequence', () => {
         type: 'Crash',
         blob: null,
         note: 'G7',
-        sampleName: 'IJ pont varen'
+        sampleName: 'IJ pont varen',
+        reverb: 0.0
       }
     ]
   }
@@ -170,7 +171,12 @@ export const useSequenceStore = defineStore('sequence', () => {
       steps: createSequenceArraySteps(columns.value),
       url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
       color: thisColor,
-      volume: -30
+      volume: -30,
+      type: 'Crash',
+      blob: null,
+      note: 'G7',
+      sampleName: 'IJ pont varen',
+      reverb: 0.0
     }
     return sequenceData.value.splice(sequenceID, 0, newSequenceData)
   }

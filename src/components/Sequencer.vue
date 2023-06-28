@@ -237,7 +237,7 @@ console.log(isStarted.value)
     Tone.Transport.start(Tone.now())
     // sequence.start()
   } else {
-    Tone.Transport.pause()
+    Tone.Transport.pause(Tone.now())
     // sequence.stop()
   }
 }
