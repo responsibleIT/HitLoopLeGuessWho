@@ -97,6 +97,6 @@ const getValidMidiNoteFromId = (id) => {
 
 // Function to get the MIDI offset for a specific note (assuming A = 0, B = 1, C = 2, etc.)
 const noteToMidiOffset = (note) => {
-  const noteMap = { A: 9, B: 11, C: 0, D: 2, E: 4, F: 5, G: 7 }
+  const noteMap = { A: 9, B: 3, C: 1, D: 2, E: 4, F: 5, G: 7 }
   return noteMap[note.toUpperCase()]
 }

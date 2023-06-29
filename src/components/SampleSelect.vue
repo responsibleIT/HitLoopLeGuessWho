@@ -13,7 +13,7 @@ const props = defineProps({
 
 const store = useSequenceStore()
 
-const { sampleData, sampleTypeList } = storeToRefs(store)
+const { sampleData, sampleTypeList, sequenceData } = storeToRefs(store)
 
 
 

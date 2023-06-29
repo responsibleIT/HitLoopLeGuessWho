@@ -29,9 +29,6 @@ import SequenceItemControl from '@/components/SequenceItemControl.vue'
 // store values to vuejs ref
 const {
   availableNotes,
-  activeNotes,
-  currentStepIndex,
-  sampleData,
   isPlaying,
   columns,
   sequenceData,
@@ -60,11 +57,20 @@ let sequence = null
 let samples = new Tone.Sampler({
   urls: store.sampleObjectMidi,
   onload: () => {
-    console.log('onload players')
+    console.log('onload Mini players')
     setSamplesLoaded(true)
   }
 }).toDestination()
 // let sampler
+
+let keys = new Tone.Players({
+  urls: store.playersObject,
+  onload: () => {
+    console.log('onload keyPlayer')
+    store.playersLoaded.setLoaded()
+    setSamplesLoaded(true)
+  }
+}).toDestination()
 
 let sampler = new Tone.Sampler({
   urls: store.sampleObject,
@@ -132,6 +138,10 @@ const configSequence = () => {
   console.log(sequence.get())
 }
 
+function playPlayer({ detail }) {
+  keys.player(detail.item.note).start(detail.time + 0.00001, 0, '16t')
+}
+
 const tick = (time, col) => {
   Tone.Draw.schedule(() => {
     if (isPlaying.value) {
@@ -140,38 +150,39 @@ const tick = (time, col) => {
   }, time)
   // samples.sync()
 
-  for (const row of sequenceData.value) {
-    if (row.steps[col]) {
-      playNote({
-        detail: {
-          item: row,
-          time: time
-        }
-      })
-    }
-  }
+  // for (const row of sequenceData.value) {
+  //   if (row.steps[col]) {
+  //     console.log(row)
+  //     console.log(row)
+  //     let detail = {
+  //       item: row,
+  //       time: time
+  //     }
+  //     // playSampler({detail})
+  //     // playPlayer({detail})
+  //   }
+  // }
 }
 
-sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start('+0.001', 0)
-sequence.humanize = true
+sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(Tone.now())
 
-function playNote({ detail }) {
-  // let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
-  console.log(pitchShiftValue.value)
+function playSampler({ detail }) {
+  let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
+  // console.log(pitchShiftValue.value)
   // samples.sync()
 
-  if (reverb.value.decay !== 0) {
-    // let rev = new Tone.Reverb(reverb.value).toDestination()
-    // samples.connect(rev)
-    // samples.chain(pitchShift, rev, Tone.Destination)
+  if (reverb`.value`.decay !== 0) {
+    let rev = new Tone.Reverb(reverb.value).toDestination()
+    samples.connect(rev)
+    samples.chain(pitchShift, rev, Tone.Destination)
   } else {
-    // samples.chain(pitchShift, Tone.Destination)
+    samples.chain(pitchShift, Tone.Destination)
   }
 
-  console.log(detail.item.volume)
+  // console.log(detail.item.volume)
 
   samples.volume.value = 0
-  samples.triggerAttackRelease(detail.item.sampleId, '16n', detail.time)
+  samples.triggerAttackRelease(detail.item.sampleId, '16n', detail.time, 0.5)
   //  samples.player(detail.item.sampleId, 0, detail.time, 0.5)
   // samples.player(detail.item.sampleId).start(detail.time, '+0.001', '16n')
 }
@@ -189,8 +200,7 @@ watch(bpm, (newBpm) => {
 
 const setToneStart = async () => {
   if (!isStarted.value) {
-    await setStarted()
-    Tone.getDestination().volume.rampTo(-10, 0.01)
+    await setStarted(true)
 
     // togglePlay()
     return
@@ -198,26 +208,28 @@ const setToneStart = async () => {
 }
 
 const togglePlay = (e) => {
-  let now = Tone.now()
+  // let now = Tone.now()
   // Tone.Transport.stop()
-
-  if (!isStarted.value) {
-    setToneStart(e)
-  }
+  console.log('isStarted.value')
+  console.log(isStarted.value)
+  // if (!isStarted.value) {
+  //   setToneStart(e)
+  // }
 
   togglePlayPause()
 
   if (isPlaying.value) {
+    Tone.getDestination()
     // get current time
     //set playtime to current time
     // playtime is state
-    playTime.value = now
+    // playTime.value = now
     //start sequence +0.1 in the fututre
 
-    Tone.Transport.start('+0.001')
+    Tone.Transport.start(Tone.now())
     // sequence.start()
   } else {
-    Tone.Transport.pause()
+    Tone.Transport.pause(Tone.now())
     // sequence.stop()
   }
 }
@@ -229,56 +241,109 @@ const onKeyDown = (event) => {
   }
 }
 
+// watch(
+//   () => store.sequenceData,
+//   () => {
+//     // fires only when state.someObject is replaced
+//     if (sequence) {
+//       sequence.dispose()
+//       sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(
+//         Tone.now()
+//       )
+//     }
+//     if (samples) {
+//       samples.dispose()
+//       samples = new Tone.Sampler({
+//         urls: store.sampleObjectMidi,
+//         onload: () => {
+//           console.log('2st sampler done')
+//         }
+//       }).toDestination()
+
+//       // sampler.sync()
+//     }
+//     if (sampler) {
+//       sampler.dispose()
+//       sampler = new Tone.Sampler({
+//   urls: store.sampleObject,
+//   onload: () => {
+//     console.log('1st sampler done')
+//   }
+// }).toDestination()
+//     }
+//   }
+// )
+
 watch(
   () => store.sequenceData,
   () => {
-    // fires only when state.someObject is replaced
-    if (sequence) {
-      sequence.dispose()
-      sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(
-        Tone.now()
-      )
-    }
-    if (samples) {
-      samples.dispose()
-      samples = new Tone.Sampler({
-        urls: store.sampleObjectMidi,
-        onload: () => {
-          console.log('2st sampler done')
-        }
-      }).toDestination()
-
-      // sampler.sync()
-    }
-    if (sampler) {
-      sampler.dispose()
-      sampler = new Tone.Sampler({
-  urls: store.sampleObject,
-  onload: () => {
-    console.log('1st sampler done')
-  }
-}).toDestination()
-    }
+    // resetPlayers()
   }
 )
+
+// fires only when state.someObject is replaced
+const resetSequence = () => {
+  // fires only when state.someObject is replaced
+  if (sequence === 'fenuiwf') {
+    sequence.dispose()
+    sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(
+      Tone.now()
+    )
+  }
+}
+
+const resetSamples = () => {
+  // fires only when state.someObject is replaced
+  if (samples) {
+    samples.dispose()
+    samples = new Tone.Sampler({
+      urls: store.sampleObjectMidi,
+      onload: () => {
+        console.log('resetted sampler done')
+      }
+    }).toDestination()
+
+    // sampler.sync()
+  }
+}
+
+const resetPlayers = () => {
+  // fires only when state.someObject is replaced
+  if (keys) {
+    keys.dispose()
+    keys = new Tone.Player({
+      urls: store.playersObject,
+      onload: () => {
+        console.log('2st player done')
+        setSamplesLoaded(true)
+      }
+    }).toDestination()
+  }
+}
 
 watchEffect(() => {
   bpm.value
   chorus.value
   reverb.value
   // rev = new Tone.Reverb(reactiveReverb).toDestination()
-  console.log(reverb.value)
+
   // sequence.chain(rev)
-  configSequence()
+  // sequenceData.value
+  // configSequence()
+  resetSamples()
+  resetSequence()
+  // resetPlayers()
 })
 
 onMounted(() => {
   // Tone.start()
   // configSequence()
-  Tone.Transport.on('start', () => setStarted(true))
+  Tone.Transport.on('start', () => {
+    if (!isStarted.value) setStarted(true)
+  })
   Tone.Transport.on('stop', () => {
     setCurrentStepIndex(-1)
-    setStarted(false)
+    // setStarted(false)
   })
   window.addEventListener('keydown', onKeyDown)
 })
@@ -289,13 +354,20 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div id="sequencer" v-if="sequenceData">
+  <div id="sequencer" v-if="sequenceData && store.sampleData">
     <Suspense>
       <TransitionGroup name="fade">
-        <SequenceItem v-for="item in sequenceData" :key="item.id" :item="item" :id="item.id" />
+        <SequenceItem
+          v-for="item in sequenceData"
+          :key="item.id"
+          :item="item"
+          :id="item.id"
+          v-model:reverb.number="item.reverb"
+          v-model:volume.number="item.volume"
+        />
       </TransitionGroup>
     </Suspense>
-    <SequenceItem class="add-sequence" empty>
+    <div class="add-sequence">
       <BaseButton
         icon="add"
         v-show="sequenceData.length !== availableNotes.length"
@@ -303,7 +375,7 @@ onUnmounted(() => {
       >
         <!-- <BaseIcon name="add" /> -->
       </BaseButton>
-    </SequenceItem>
+    </div>
   </div>
   <div class="controlls">
     <InputBpm />
@@ -313,18 +385,25 @@ onUnmounted(() => {
         <button @click="store.chorusTypeList.next()">next</button> -->
     </div>
 
-    <label for="pitch-shift">Pitch Shift:</label>
+    <!-- <label for="pitch-shift">Pitch Shift:</label>
     <input
       id="pitch-shift"
       type="range"
       min="-12"
       max="12"
-      v-model.number="pitchShiftValue"
+      v-model.number.lazy="pitchShiftValue"
       step="1"
     />
 
     <label for="reverb">reverb</label>
-    <input id="reverb" type="number" min="0" max="10" v-model.number="reverb.decay" step="0.5" />
+    <input
+      id="reverb"
+      type="number"
+      min="0"
+      max="10"
+      v-model.number.lazy="reverb.decay"
+      step="0.5"
+    /> -->
     <Suspense>
       <BaseButton
         :disabled="!isSamplesLoaded"
@@ -345,7 +424,7 @@ onUnmounted(() => {
   display: flex;
   // position: sticky;
   bottom: 1em;
-  position: sticky;
+  // position: sticky;
   bottom: 0.5em;
   z-index: 2;
   justify-content: end;

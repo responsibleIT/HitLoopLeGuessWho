@@ -1,4 +1,4 @@
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, watchEffect } from 'vue'
 import { defineStore } from 'pinia'
 import * as Tone from 'tone'
 import {
@@ -8,7 +8,7 @@ import {
 } from '@/helpers/toneHelpers.js'
 
 import { getSampleData, getSampleFile, getSampleUrl } from '@/composables/getSampleData.js'
-import { useCycleList, useToNumber } from '@vueuse/core'
+import { useCycleList, useToNumber, useToString, watchArray, watchOnce } from '@vueuse/core'
 
 const apiBaseURL = import.meta.env.VITE_API_BASE
 
@@ -19,6 +19,12 @@ export const useSequenceStore = defineStore('sequence', () => {
   })
 
   const samplesIsLoaded = ref(false)
+  const playersLoaded = reactive({
+    isLoaded: false,
+    setLoaded() {
+      this.isLoaded = true
+    }
+  })
 
   function setSamplesLoaded(value) {
     return (samplesIsLoaded.value = value)
@@ -26,10 +32,10 @@ export const useSequenceStore = defineStore('sequence', () => {
 
   async function setStarted(value) {
     try {
-      
       console.log('context started')
       if (value === true) {
         await Tone.start()
+        // Tone.setContext(new Tone.Context({ latencyHint: 'playback' }), false)
         return (isStarted.value = true)
       } else if (value === false) {
         await Tone.stop()
@@ -53,7 +59,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   function lessBPM() {
     if (bpm.value > 10) bpm.value = bpm.value - 10
   }
-  const reverb = ref({
+  const reverb = reactive({
     decay: 0.0,
     preDelay: 0.01
   })
@@ -86,7 +92,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   // sampleData is array of objects witl sample data. file name, url, type(Crash Hi-hat-Etc)
   const sampleData = ref([])
   // hold the sequence data.sampleNote, sampleURL, steps[false, true], color
-  
+
   const getInitialSequence = () => {
     const sample = availableNotes.value[0]
     return [
@@ -98,7 +104,12 @@ export const useSequenceStore = defineStore('sequence', () => {
         steps: createSequenceArraySteps(columns.value),
         url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
         color: 'red',
-        volume: -30
+        volume: 0,
+        type: 'Crash',
+        blob: null,
+        note: 'G7',
+        sampleName: 'IJ pont varen',
+        reverb: 0
       }
     ]
   }
@@ -150,7 +161,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     let thisSample = availableNotes.value[all]
     let thisColor = availableColors.value[all]
     const i = Math.round(Math.random() * sequenceData.value.length)
-    
+
     // activeNotes.value.push(thisSample)
     let newSequenceData = {
       id: sequenceID++,
@@ -160,7 +171,12 @@ export const useSequenceStore = defineStore('sequence', () => {
       steps: createSequenceArraySteps(columns.value),
       url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
       color: thisColor,
-      volume: -30
+      volume: 0,
+      type: 'Crash',
+      blob: null,
+      note: 'G7',
+      sampleName: 'IJ pont varen',
+      reverb: 0
     }
     return sequenceData.value.splice(sequenceID, 0, newSequenceData)
   }
@@ -178,7 +194,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   //   B3: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav'
   // }
   const sampleObject = computed(() => {
-    const newObj = {}
+    let newObj = {}
     if (sequenceData.value) {
       sequenceData.value.forEach((obj) => {
         if (obj && obj.sample && obj.url) {
@@ -190,7 +206,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   })
 
   const sampleObjectMidi = computed(() => {
-    const newObj = reactive({})
+    let newObj = {}
     if (sampleData.value) {
       sampleData.value.forEach((obj) => {
         if (obj && obj.url) {
@@ -200,13 +216,24 @@ export const useSequenceStore = defineStore('sequence', () => {
     }
     return newObj
   })
-
-  const playersObject = computed(() => {
-    const newObj = reactive({})
+  const sampleObjectNote = computed(() => {
+    let newObj = {}
     if (sampleData.value) {
       sampleData.value.forEach((obj) => {
         if (obj && obj.url) {
-          newObj[obj.id] = obj.url
+          newObj[obj.note] = obj.url
+        }
+      })
+    }
+    return newObj
+  })
+
+  const playersObject = computed(() => {
+    let newObj = {}
+    if (sequenceData.value) {
+      sequenceData.value.forEach((obj) => {
+        if (obj && obj.sampleId && obj.url) {
+          newObj[obj.sampleId] = obj.url
         }
       })
     }
@@ -217,40 +244,130 @@ export const useSequenceStore = defineStore('sequence', () => {
     return (item.steps[step] = !item.steps[step])
   }
 
+  // Sample array
+  const randomArrays = [
+    [
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  ]
+
+  // Generate a random index
+
+  const randomSequenceArray = Math.floor(Math.random() * 16)
+
+  const returnRandomArray = (random) => {}
+
+  const randomSequenceSteps = (id) => {
+    let randomIndex = Math.floor(Math.random() * randomArrays.length)
+
+    // Retrieve the random item from the array
+    let randomItem = randomArrays[randomIndex]
+    console.log('clicked')
+    return (sequenceData.value[id].steps = randomArrays[randomIndex])
+  }
   const updateSequenceURL = async (id, newUrl) => {
     return (sequenceData.value[id].url = newUrl)
   }
 
   const updateSequenceSample = async (sequenceDataId, sampleDataId) => {
     try {
-      if (!sequenceData.value[sequenceDataId]) return console.log('nodata') 
-      let setSequence = sequenceData.value[sequenceDataId]
-      let toSample = sampleData.value[sampleDataId]
-      
-      setSequence.sampleId = toSample.sampleId
-      setSequence.sampleDataId = useToNumber(sampleDataId).value
-      setSequence.type = toSample.type
-      setSequence.blob = toSample.blob
-      setSequence.url = toSample.url
-      setSequence.note = toSample.note
-      return setSequence
+      const setSequence = sequenceData.value[sequenceDataId]
+      const toSample = sampleData.value[sampleDataId]
+      if (!setSequence || toSample === undefined) return console.log('nodata')
+      // let setSequence = sequenceData.value[sequenceDataId]
+      // let toSample = sampleData.value[sampleDataId]
+      return Object.assign(setSequence, {
+        sampleId: useToNumber(toSample.sampleId).value,
+        sampleDataId: useToNumber(sampleDataId).value,
+        type: toSample.type,
+        blob: toSample.blob,
+        url: toSample.url,
+        note: toSample.note,
+        sampleName: toSample.name
+      })
     } catch (error) {
       console.log(error)
     }
-    
   }
-  
-  const togglePlayPause = (val) => isPlaying.value = !isPlaying.value
+
+  watchArray(sequenceData.value, (added) => {
+    if (added[0]) {
+      let id = added[0].id
+      let sampleDataId = added[0].sampleDataId
+      return updateSequenceSample(id, sampleDataId)
+    }
+  })
+
+  const togglePlayPause = (val) => (isPlaying.value = !isPlaying.value)
   const togglePlay = (val) => {
     togglePlayPause()
     if (isPlaying.value) {
-      Tone.Transport.start()
+      Tone.Transport.start('+0.001')
     } else {
       Tone.Transport.stop()
     }
   }
 
+  // const toneState = reactive({
+  //   isStarted: isStarted.value,
+  //   isPlaying: isPlaying.value,
+  //   isSamplesLoaded: isSamplesLoaded,
+
+  // })
+
   return {
+    sampleObjectNote,
     bpm,
     sequenceData,
     isPlaying,
@@ -284,6 +401,8 @@ export const useSequenceStore = defineStore('sequence', () => {
     updateSequenceSample,
     samplesIsLoaded,
     sampleObjectMidi,
-    pitchShiftValue
+    pitchShiftValue,
+    playersLoaded,
+    randomSequenceSteps
   }
 })

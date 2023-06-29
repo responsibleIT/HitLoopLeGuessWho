@@ -6,7 +6,8 @@ import { ref, TransitionGroup } from 'vue'
 const props = defineProps({
   id: Number,
   item: Object,
-  color: String
+  color: String,
+  highlighted: Number
 })
 
 const store = useSequenceStore()
@@ -42,12 +43,14 @@ const { toggleStep } = store
   height: 2rem;
   border-radius: 100%;
   background: var(--color-background-transparent);
+  transition: all 0.5s;
 }
 .active {
   // stroke-opacity: 50%;
   // background-color: #2ecd71;
   background-color: var(--color-green);
   transform: scale(1.25);
+  transition: all 0.3s;
   // opacity: 1;
 }
 
