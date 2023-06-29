@@ -498,7 +498,7 @@ svg {
   display: flex;
   flex-direction: column;
   // grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* see notes below */
-  grid-gap: 1em;
+  grid-gap: 2rem;
   padding: var(--padding-l);
 
   // div {

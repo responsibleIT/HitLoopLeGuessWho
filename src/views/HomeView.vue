@@ -42,7 +42,7 @@ main {
   justify-content: space-between;
   position: relative;
   width: 100%;
-  min-height: 85vh;
+  min-height: 98vh;
   max-height: 100cqh;
 
   border-radius: 8px;

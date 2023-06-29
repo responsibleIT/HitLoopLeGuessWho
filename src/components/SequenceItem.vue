@@ -65,13 +65,13 @@ sampler = new Tone.Sampler({
   .sync()
 
 const currentStep = ref(currentStepIndex.value)
-const vol = new Tone.Volume(props.volume).toDestination();
+const vol = new Tone.Volume(props.volume).toDestination()
 let rev = new Tone.Reverb({
-      ready: () => {
-        rev.set({
+  ready: () => {
+    rev.set({
       reverb: props.reverb
-        })
-        console.log('rev.get()')
+    })
+    console.log('rev.get()')
     console.log(rev.get())
     sampler.connect(rev)
   }
@@ -182,75 +182,84 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="sequence-item">
-    <BaseButton icon="tune" class="btn-icon" id="show-modal" @click="showModal = true"></BaseButton>
-
-    <slot></slot>
-    <slot name="steps">
-      <SequenceSteps
-        v-if="!empty"
-        :id="id"
-        :item="item"
-        :color="item.color"
-        :highlighted="currentStepIndex"
-      />
-    </slot>
-    <BaseButton
-      icon="sync"
-      class="btn-icon"
-      id="show-modal"
-      @click="randomSequenceSteps(id)"
-    ></BaseButton>
-    <div v-if="!empty">
-      <BaseButton @click="removeSequence(id)" icon="delete" />
+    <div class="sequence-title-wrapper">
+      <p>{{ item.sampleName }}</p>
     </div>
+    <div class="sequence-item-wrapper">
+      <BaseButton
+        icon="tune"
+        class="btn-icon"
+        id="show-modal"
+        @click="showModal = true"
+      ></BaseButton>
+      <slot></slot>
+      <slot name="steps">
+        <SequenceSteps
+          v-if="!empty"
+          :id="id"
+          :item="item"
+          :color="item.color"
+          :highlighted="currentStepIndex"
+        />
+      </slot>
+      <BaseButton
+        icon="shuffle"
+        class="btn-icon"
+        id="show-modal"
+        @click="randomSequenceSteps(id)"
+      ></BaseButton>
+      <div v-if="!empty">
+        <BaseButton @click="removeSequence(id)" icon="delete" />
+      </div>
 
-    <Teleport to="main" v-if="!empty">
-      <!-- use the modal component, pass in the prop -->
-      <Modal :show="showModal" @close="showModal = false">
-        <template #header>
-          <h3>Edit sound</h3>
-        </template>
-        <template #body>
-          <div class="input-group">
-            <label for="reverb">Reverb:</label>
-            <Suspense>
-              <SampleSelect
-                class="sample-select"
-                :value="item.sampleDataId"
-                @update:url="updateSequenceURL(id, $event)"
-                @change:sampleDataId="updateSequenceSample"
-                :item="item"
-                :id="id"
+      <Teleport to="main" v-if="!empty">
+        <!-- use the modal component, pass in the prop -->
+        <Modal :show="showModal" @close="showModal = false">
+          <template #header>
+            <h3>Edit sound</h3>
+          </template>
+          <template #body>
+            <div class="input-group">
+              <label for="reverb">Reverb:</label>
+              <Suspense>
+                <SampleSelect
+                  class="sample-select"
+                  :value="item.sampleDataId"
+                  @update:url="updateSequenceURL(id, $event)"
+                  @change:sampleDataId="updateSequenceSample"
+                  :item="item"
+                  :id="id"
+                />
+              </Suspense>
+            </div>
+            <div class="input-group">
+              <label for="reverb">Reverb:</label>
+              <input
+                id="reverb"
+                type="number"
+                min="0"
+                max="10"
+                @input="$emit('update:reverb', $event.target.value)"
+                :value="reverb"
+                step="0.1"
               />
-            </Suspense>
-          </div>
-          <div class="input-group">
-            <label for="reverb">Reverb:</label>
-            <input
-              id="reverb"
-              type="number"
-              min="0"
-              max="10"
-              @input="$emit('update:reverb', $event.target.value)"
-              :value="reverb"
-              step="0.1"
-            />
-          </div>
-          <div class="input-group">
-            <label for="volume">Volume:</label>
-            <input
-              id="volume"
-              type="range"
-              min="-70"
-              max="0"
-              @input="$emit('update:volume', $event.target.value)"
-              :value="volume"
-              step="1"
-            />
-          </div>
-        </template>
-      </Modal>
-    </Teleport>
+            </div>
+            <div class="input-group">
+              <label for="volume">Volume:</label>
+              <input
+                id="volume"
+                type="range"
+                min="-70"
+                max="0"
+                @input="$emit('update:volume', $event.target.value)"
+                :value="volume"
+                step="1"
+              />
+            </div>
+          </template>
+        </Modal>
+      </Teleport>
+    </div>
   </div>
 </template>
 
@@ -260,9 +269,16 @@ onUnmounted(() => {
   display: flex;
   // overflow-x: visible;
   // overflow-y: scroll;
-  align-items: center;
+  flex-direction: column;
   // justify-content: space-between;
-  gap: 1em;
+  gap: 0.5em;
+}
+
+.sequence-item-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .sample-select {
