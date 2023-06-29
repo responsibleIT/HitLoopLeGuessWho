@@ -79,36 +79,34 @@ const currentStep = ref(currentStepIndex.value)
 const vol = new Tone.Volume(props.volume).toDestination()
 let rev = new Tone.Reverb({
   ready: () => {
-    rev.set({
-      reverb: props.reverb
-    })
-    
-    
 
-    if (props.reverb > 0) {
-      console.log('>0')
-    }
+
+
+
+    // if (props.reverb !== 0) {
+    //   // console.log(sampler.connect(rev))
+    //   sampler.connect(rev)
+    // }
 
     if (props.reverb < 0) {
       console.log('<0')
     }
-    sampler.connect(rev)
   }
 }).toDestination()
+
+
+
+
 
 const tick = (time, col) => {
   console.log(rev.get())
 
-
-  console.log(itemData)
-  if (itemData.reverb !== 0) {
-    sampler.chain(rev, Tone.Destination)
+  if (props.reverb >= 0.001) {
+    
+    // sampler.connect(rev)
+    // rev.set({ decay: props.reverb })
   } else {
-    if (rev) {
-      rev.disconnect()
-    }
-
-    // sampler.chain(pitchShift, Tone.Destination)
+    // sampler.disconnect(rev)
   }
 
   // vol.set(itemData.volume)
@@ -116,7 +114,7 @@ const tick = (time, col) => {
   sampler.connect(vol)
 
   if (props.item.steps[col] === true) {
-      sampler.triggerAttackRelease(props.item.sampleId, '8n', time)
+      sampler.triggerAttackRelease(props.item.sampleId, '16n', time)
   }
 }
 
@@ -158,15 +156,16 @@ watch(
 watch(
   () => props.reverb,
   (newRev) => {
-    if (rev) {
-      console.log(rev)
+console.log(newRev)
 
-      if (newRev >= 0.001) {
-        rev.set({ decay: newRev })
-      } else {
-        sampler.disconnect(rev)
-      }
+    if (newRev > 0.001 && newRev !== 0 && newRev !== null) {
+      rev.set({ decay: newRev })
+      sampler.connect(rev)
+      
+    } else {
+      sampler.disconnect(rev)
     }
+
   }
 )
 
@@ -239,7 +238,7 @@ onUnmounted(() => {
               type="number"
               min="0"
               max="10"
-              @input="$emit('update:reverb', $event.target.value)"
+              @change="$emit('update:reverb', $event.target.value)"
               :value="reverb"
               step="0.1"
             />

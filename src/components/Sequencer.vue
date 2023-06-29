@@ -177,13 +177,13 @@ function playSampler({ detail }) {
   // console.log(pitchShiftValue.value)
   // samples.sync()
 
-  if (reverb`.value`.decay !== 0) {
-    let rev = new Tone.Reverb(reverb.value).toDestination()
-    samples.connect(rev)
-    samples.chain(pitchShift, rev, Tone.Destination)
-  } else {
-    samples.chain(pitchShift, Tone.Destination)
-  }
+  // if (reverb`.value`.decay !== 0) {
+  //   let rev = new Tone.Reverb(reverb.value).toDestination()
+  //   samples.connect(rev)
+  //   samples.chain(pitchShift, rev, Tone.Destination)
+  // } else {
+  //   samples.chain(pitchShift, Tone.Destination)
+  // }
 
   // console.log(detail.item.volume)
 
@@ -389,7 +389,7 @@ onUnmounted(() => {
           :key="item.id"
           :item="item"
           :id="item.id"
-          v-model:reverb.number="item.reverb"
+          v-model:reverb.number.lazy="item.reverb"
           v-model:volume.number="item.volume"
           :sampleFiles="useSampleFiles"
         />
