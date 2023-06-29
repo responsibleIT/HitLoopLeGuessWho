@@ -104,7 +104,7 @@ export const useSequenceStore = defineStore('sequence', () => {
         steps: createSequenceArraySteps(columns.value),
         url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
         color: 'red',
-        volume: -150,
+        volume: 0,
         type: 'Crash',
         blob: null,
         note: 'G7',

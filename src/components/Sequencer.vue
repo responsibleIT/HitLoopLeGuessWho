@@ -385,7 +385,7 @@ onUnmounted(() => {
         <button @click="store.chorusTypeList.next()">next</button> -->
     </div>
 
-    <label for="pitch-shift">Pitch Shift:</label>
+    <!-- <label for="pitch-shift">Pitch Shift:</label>
     <input
       id="pitch-shift"
       type="range"
@@ -403,7 +403,7 @@ onUnmounted(() => {
       max="10"
       v-model.number.lazy="reverb.decay"
       step="0.5"
-    />
+    /> -->
     <Suspense>
       <BaseButton
         :disabled="!isSamplesLoaded"
@@ -424,7 +424,7 @@ onUnmounted(() => {
   display: flex;
   // position: sticky;
   bottom: 1em;
-  position: sticky;
+  // position: sticky;
   bottom: 0.5em;
   z-index: 2;
   justify-content: end;
