@@ -365,9 +365,7 @@ onUnmounted(() => {
           v-model:reverb.number="item.reverb"
           v-model:volume.number="item.volume"
         />
-      </TransitionGroup>
-    </Suspense>
-    <div class="add-sequence">
+        <div class="add-sequence" :key="sequenceData.lastIndexOf + 1">
       <BaseButton
         icon="add"
         v-show="sequenceData.length !== availableNotes.length"
@@ -376,6 +374,11 @@ onUnmounted(() => {
         <!-- <BaseIcon name="add" /> -->
       </BaseButton>
     </div>
+      </TransitionGroup>
+    </Suspense>
+    <Transition>
+    
+  </Transition>
   </div>
   <div class="controlls">
     <InputBpm />
@@ -418,6 +421,7 @@ onUnmounted(() => {
 <style scoped lang="scss">
 .add-sequence {
   margin-inline: auto;
+  transition: all .5s;
 }
 
 .controlls {
