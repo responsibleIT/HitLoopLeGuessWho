@@ -182,21 +182,8 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="sequence-item">
-    <slot name="select" v-if="!empty">
-      <BaseButton
-        icon="edit"
-        class="btn-icon"
-        id="show-modal"
-        @click="showModal = true"
-      ></BaseButton>
-    </slot>
+    <BaseButton icon="tune" class="btn-icon" id="show-modal" @click="showModal = true"></BaseButton>
 
-    <BaseButton
-      icon="shuffle"
-      class="btn-icon"
-      id="show-modal"
-      @click="randomSequenceSteps(id)"
-    ></BaseButton>
     <slot></slot>
     <slot name="steps">
       <SequenceSteps
@@ -207,6 +194,12 @@ onUnmounted(() => {
         :highlighted="currentStepIndex"
       />
     </slot>
+    <BaseButton
+      icon="sync"
+      class="btn-icon"
+      id="show-modal"
+      @click="randomSequenceSteps(id)"
+    ></BaseButton>
     <div v-if="!empty">
       <BaseButton @click="removeSequence(id)" icon="delete" />
     </div>

@@ -47,7 +47,7 @@ input#bpm {
 div {
   display: flex;
   flex-direction: row;
-  gap: 1em;
+  gap: 0.2em;
   align-items: center;
 }
 
