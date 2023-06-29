@@ -31,7 +31,6 @@ const { bpm } = storeToRefs(store)
 
 const { moreBPM, lessBPM } = store
 
-
 </script>
 
 <template>

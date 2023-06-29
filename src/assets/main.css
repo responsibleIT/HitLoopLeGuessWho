@@ -33,7 +33,7 @@ a,
 button {
   color: var(--color-text);
   appearance: none;
-  background-color: 1px solid var(--color-background);
+  background-color: var(--color-background-soft);
   border: 1px solid var(--color-background-mute);
   padding: 0.75em;
 }

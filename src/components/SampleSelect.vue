@@ -15,9 +15,6 @@ const store = useSequenceStore()
 
 const { sampleData, sampleTypeList, sequenceData } = storeToRefs(store)
 
-
-
-console.log(props.item)
 </script>
 
 <template>
@@ -26,7 +23,7 @@ console.log(props.item)
       <optgroup :label="sampleType">
         <template v-for="sample in sampleData">
           <option v-if="sample.type === sampleType" :key="sample.id" :value="sample.id">
-            {{ sample.version }} {{ sample.name }} {{ sample.id }}
+            {{ sample.version }} {{ sample.name }}
           </option>
         </template>
       </optgroup>

@@ -34,9 +34,7 @@ defineProps({
 </template>
 
 <style lang="scss" scoped>
-span {
-  font-size: inherit;
-}
+
 
 .icon {
   // font-size: inherit;
@@ -46,7 +44,7 @@ span.icon:hover {
   // transform: scale(2);
 }
 .material-symbols-rounded {
-  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 200, 'opsz' 24;
+  font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 200, 'opsz' 48;
 }
 
 // .material-symbols-rounded {
