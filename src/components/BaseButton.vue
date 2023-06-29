@@ -20,8 +20,8 @@ defineProps({
 <style lang="scss" scoped>
 .btn-icon {
   font-size: 1em;
-  width: 3.5rem;
-  height: 3.5rem;
+  // width: 3.5rem;
+  // height: 3.5rem;
   display: flex;
   align-items: center;
   justify-items: center;

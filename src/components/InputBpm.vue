@@ -22,18 +22,32 @@ const { moreBPM, lessBPM } = store
 </script>
 
 <template>
-  <div>
-    <button @click="lessBPM"><BaseIcon name="remove" /></button>
-    <input id="bpm" type="number" min="20" max="300" step=".01" v-model.number="bpm" />
-    <button @click="moreBPM"><BaseIcon name="add" /></button>
+  <div class="input-group-v">
+    <label for="bpm">BPM</label>
+    <div>
+      <button @click="lessBPM"><BaseIcon name="remove" /></button>
+      <input id="bpm" type="number" min="20" max="300" step=".01" v-model.number="bpm" />
+      <button @click="moreBPM"><BaseIcon name="add" /></button>
+    </div>
   </div>
 </template>
 
 <style lang="scss" scoped>
+input#bpm {
+  appearance: none;
+  border: 0;
+  background-color: --color;
+}
+
+.input-group-v {
+  display: flex;
+  flex-direction: column;
+}
+
 div {
   display: flex;
   flex-direction: row;
-  gap: 1em;
+  gap: 0.2em;
   align-items: center;
 }
 

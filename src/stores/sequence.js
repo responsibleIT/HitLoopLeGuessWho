@@ -104,12 +104,12 @@ export const useSequenceStore = defineStore('sequence', () => {
         steps: createSequenceArraySteps(columns.value),
         url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
         color: 'red',
-        volume: -30,
+        volume: 0,
         type: 'Crash',
         blob: null,
         note: 'G7',
         sampleName: 'IJ pont varen',
-        reverb: 0.0
+        reverb: 0
       }
     ]
   }
@@ -171,12 +171,12 @@ export const useSequenceStore = defineStore('sequence', () => {
       steps: createSequenceArraySteps(columns.value),
       url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
       color: thisColor,
-      volume: -30,
+      volume: 0,
       type: 'Crash',
       blob: null,
       note: 'G7',
       sampleName: 'IJ pont varen',
-      reverb: 0.0
+      reverb: 0
     }
     return sequenceData.value.splice(sequenceID, 0, newSequenceData)
   }
@@ -244,6 +244,78 @@ export const useSequenceStore = defineStore('sequence', () => {
     return (item.steps[step] = !item.steps[step])
   }
 
+  // Sample array
+  const randomArrays = [
+    [
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  ]
+
+  // Generate a random index
+
+  const randomSequenceArray = Math.floor(Math.random() * 16)
+
+  const returnRandomArray = (random) => {}
+
+  const randomSequenceSteps = (id) => {
+    let randomIndex = Math.floor(Math.random() * randomArrays.length)
+
+    // Retrieve the random item from the array
+    let randomItem = randomArrays[randomIndex]
+    console.log('clicked')
+    return (sequenceData.value[id].steps = randomArrays[randomIndex])
+  }
   const updateSequenceURL = async (id, newUrl) => {
     return (sequenceData.value[id].url = newUrl)
   }
@@ -255,14 +327,14 @@ export const useSequenceStore = defineStore('sequence', () => {
       if (!setSequence || toSample === undefined) return console.log('nodata')
       // let setSequence = sequenceData.value[sequenceDataId]
       // let toSample = sampleData.value[sampleDataId]
-    return Object.assign(setSequence, {
+      return Object.assign(setSequence, {
         sampleId: useToNumber(toSample.sampleId).value,
         sampleDataId: useToNumber(sampleDataId).value,
         type: toSample.type,
         blob: toSample.blob,
         url: toSample.url,
         note: toSample.note,
-        sampleName: toSample.name,
+        sampleName: toSample.name
       })
     } catch (error) {
       console.log(error)
@@ -273,10 +345,9 @@ export const useSequenceStore = defineStore('sequence', () => {
     if (added[0]) {
       let id = added[0].id
       let sampleDataId = added[0].sampleDataId
-    return updateSequenceSample(id, sampleDataId)      
+      return updateSequenceSample(id, sampleDataId)
     }
-
-})
+  })
 
   const togglePlayPause = (val) => (isPlaying.value = !isPlaying.value)
   const togglePlay = (val) => {
@@ -332,6 +403,6 @@ export const useSequenceStore = defineStore('sequence', () => {
     sampleObjectMidi,
     pitchShiftValue,
     playersLoaded,
-    
+    randomSequenceSteps
   }
 })

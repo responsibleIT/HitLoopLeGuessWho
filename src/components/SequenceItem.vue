@@ -21,11 +21,16 @@ const props = defineProps({
 
 const store = useSequenceStore()
 // store values to vuejs ref
-const { currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns } =
-  storeToRefs(store)
+const { currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns } = storeToRefs(store)
 
-const { toggleStep, updateSequenceURL, removeSequence, updateSequenceSample, setCurrentStepIndex } =
-  store
+const {
+  toggleStep,
+  updateSequenceURL,
+  removeSequence,
+  updateSequenceSample,
+  setCurrentStepIndex,
+  randomSequenceSteps
+} = store
 
 const itemData = toReactive(sequenceData.value[props.id])
 
@@ -50,13 +55,14 @@ console.log('sampleObject.value')
 console.log(sampleObject.value)
 let sampler = null
 
-
 sampler = new Tone.Sampler({
   urls: sampleObject.value,
   onload: () => {
     isThisLoaded.value = true
   }
-}).toDestination().sync()
+})
+  .toDestination()
+  .sync()
 
 const currentStep = ref(currentStepIndex.value)
 const vol = new Tone.Volume(props.volume).toDestination();
@@ -68,17 +74,11 @@ let rev = new Tone.Reverb({
         console.log('rev.get()')
     console.log(rev.get())
     sampler.connect(rev)
-      }
-    }).toDestination()
-
-
-
+  }
+}).toDestination()
 
 const tick = (time, col) => {
-
-console.log(rev.get())
-
-  
+  console.log(rev.get())
 
   Tone.Draw.schedule(() => {
     if (isPlaying.value) {
@@ -86,36 +86,27 @@ console.log(rev.get())
       currentStep.value
     }
   }, time)
-  
+
   console.log(itemData)
   if (itemData.reverb !== 0) {
-  
-    
     // sampler.chain(rev, Tone.Destination)
   } else {
     if (rev) {
       // rev.dispose()
     }
-    
+
     // sampler.chain(pitchShift, Tone.Destination)
   }
 
-
-// vol.set(itemData.volume)
+  // vol.set(itemData.volume)
 
   sampler.connect(vol)
   sampler.connect(rev)
-  
-
 
   if (props.item.steps[col] === true) {
-    
-    
     Tone.loaded().then(() => {
-        sampler.triggerAttackRelease(props.item.sample, '8n', time)
-      })
-
-    
+      sampler.triggerAttackRelease(props.item.sample, '8n', time)
+    })
   }
 }
 
@@ -127,31 +118,29 @@ const resetSequence = () => {
   // fires only when state.someObject is replaced
 }
 
-
 const resetSamples = () => {
   // fires only when state.someObject is replaced
   if (sampler) {
-      sampler.dispose()
-    return  sampler = new Tone.Sampler({
-        urls: sampleObject.value,
-        onload: () => {
-          console.log('2st sampler done')
-        }
-      }).toDestination()
-    }
+    sampler.dispose()
+    return (sampler = new Tone.Sampler({
+      urls: sampleObject.value,
+      onload: () => {
+        console.log('2st sampler done')
+      }
+    }).toDestination())
+  }
 }
 
 watch(sampleObject, () => {
-return  resetSamples()
+  return resetSamples()
 })
-
 
 watch(
   () => props.volume,
   (nVol) => {
     console.log(`vol is: ${nVol}`)
     if (vol) {
-      vol.set({volume: nVol})
+      vol.set({ volume: nVol })
     }
   }
 )
@@ -160,51 +149,41 @@ watch(
   () => props.reverb,
   (newRev) => {
     if (rev) {
-      rev.set({decay: newRev })
+      rev.set({ decay: newRev })
     }
   }
 )
 
-
 onMounted(() => {
-
   sampler = new Tone.Sampler({
-  urls: sampleObject.value,
-  onload: () => {
-    isThisLoaded.value = true
-  }
-}).toDestination().sync()
+    urls: sampleObject.value,
+    onload: () => {
+      isThisLoaded.value = true
+    }
+  })
+    .toDestination()
+    .sync()
 
   if (sequence) {
     sequence.dispose()
-    sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(
-      0
-    )
+    sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(0)
   }
   // if (isPlaying.value) return Tone.Transport.start(Tone.now())
-
 })
 
 onUnmounted(() => {
   if (sequence) {
     sequence.dispose()
-  } 
+  }
   if (sampler) {
     sampler.dispose()
-  }  
+  }
 })
-
 </script>
 <template>
   <div class="sequence-item">
-    <slot name="select" v-if="!empty">
-      <BaseButton
-        icon="notes"
-        class="btn-icon"
-        id="show-modal"
-        @click="showModal = true"
-      ></BaseButton>
-    </slot>
+    <BaseButton icon="tune" class="btn-icon" id="show-modal" @click="showModal = true"></BaseButton>
+
     <slot></slot>
     <slot name="steps">
       <SequenceSteps
@@ -215,6 +194,12 @@ onUnmounted(() => {
         :highlighted="currentStepIndex"
       />
     </slot>
+    <BaseButton
+      icon="sync"
+      class="btn-icon"
+      id="show-modal"
+      @click="randomSequenceSteps(id)"
+    ></BaseButton>
     <div v-if="!empty">
       <BaseButton @click="removeSequence(id)" icon="delete" />
     </div>
@@ -223,24 +208,46 @@ onUnmounted(() => {
       <!-- use the modal component, pass in the prop -->
       <Modal :show="showModal" @close="showModal = false">
         <template #header>
-          <h3>Sound</h3>
+          <h3>Edit sound</h3>
         </template>
         <template #body>
-          <Suspense>
-            <SampleSelect
-              class="sample-select"
-              :value="item.sampleDataId"
-              @update:url="updateSequenceURL(id, $event)"
-              @change:sampleDataId="updateSequenceSample"
-              :item="item"
-              :id="id"
+          <div class="input-group">
+            <label for="reverb">Reverb:</label>
+            <Suspense>
+              <SampleSelect
+                class="sample-select"
+                :value="item.sampleDataId"
+                @update:url="updateSequenceURL(id, $event)"
+                @change:sampleDataId="updateSequenceSample"
+                :item="item"
+                :id="id"
+              />
+            </Suspense>
+          </div>
+          <div class="input-group">
+            <label for="reverb">Reverb:</label>
+            <input
+              id="reverb"
+              type="number"
+              min="0"
+              max="10"
+              @input="$emit('update:reverb', $event.target.value)"
+              :value="reverb"
+              step="0.1"
             />
-            <!-- @update:url="updateSequenceURL(id, $event)" -->
-          </Suspense>
-          <label for="reverb">Reverb:</label>
-          <input id="reverb" type="number" min="0" max="10" @input="$emit('update:reverb', $event.target.value)" :value="reverb" step="0.1" />
-          <label for="volume">Volume:</label>
-          <input id="volume" type="range" min="-60" max="0" @input="$emit('update:volume', $event.target.value)" :value="volume" step="1" />
+          </div>
+          <div class="input-group">
+            <label for="volume">Volume:</label>
+            <input
+              id="volume"
+              type="range"
+              min="-70"
+              max="0"
+              @input="$emit('update:volume', $event.target.value)"
+              :value="volume"
+              step="1"
+            />
+          </div>
         </template>
       </Modal>
     </Teleport>
@@ -262,5 +269,11 @@ onUnmounted(() => {
   max-width: 12em;
 
   background: -var(--color-background-mute);
+}
+
+.input-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 </style>
