@@ -104,7 +104,7 @@ export const useSequenceStore = defineStore('sequence', () => {
         steps: createSequenceArraySteps(columns.value),
         url: 'https://api-hitloop.responsible-it.nl/test_samples?sample_pack=b&file=crash_1_0_IJ-pont_varen.wav',
         color: 'red',
-        volume: -30,
+        volume: -150,
         type: 'Crash',
         blob: null,
         note: 'G7',
@@ -171,7 +171,7 @@ export const useSequenceStore = defineStore('sequence', () => {
       steps: createSequenceArraySteps(columns.value),
       url: getSampleUrl(apiBaseURL, samplePack.value, sampleData.value[0].file),
       color: thisColor,
-      volume: -30,
+      volume: 0,
       type: 'Crash',
       blob: null,
       note: 'G7',
@@ -255,14 +255,14 @@ export const useSequenceStore = defineStore('sequence', () => {
       if (!setSequence || toSample === undefined) return console.log('nodata')
       // let setSequence = sequenceData.value[sequenceDataId]
       // let toSample = sampleData.value[sampleDataId]
-    return Object.assign(setSequence, {
+      return Object.assign(setSequence, {
         sampleId: useToNumber(toSample.sampleId).value,
         sampleDataId: useToNumber(sampleDataId).value,
         type: toSample.type,
         blob: toSample.blob,
         url: toSample.url,
         note: toSample.note,
-        sampleName: toSample.name,
+        sampleName: toSample.name
       })
     } catch (error) {
       console.log(error)
@@ -273,10 +273,9 @@ export const useSequenceStore = defineStore('sequence', () => {
     if (added[0]) {
       let id = added[0].id
       let sampleDataId = added[0].sampleDataId
-    return updateSequenceSample(id, sampleDataId)      
+      return updateSequenceSample(id, sampleDataId)
     }
-
-})
+  })
 
   const togglePlayPause = (val) => (isPlaying.value = !isPlaying.value)
   const togglePlay = (val) => {
@@ -331,7 +330,6 @@ export const useSequenceStore = defineStore('sequence', () => {
     samplesIsLoaded,
     sampleObjectMidi,
     pitchShiftValue,
-    playersLoaded,
-    
+    playersLoaded
   }
 })

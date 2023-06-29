@@ -63,7 +63,6 @@ let samples = new Tone.Sampler({
 }).toDestination()
 // let sampler
 
-
 let keys = new Tone.Players({
   urls: store.playersObject,
   onload: () => {
@@ -72,7 +71,6 @@ let keys = new Tone.Players({
     setSamplesLoaded(true)
   }
 }).toDestination()
-
 
 let sampler = new Tone.Sampler({
   urls: store.sampleObject,
@@ -141,7 +139,7 @@ const configSequence = () => {
 }
 
 function playPlayer({ detail }) {
-    keys.player(detail.item.note).start(detail.time + 0.00001 , 0, "16t");
+  keys.player(detail.item.note).start(detail.time + 0.00001, 0, '16t')
 }
 
 const tick = (time, col) => {
@@ -166,19 +164,14 @@ const tick = (time, col) => {
   // }
 }
 
-
-
 sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(Tone.now())
-
-
-
 
 function playSampler({ detail }) {
   let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
   // console.log(pitchShiftValue.value)
   // samples.sync()
 
-  if (reverb.value.decay !== 0) {
+  if (reverb`.value`.decay !== 0) {
     let rev = new Tone.Reverb(reverb.value).toDestination()
     samples.connect(rev)
     samples.chain(pitchShift, rev, Tone.Destination)
@@ -209,7 +202,6 @@ const setToneStart = async () => {
   if (!isStarted.value) {
     await setStarted(true)
 
-    
     // togglePlay()
     return
   }
@@ -219,7 +211,7 @@ const togglePlay = (e) => {
   // let now = Tone.now()
   // Tone.Transport.stop()
   console.log('isStarted.value')
-console.log(isStarted.value)
+  console.log(isStarted.value)
   // if (!isStarted.value) {
   //   setToneStart(e)
   // }
@@ -227,7 +219,7 @@ console.log(isStarted.value)
   togglePlayPause()
 
   if (isPlaying.value) {
-    Tone.getDestination().volume.rampTo(-20, 0.01)
+    Tone.getDestination()
     // get current time
     //set playtime to current time
     // playtime is state
@@ -282,17 +274,17 @@ const onKeyDown = (event) => {
 //   }
 // )
 
-
 watch(
   () => store.sequenceData,
   () => {
     // resetPlayers()
-  })
+  }
+)
 
-    // fires only when state.someObject is replaced
+// fires only when state.someObject is replaced
 const resetSequence = () => {
   // fires only when state.someObject is replaced
-  if (sequence === "fenuiwf") {
+  if (sequence === 'fenuiwf') {
     sequence.dispose()
     sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(
       Tone.now()
@@ -303,31 +295,30 @@ const resetSequence = () => {
 const resetSamples = () => {
   // fires only when state.someObject is replaced
   if (samples) {
-      samples.dispose()
-      samples = new Tone.Sampler({
-        urls: store.sampleObjectMidi,
-        onload: () => {
-          console.log('resetted sampler done')
-        }
-      }).toDestination()
+    samples.dispose()
+    samples = new Tone.Sampler({
+      urls: store.sampleObjectMidi,
+      onload: () => {
+        console.log('resetted sampler done')
+      }
+    }).toDestination()
 
-      // sampler.sync()
-    }
+    // sampler.sync()
+  }
 }
-
 
 const resetPlayers = () => {
   // fires only when state.someObject is replaced
   if (keys) {
-      keys.dispose()
-      keys = new Tone.Player({
-        urls: store.playersObject,
-        onload: () => {
-          console.log('2st player done')
-          setSamplesLoaded(true)
-        }
-      }).toDestination()
-    }
+    keys.dispose()
+    keys = new Tone.Player({
+      urls: store.playersObject,
+      onload: () => {
+        console.log('2st player done')
+        setSamplesLoaded(true)
+      }
+    }).toDestination()
+  }
 }
 
 watchEffect(() => {
@@ -335,7 +326,7 @@ watchEffect(() => {
   chorus.value
   reverb.value
   // rev = new Tone.Reverb(reactiveReverb).toDestination()
-  
+
   // sequence.chain(rev)
   // sequenceData.value
   // configSequence()
@@ -366,7 +357,14 @@ onUnmounted(() => {
   <div id="sequencer" v-if="sequenceData && store.sampleData">
     <Suspense>
       <TransitionGroup name="fade">
-        <SequenceItem v-for="item in sequenceData" :key="item.id" :item="item" :id="item.id" v-model:reverb.number="item.reverb" v-model:volume.number="item.volume"  />
+        <SequenceItem
+          v-for="item in sequenceData"
+          :key="item.id"
+          :item="item"
+          :id="item.id"
+          v-model:reverb.number="item.reverb"
+          v-model:volume.number="item.volume"
+        />
       </TransitionGroup>
     </Suspense>
     <div class="add-sequence">
@@ -398,7 +396,14 @@ onUnmounted(() => {
     />
 
     <label for="reverb">reverb</label>
-    <input id="reverb" type="number" min="0" max="10" v-model.number.lazy="reverb.decay" step="0.5" />
+    <input
+      id="reverb"
+      type="number"
+      min="0"
+      max="10"
+      v-model.number.lazy="reverb.decay"
+      step="0.5"
+    />
     <Suspense>
       <BaseButton
         :disabled="!isSamplesLoaded"
