@@ -244,6 +244,78 @@ export const useSequenceStore = defineStore('sequence', () => {
     return (item.steps[step] = !item.steps[step])
   }
 
+  // Sample array
+  const randomArrays = [
+    [
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false
+    ],
+    [
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true,
+      true,
+      false,
+      true,
+      true
+    ],
+    [
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  ]
+
+  // Generate a random index
+
+  const randomSequenceArray = Math.floor(Math.random() * 16)
+
+  const returnRandomArray = (random) => {}
+
+  const randomSequenceSteps = (id) => {
+    let randomIndex = Math.floor(Math.random() * randomArrays.length)
+
+    // Retrieve the random item from the array
+    let randomItem = randomArrays[randomIndex]
+    console.log('clicked')
+    return (sequenceData.value[id].steps = randomArrays[randomIndex])
+  }
   const updateSequenceURL = async (id, newUrl) => {
     return (sequenceData.value[id].url = newUrl)
   }
@@ -330,6 +402,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     samplesIsLoaded,
     sampleObjectMidi,
     pitchShiftValue,
-    playersLoaded
+    playersLoaded,
+    randomSequenceSteps
   }
 })

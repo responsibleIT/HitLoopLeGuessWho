@@ -23,8 +23,14 @@ const store = useSequenceStore()
 // store values to vuejs ref
 const { currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns } = storeToRefs(store)
 
-const { toggleStep, updateSequenceURL, removeSequence, updateSequenceSample, setCurrentStepIndex } =
-  store
+const {
+  toggleStep,
+  updateSequenceURL,
+  removeSequence,
+  updateSequenceSample,
+  setCurrentStepIndex,
+  randomSequenceSteps
+} = store
 
 const itemData = toReactive(sequenceData.value[props.id])
 
@@ -189,7 +195,7 @@ onUnmounted(() => {
       icon="shuffle"
       class="btn-icon"
       id="show-modal"
-      @click="showModal = true"
+      @click="randomSequenceSteps(id)"
     ></BaseButton>
     <slot></slot>
     <slot name="steps">
@@ -209,40 +215,46 @@ onUnmounted(() => {
       <!-- use the modal component, pass in the prop -->
       <Modal :show="showModal" @close="showModal = false">
         <template #header>
-          <h3>Sound</h3>
+          <h3>Edit sound</h3>
         </template>
         <template #body>
-          <Suspense>
-            <SampleSelect
-              class="sample-select"
-              :value="item.sampleDataId"
-              @update:url="updateSequenceURL(id, $event)"
-              @change:sampleDataId="updateSequenceSample"
-              :item="item"
-              :id="id"
+          <div class="input-group">
+            <label for="reverb">Reverb:</label>
+            <Suspense>
+              <SampleSelect
+                class="sample-select"
+                :value="item.sampleDataId"
+                @update:url="updateSequenceURL(id, $event)"
+                @change:sampleDataId="updateSequenceSample"
+                :item="item"
+                :id="id"
+              />
+            </Suspense>
+          </div>
+          <div class="input-group">
+            <label for="reverb">Reverb:</label>
+            <input
+              id="reverb"
+              type="number"
+              min="0"
+              max="10"
+              @input="$emit('update:reverb', $event.target.value)"
+              :value="reverb"
+              step="0.1"
             />
-            <!-- @update:url="updateSequenceURL(id, $event)" -->
-          </Suspense>
-          <label for="reverb">Reverb:</label>
-          <input
-            id="reverb"
-            type="number"
-            min="0"
-            max="10"
-            @input="$emit('update:reverb', $event.target.value)"
-            :value="reverb"
-            step="0.1"
-          />
-          <label for="volume">Volume:</label>
-          <input
-            id="volume"
-            type="range"
-            min="-70"
-            max="0"
-            @input="$emit('update:volume', $event.target.value)"
-            :value="volume"
-            step="1"
-          />
+          </div>
+          <div class="input-group">
+            <label for="volume">Volume:</label>
+            <input
+              id="volume"
+              type="range"
+              min="-70"
+              max="0"
+              @input="$emit('update:volume', $event.target.value)"
+              :value="volume"
+              step="1"
+            />
+          </div>
         </template>
       </Modal>
     </Teleport>
@@ -264,5 +276,11 @@ onUnmounted(() => {
   max-width: 12em;
 
   background: -var(--color-background-mute);
+}
+
+.input-group {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 </style>
