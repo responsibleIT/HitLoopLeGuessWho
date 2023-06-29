@@ -1,4 +1,4 @@
-import { ref, computed, reactive, watchEffect } from 'vue'
+import { ref, computed, reactive, watchEffect, onMounted } from 'vue'
 import { defineStore } from 'pinia'
 import * as Tone from 'tone'
 import {
@@ -26,6 +26,13 @@ export const useSequenceStore = defineStore('sequence', () => {
     }
   })
 
+  const bufferLoaded = reactive({
+    value: false,
+    setLoaded() {
+      this.value = true
+    }
+  })
+
   function setSamplesLoaded(value) {
     return (samplesIsLoaded.value = value)
   }
@@ -41,6 +48,7 @@ export const useSequenceStore = defineStore('sequence', () => {
         await Tone.stop()
         return (isStarted.value = false)
       } else {
+        console.log(Tone.getDestination().state())
         await Tone.start()
       }
     } catch (error) {
@@ -240,6 +248,9 @@ export const useSequenceStore = defineStore('sequence', () => {
     return newObj
   })
 
+
+
+
   const toggleStep = (item, step) => {
     return (item.steps[step] = !item.steps[step])
   }
@@ -403,6 +414,7 @@ export const useSequenceStore = defineStore('sequence', () => {
     sampleObjectMidi,
     pitchShiftValue,
     playersLoaded,
-    randomSequenceSteps
+    bufferLoaded,
+    randomSequenceSteps,
   }
 })

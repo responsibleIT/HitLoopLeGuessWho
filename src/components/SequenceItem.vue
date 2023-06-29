@@ -16,12 +16,14 @@ const props = defineProps({
   id: Number,
   empty: Boolean,
   reverb: Number,
-  volume: Number
+  volume: Number,
+  sampleFiles: Object
 })
 
 const store = useSequenceStore()
 // store values to vuejs ref
-const { currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns } = storeToRefs(store)
+const { currentStepIndex, sequenceData, sampleTypeList, isPlaying, columns, sampleObjectMidi } =
+  storeToRefs(store)
 
 const {
   toggleStep,
@@ -45,8 +47,8 @@ const sampleObject = computed(() => {
   let newObj = {}
   if (props.item) {
     let obj = props.item
-    if (obj && obj.sample && obj.url) {
-      newObj[obj.sample] = obj.url
+    if (obj && obj.sampleId && obj.url) {
+      newObj[obj.sampleId] = obj.url
     }
   }
   return newObj
@@ -56,7 +58,7 @@ console.log(sampleObject.value)
 let sampler = null
 
 sampler = new Tone.Sampler({
-  urls: sampleObject.value,
+  urls: store.sampleObjectMidi,
   onload: () => {
     isThisLoaded.value = true
   }
@@ -64,15 +66,32 @@ sampler = new Tone.Sampler({
   .toDestination()
   .sync()
 
+// sampler = new Tone.Sampler().toDestination().sync()
+
+// sampler.buffer = props.sampleFiles.get(props.item.sampleId)
+console.log('sampler.get(props.item.sampleId.toString())')
+console.log(sampler.get(props.item.sampleDataId))
+sampler.get(props.item.sampleId.toString())
+console.log('sampler.buffer')
+console.log(sampler.buffer)
+
 const currentStep = ref(currentStepIndex.value)
-const vol = new Tone.Volume(props.volume).toDestination();
+const vol = new Tone.Volume(props.volume).toDestination()
 let rev = new Tone.Reverb({
-      ready: () => {
-        rev.set({
+  ready: () => {
+    rev.set({
       reverb: props.reverb
-        })
-        console.log('rev.get()')
-    console.log(rev.get())
+    })
+    
+    
+
+    if (props.reverb > 0) {
+      console.log('>0')
+    }
+
+    if (props.reverb < 0) {
+      console.log('<0')
+    }
     sampler.connect(rev)
   }
 }).toDestination()
@@ -80,19 +99,13 @@ let rev = new Tone.Reverb({
 const tick = (time, col) => {
   console.log(rev.get())
 
-  Tone.Draw.schedule(() => {
-    if (isPlaying.value) {
-      console.log(currentStep.value)
-      currentStep.value
-    }
-  }, time)
 
   console.log(itemData)
   if (itemData.reverb !== 0) {
-    // sampler.chain(rev, Tone.Destination)
+    sampler.chain(rev, Tone.Destination)
   } else {
     if (rev) {
-      // rev.dispose()
+      rev.disconnect()
     }
 
     // sampler.chain(pitchShift, Tone.Destination)
@@ -101,12 +114,9 @@ const tick = (time, col) => {
   // vol.set(itemData.volume)
 
   sampler.connect(vol)
-  sampler.connect(rev)
 
   if (props.item.steps[col] === true) {
-    Tone.loaded().then(() => {
-      sampler.triggerAttackRelease(props.item.sample, '8n', time)
-    })
+      sampler.triggerAttackRelease(props.item.sampleId, '8n', time)
   }
 }
 
@@ -123,9 +133,9 @@ const resetSamples = () => {
   if (sampler) {
     sampler.dispose()
     return (sampler = new Tone.Sampler({
-      urls: sampleObject.value,
+      urls: store.sampleObjectMidi,
       onload: () => {
-        console.log('2st sampler done')
+        console.log('2st sampleObjectMidi done')
       }
     }).toDestination())
   }
@@ -149,21 +159,19 @@ watch(
   () => props.reverb,
   (newRev) => {
     if (rev) {
-      rev.set({ decay: newRev })
+      console.log(rev)
+
+      if (newRev >= 0.001) {
+        rev.set({ decay: newRev })
+      } else {
+        sampler.disconnect(rev)
+      }
     }
   }
 )
 
 onMounted(() => {
-  sampler = new Tone.Sampler({
-    urls: sampleObject.value,
-    onload: () => {
-      isThisLoaded.value = true
-    }
-  })
-    .toDestination()
-    .sync()
-
+  resetSamples()
   if (sequence) {
     sequence.dispose()
     sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(0)
@@ -212,7 +220,7 @@ onUnmounted(() => {
         </template>
         <template #body>
           <div class="input-group">
-            <label for="reverb">Reverb:</label>
+            <label for="reverb">Sample:</label>
             <Suspense>
               <SampleSelect
                 class="sample-select"

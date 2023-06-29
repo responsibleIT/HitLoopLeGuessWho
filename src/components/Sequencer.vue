@@ -25,6 +25,7 @@ import { createSequenceArrayIndex } from '@/helpers/toneHelpers.js'
 import BaseButton from '@/components/BaseButton.vue'
 import SequenceItem from '@/components/SequenceItem.vue'
 import SequenceItemControl from '@/components/SequenceItemControl.vue'
+import { whenever } from '@vueuse/core';
 
 // store values to vuejs ref
 const {
@@ -67,7 +68,12 @@ let keys = new Tone.Players({
   urls: store.playersObject,
   onload: () => {
     console.log('onload keyPlayer')
+    console.log('store.playersLoaded.isLoaded')
+    console.log(store.playersLoaded.isLoaded)
     store.playersLoaded.setLoaded()
+    console.log('store.playersLoaded.isLoaded')
+    console.log(store.playersLoaded.isLoaded)
+
     setSamplesLoaded(true)
   }
 }).toDestination()
@@ -334,8 +340,19 @@ watchEffect(() => {
   resetSequence()
   // resetPlayers()
 })
-
+let useSampleFiles = null
 onMounted(() => {
+
+
+  useSampleFiles = new Tone.ToneAudioBuffers({
+      urls: store.sampleObjectMidi,
+      onload: () => {
+        store.bufferLoaded.setLoaded()
+        console.log(`bufferLoaded is: ${store.bufferLoaded.value}`)
+      }
+    })
+
+
   // Tone.start()
   // configSequence()
   Tone.Transport.on('start', () => {
@@ -346,7 +363,17 @@ onMounted(() => {
     // setStarted(false)
   })
   window.addEventListener('keydown', onKeyDown)
+
+  
+  console.log(useSampleFiles.get('101'))
 })
+
+
+
+whenever(store.bufferLoaded, () => {
+  console.log(useSampleFiles.get('101'))
+}
+)
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeyDown)
@@ -356,14 +383,15 @@ onUnmounted(() => {
 <template>
   <div id="sequencer" v-if="sequenceData && store.sampleData">
     <Suspense>
-      <TransitionGroup name="fade">
+      <TransitionGroup name="fade" v-if="store.bufferLoaded.value">
         <SequenceItem
-          v-for="item in sequenceData"
+          v-for="item in store.sequenceData"
           :key="item.id"
           :item="item"
           :id="item.id"
           v-model:reverb.number="item.reverb"
           v-model:volume.number="item.volume"
+          :sampleFiles="useSampleFiles"
         />
         <div class="add-sequence" :key="sequenceData.lastIndexOf + 1">
       <BaseButton

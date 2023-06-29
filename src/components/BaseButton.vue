@@ -19,7 +19,8 @@ defineProps({
 
 <style lang="scss" scoped>
 .btn-icon {
-  font-size: 1em;
+  font-size: inherit;
+  // font-size: 1em;
   // width: 3.5rem;
   // height: 3.5rem;
   display: flex;
@@ -29,10 +30,13 @@ defineProps({
   justify-content: center;
   border-radius: 100%;
   color: var(--color-text);
+  .icon{
+    // font-size: inherit;
+  }
 
   span {
     text-align: center;
-    font-size: 1.5em;
+    // font-size: 1.5em;
     // display: block;
     align-self: center;
     // color: var(--color-text);
