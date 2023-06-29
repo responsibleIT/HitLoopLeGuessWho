@@ -65,13 +65,13 @@ sampler = new Tone.Sampler({
   .sync()
 
 const currentStep = ref(currentStepIndex.value)
-const vol = new Tone.Volume(itemData.volume).toDestination()
+const vol = new Tone.Volume(props.volume).toDestination();
 let rev = new Tone.Reverb({
-  ready: () => {
-    rev.set({
-      reverb: itemData.reverb
-    })
-    console.log('rev.get()')
+      ready: () => {
+        rev.set({
+      reverb: props.reverb
+        })
+        console.log('rev.get()')
     console.log(rev.get())
     sampler.connect(rev)
   }
