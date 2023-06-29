@@ -82,7 +82,7 @@ export const useSequenceStore = defineStore('sequence', () => {
   })
 
   const columns = ref(16)
-  const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3', 'F3', 'G3', 'A4'])
+  const availableNotes = ref(['A3', 'B3', 'C3', 'D3', 'E3'])
 
   const activeNotes = ref(['A3'])
   const availableColors = ref(['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'G3', 'A4'])
@@ -298,6 +298,24 @@ export const useSequenceStore = defineStore('sequence', () => {
       false,
       false,
       false,
+      false
+    ],
+    [
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
+      false,
+      false,
+      false,
+      true,
       false
     ]
   ]

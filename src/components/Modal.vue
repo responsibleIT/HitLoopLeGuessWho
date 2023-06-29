@@ -1,27 +1,28 @@
 <script setup>
+import BaseButton from '@/components/BaseButton.vue'
+
 const props = defineProps({
   show: Boolean
 })
-
-import BaseButton from '@/components/BaseButton.vue';
-
-
 </script>
 
 <template>
   <Transition name="modal">
-    <div v-if="show" class="modal-mask">
+    <div v-if="show" class="modal-mask" v-on-click-outside="closeModal">
       <div class="modal-container">
         <div class="modal-header">
           <slot name="header">default header</slot>
-          <BaseButton icon="close" class="modal-default-button" @click="$emit('close')"></BaseButton>
+          <BaseButton
+            icon="close"
+            class="modal-default-button"
+            @click="$emit('close')"
+          ></BaseButton>
         </div>
         <div class="modal-body">
           <slot name="body"></slot>
         </div>
         <div class="modal-footer">
-          <slot name="footer">
-          </slot>
+          <slot name="footer"> </slot>
         </div>
       </div>
     </div>
@@ -32,28 +33,31 @@ import BaseButton from '@/components/BaseButton.vue';
 .modal-mask {
   position: fixed;
   z-index: 9998;
-  top: 0; 
+  top: 0;
   left: 0;
   bottom: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
+  justify-content: center;
+  align-items: center;
   transition: opacity 0.3s ease;
 }
 
 .modal-container {
-  width: 100%;
+  width: 50%;
   height: 50%;
   z-index: 9999;
-  margin-top: auto;
+  /* margin-top: auto; */
   padding: 2em 2em;
-  bottom: 0;
+  /* bottom: 130px; */
   position: relative;
   background-color: var(--color-background);
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
+  border-radius: 8px;
 }
 
 .modal-header h3 {
@@ -92,6 +96,5 @@ import BaseButton from '@/components/BaseButton.vue';
 .modal-leave-to .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1) translateY(+50%);
-
 }
 </style>
