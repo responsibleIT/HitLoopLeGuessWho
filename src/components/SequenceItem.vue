@@ -184,6 +184,13 @@ onUnmounted(() => {
         @click="showModal = true"
       ></BaseButton>
     </slot>
+
+    <BaseButton
+      icon="shuffle"
+      class="btn-icon"
+      id="show-modal"
+      @click="showModal = true"
+    ></BaseButton>
     <slot></slot>
     <slot name="steps">
       <SequenceSteps

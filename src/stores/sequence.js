@@ -109,7 +109,7 @@ export const useSequenceStore = defineStore('sequence', () => {
         blob: null,
         note: 'G7',
         sampleName: 'IJ pont varen',
-        reverb: 0.0
+        reverb: 0
       }
     ]
   }
@@ -176,7 +176,7 @@ export const useSequenceStore = defineStore('sequence', () => {
       blob: null,
       note: 'G7',
       sampleName: 'IJ pont varen',
-      reverb: 0.0
+      reverb: 0
     }
     return sequenceData.value.splice(sequenceID, 0, newSequenceData)
   }
