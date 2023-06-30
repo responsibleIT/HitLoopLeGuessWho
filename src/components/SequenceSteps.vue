@@ -60,5 +60,6 @@ const { toggleStep } = store
   width: 100%;
   display: flex;
   justify-content: space-between;
+  margin: 0 2rem;
 }
 </style>

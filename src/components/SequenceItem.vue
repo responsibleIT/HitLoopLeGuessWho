@@ -293,5 +293,6 @@ onUnmounted(() => {
 
 .active-sample-title {
   color: #2ecd71;
+  text-transform: uppercase;
 }
 </style>
