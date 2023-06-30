@@ -179,7 +179,9 @@ onUnmounted(() => {
 <template>
   <div class="sequence-item">
     <div class="sequence-title-wrapper">
-      <p>{{ item.sampleName }}</p>
+      <p>
+        Sample: <span class="active-sample-title">{{ item.sampleName }}</span>
+      </p>
     </div>
     <div class="sequence-item-wrapper">
       <BaseButton
@@ -287,5 +289,9 @@ onUnmounted(() => {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+}
+
+.active-sample-title {
+  color: #2ecd71;
 }
 </style>
