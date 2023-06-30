@@ -79,10 +79,6 @@ const currentStep = ref(currentStepIndex.value)
 const vol = new Tone.Volume(props.volume).toDestination()
 let rev = new Tone.Reverb({
   ready: () => {
-
-
-
-
     // if (props.reverb !== 0) {
     //   // console.log(sampler.connect(rev))
     //   sampler.connect(rev)
@@ -94,15 +90,10 @@ let rev = new Tone.Reverb({
   }
 }).toDestination()
 
-
-
-
-
 const tick = (time, col) => {
   console.log(rev.get())
 
   if (props.reverb >= 0.001) {
-    
     // sampler.connect(rev)
     // rev.set({ decay: props.reverb })
   } else {
@@ -114,7 +105,7 @@ const tick = (time, col) => {
   sampler.connect(vol)
 
   if (props.item.steps[col] === true) {
-      sampler.triggerAttackRelease(props.item.sampleId, '16n', time)
+    sampler.triggerAttackRelease(props.item.sampleId, '16n', time)
   }
 }
 
@@ -156,16 +147,14 @@ watch(
 watch(
   () => props.reverb,
   (newRev) => {
-console.log(newRev)
+    console.log(newRev)
 
     if (newRev > 0.001 && newRev !== 0 && newRev !== null) {
       rev.set({ decay: newRev })
       sampler.connect(rev)
-      
     } else {
       sampler.disconnect(rev)
     }
-
   }
 )
 
@@ -219,54 +208,54 @@ onUnmounted(() => {
         <BaseButton @click="removeSequence(id)" icon="delete" />
       </div>
 
-    <Teleport to="main" v-if="!empty">
-      <!-- use the modal component, pass in the prop -->
-      <Modal :show="showModal" @close="showModal = false">
-        <template #header>
-          <h3>Edit sound</h3>
-        </template>
-        <template #body>
-          <div class="input-group">
-            <label for="reverb">Sample:</label>
-            <Suspense>
-              <SampleSelect
-                class="sample-select"
-                :value="item.sampleDataId"
-                @update:url="updateSequenceURL(id, $event)"
-                @change:sampleDataId="updateSequenceSample"
-                :item="item"
-                :id="id"
+      <Teleport to="main" v-if="!empty">
+        <!-- use the modal component, pass in the prop -->
+        <Modal :show="showModal" @close="showModal = false">
+          <template #header>
+            <h3>Edit sound</h3>
+          </template>
+          <template #body>
+            <div class="input-group">
+              <label for="reverb">Sample:</label>
+              <Suspense>
+                <SampleSelect
+                  class="sample-select"
+                  :value="item.sampleDataId"
+                  @update:url="updateSequenceURL(id, $event)"
+                  @change:sampleDataId="updateSequenceSample"
+                  :item="item"
+                  :id="id"
+                />
+              </Suspense>
+            </div>
+            <div class="input-group">
+              <label for="reverb">Reverb:</label>
+              <input
+                id="reverb"
+                type="range"
+                min="0"
+                max="10"
+                @change="$emit('update:reverb', $event.target.value)"
+                :value="reverb"
+                step="0.5"
               />
-            </Suspense>
-          </div>
-          <div class="input-group">
-            <label for="reverb">Reverb:</label>
-            <input
-              id="reverb"
-              type="number"
-              min="0"
-              max="10"
-              @change="$emit('update:reverb', $event.target.value)"
-              :value="reverb"
-              step="0.1"
-            />
-          </div>
-          <div class="input-group">
-            <label for="volume">Volume:</label>
-            <input
-              id="volume"
-              type="range"
-              min="-70"
-              max="0"
-              @input="$emit('update:volume', $event.target.value)"
-              :value="volume"
-              step="1"
-            />
-          </div>
-        </template>
-      </Modal>
-    </Teleport>
-  </div>
+            </div>
+            <div class="input-group">
+              <label for="volume">Volume:</label>
+              <input
+                id="volume"
+                type="range"
+                min="-70"
+                max="0"
+                @input="$emit('update:volume', $event.target.value)"
+                :value="volume"
+                step="1"
+              />
+            </div>
+          </template>
+        </Modal>
+      </Teleport>
+    </div>
   </div>
 </template>
 
