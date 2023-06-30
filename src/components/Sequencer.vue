@@ -25,7 +25,7 @@ import { createSequenceArrayIndex } from '@/helpers/toneHelpers.js'
 import BaseButton from '@/components/BaseButton.vue'
 import SequenceItem from '@/components/SequenceItem.vue'
 import SequenceItemControl from '@/components/SequenceItemControl.vue'
-import { whenever } from '@vueuse/core';
+import { whenever } from '@vueuse/core'
 
 // store values to vuejs ref
 const {
@@ -342,16 +342,13 @@ watchEffect(() => {
 })
 let useSampleFiles = null
 onMounted(() => {
-
-
   useSampleFiles = new Tone.ToneAudioBuffers({
-      urls: store.sampleObjectMidi,
-      onload: () => {
-        store.bufferLoaded.setLoaded()
-        console.log(`bufferLoaded is: ${store.bufferLoaded.value}`)
-      }
-    })
-
+    urls: store.sampleObjectMidi,
+    onload: () => {
+      store.bufferLoaded.setLoaded()
+      console.log(`bufferLoaded is: ${store.bufferLoaded.value}`)
+    }
+  })
 
   // Tone.start()
   // configSequence()
@@ -364,16 +361,12 @@ onMounted(() => {
   })
   window.addEventListener('keydown', onKeyDown)
 
-  
   console.log(useSampleFiles.get('101'))
 })
 
-
-
 whenever(store.bufferLoaded, () => {
   console.log(useSampleFiles.get('101'))
-}
-)
+})
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeyDown)
@@ -394,19 +387,17 @@ onUnmounted(() => {
           :sampleFiles="useSampleFiles"
         />
         <div class="add-sequence" :key="sequenceData.lastIndexOf + 1">
-      <BaseButton
-        icon="add"
-        v-show="sequenceData.length !== availableNotes.length"
-        @click="addSequence()"
-      >
-        <!-- <BaseIcon name="add" /> -->
-      </BaseButton>
-    </div>
+          <BaseButton
+            icon="add"
+            v-show="sequenceData.length !== availableNotes.length"
+            @click="addSequence()"
+          >
+            <!-- <BaseIcon name="add" /> -->
+          </BaseButton>
+        </div>
       </TransitionGroup>
     </Suspense>
-    <Transition>
-    
-  </Transition>
+    <Transition> </Transition>
   </div>
   <div class="controlls">
     <InputBpm />
@@ -449,7 +440,7 @@ onUnmounted(() => {
 <style scoped lang="scss">
 .add-sequence {
   margin-inline: auto;
-  transition: all .5s;
+  transition: all 0.5s;
 }
 
 .controlls {
@@ -459,7 +450,7 @@ onUnmounted(() => {
   // position: sticky;
   bottom: 0.5em;
   z-index: 2;
-  justify-content: end;
+  justify-content: center;
   align-items: center;
   align-content: center;
   gap: 1em;
