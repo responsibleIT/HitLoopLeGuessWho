@@ -13,21 +13,17 @@ import {
 } from 'vue'
 
 import { useSequenceStore } from '@/stores/sequence.js'
-
 import { storeToRefs } from 'pinia'
 import * as Tone from 'tone'
-// Pack with sample names
-
-const store = useSequenceStore()
 import InputBpm from '@/components/InputBpm.vue'
 import { createSequenceArrayIndex } from '@/helpers/toneHelpers.js'
-
 import BaseButton from '@/components/BaseButton.vue'
 import SequenceItem from '@/components/SequenceItem.vue'
-import SequenceItemControl from '@/components/SequenceItemControl.vue'
 import { whenever } from '@vueuse/core'
 
 // store values to vuejs ref
+const store = useSequenceStore()
+
 const {
   availableNotes,
   isPlaying,
@@ -37,24 +33,13 @@ const {
   bpm,
   reverb,
   chorus,
-  chorusTypeList,
-  chorusType,
-  pitchShiftValue,
-  pitchShift,
   isSamplesLoaded
 } = storeToRefs(store)
 
 const { setStarted, addSequence, togglePlayPause, setCurrentStepIndex, setSamplesLoaded } = store
 
-// Base url for the api
-
-// const bpm = ref(120)
-const playTime = ref(null)
-// let sequence
-// Tone.setContext(new Tone.Context({ latencyHint : "playback" }))
-// const sampler = new Tone.Sampler().toDestination()
 let sequence = null
-// let sampler = null
+
 let samples = new Tone.Sampler({
   urls: store.sampleObjectMidi,
   onload: () => {
@@ -62,91 +47,6 @@ let samples = new Tone.Sampler({
     setSamplesLoaded(true)
   }
 }).toDestination()
-// let sampler
-
-let keys = new Tone.Players({
-  urls: store.playersObject,
-  onload: () => {
-    console.log('onload keyPlayer')
-    console.log('store.playersLoaded.isLoaded')
-    console.log(store.playersLoaded.isLoaded)
-    store.playersLoaded.setLoaded()
-    console.log('store.playersLoaded.isLoaded')
-    console.log(store.playersLoaded.isLoaded)
-
-    setSamplesLoaded(true)
-  }
-}).toDestination()
-
-let sampler = new Tone.Sampler({
-  urls: store.sampleObject,
-  onload: () => {
-    console.log('1st sampler done')
-  }
-}).toDestination()
-
-const configSequence = () => {
-  // let chor = new Tone.Chorus(chorus.value).toDestination()
-  // sampler = new Tone.Sampler({
-  //     urls: store.sampleObject,
-  //     onload: () => {
-  //     console.log('loaded')
-  //       // sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now()).sync()
-  //     }
-  //   }).toDestination()
-  // tick is callback function which is runned every
-  // const tick = (time, col) => {
-  //   sampler = new Tone.Sampler({
-  //     urls: store.sampleObject,
-  //     onload: () => {
-  //       for (const row of sequenceData.value) {
-  //         console.log(row.steps[col])
-  //         if (row.steps[col]) {
-  //           // notesToPlay.value.push(row.sample)
-
-  //           playNote({
-  //             detail: {
-  //               item: row,
-  //               time: time
-  //             }
-  //           })
-
-  //         }
-  //       }
-  //       // sampler.triggerAttackRelease(notesToPlay.value, '16n', Tone.now()).sync()
-  //     }
-  //   }).toDestination()
-
-  //   // console.log(col)
-  //   Tone.Draw.schedule(() => {
-  //     if (isPlaying.value) {
-  //       setCurrentStepIndex(col)
-  //     }
-  //   }, time)
-
-  //   let notesToPlay = ref([])
-  //   notesToPlay.value = []
-
-  //   // let rev = new Tone.Reverb(reverb.value).toDestination()
-  //   // sampler.chain(rev, Tone.Destination)
-  //   // console.log(reverb.value)
-  //   // console.log(chorus.value)
-
-  //   // Tone.loaded().then(() => {
-  //   //   sampler.sync()
-  //   //   sampler.toDestination()
-  //   // })
-  //   // sampler.triggerAttackRelease(notesToPlay.value, '16n', time).sync()
-  // }
-
-  // sequence.humanize = true
-
-  console.log(sequence.get())
-}
-
-function playPlayer({ detail }) {
-  keys.player(detail.item.note).start(detail.time + 0.00001, 0, '16t')
-}
 
 const tick = (time, col) => {
   Tone.Draw.schedule(() => {
@@ -154,89 +54,24 @@ const tick = (time, col) => {
       setCurrentStepIndex(col)
     }
   }, time)
-  // samples.sync()
-
-  // for (const row of sequenceData.value) {
-  //   if (row.steps[col]) {
-  //     console.log(row)
-  //     console.log(row)
-  //     let detail = {
-  //       item: row,
-  //       time: time
-  //     }
-  //     // playSampler({detail})
-  //     // playPlayer({detail})
-  //   }
-  // }
 }
 
 sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(Tone.now())
-
-function playSampler({ detail }) {
-  let pitchShift = new Tone.PitchShift(pitchShiftValue.value).toDestination()
-  // console.log(pitchShiftValue.value)
-  // samples.sync()
-
-  // if (reverb`.value`.decay !== 0) {
-  //   let rev = new Tone.Reverb(reverb.value).toDestination()
-  //   samples.connect(rev)
-  //   samples.chain(pitchShift, rev, Tone.Destination)
-  // } else {
-  //   samples.chain(pitchShift, Tone.Destination)
-  // }
-
-  // console.log(detail.item.volume)
-
-  samples.volume.value = 0
-  samples.triggerAttackRelease(detail.item.sampleId, '16n', detail.time, 0.5)
-  //  samples.player(detail.item.sampleId, 0, detail.time, 0.5)
-  // samples.player(detail.item.sampleId).start(detail.time, '+0.001', '16n')
-}
 
 Tone.Transport.bpm.value = bpm.value
 
 watch(bpm, (newBpm) => {
   Tone.Transport.bpm.value = newBpm
-  // configSequence()
 })
 
-// watch(pitchShiftValue.value, (newPitchShift) => {
-//   pitchShift.pitch = newPitchShift
-// })
-
-const setToneStart = async () => {
-  if (!isStarted.value) {
-    await setStarted(true)
-
-    // togglePlay()
-    return
-  }
-}
-
 const togglePlay = (e) => {
-  // let now = Tone.now()
-  // Tone.Transport.stop()
-  console.log('isStarted.value')
-  console.log(isStarted.value)
-  // if (!isStarted.value) {
-  //   setToneStart(e)
-  // }
-
   togglePlayPause()
 
   if (isPlaying.value) {
     Tone.getDestination()
-    // get current time
-    //set playtime to current time
-    // playtime is state
-    // playTime.value = now
-    //start sequence +0.1 in the fututre
-
     Tone.Transport.start(Tone.now())
-    // sequence.start()
   } else {
     Tone.Transport.pause(Tone.now())
-    // sequence.stop()
   }
 }
 
@@ -247,45 +82,7 @@ const onKeyDown = (event) => {
   }
 }
 
-// watch(
-//   () => store.sequenceData,
-//   () => {
-//     // fires only when state.someObject is replaced
-//     if (sequence) {
-//       sequence.dispose()
-//       sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(
-//         Tone.now()
-//       )
-//     }
-//     if (samples) {
-//       samples.dispose()
-//       samples = new Tone.Sampler({
-//         urls: store.sampleObjectMidi,
-//         onload: () => {
-//           console.log('2st sampler done')
-//         }
-//       }).toDestination()
-
-//       // sampler.sync()
-//     }
-//     if (sampler) {
-//       sampler.dispose()
-//       sampler = new Tone.Sampler({
-//   urls: store.sampleObject,
-//   onload: () => {
-//     console.log('1st sampler done')
-//   }
-// }).toDestination()
-//     }
-//   }
-// )
-
-watch(
-  () => store.sequenceData,
-  () => {
-    // resetPlayers()
-  }
-)
+watch(() => store.sequenceData)
 
 // fires only when state.someObject is replaced
 const resetSequence = () => {
@@ -298,30 +95,14 @@ const resetSequence = () => {
   }
 }
 
+// fires only when state.someObject is replaced
 const resetSamples = () => {
-  // fires only when state.someObject is replaced
   if (samples) {
     samples.dispose()
     samples = new Tone.Sampler({
       urls: store.sampleObjectMidi,
       onload: () => {
         console.log('resetted sampler done')
-      }
-    }).toDestination()
-
-    // sampler.sync()
-  }
-}
-
-const resetPlayers = () => {
-  // fires only when state.someObject is replaced
-  if (keys) {
-    keys.dispose()
-    keys = new Tone.Player({
-      urls: store.playersObject,
-      onload: () => {
-        console.log('2st player done')
-        setSamplesLoaded(true)
       }
     }).toDestination()
   }
@@ -331,16 +112,12 @@ watchEffect(() => {
   bpm.value
   chorus.value
   reverb.value
-  // rev = new Tone.Reverb(reactiveReverb).toDestination()
-
-  // sequence.chain(rev)
-  // sequenceData.value
-  // configSequence()
   resetSamples()
   resetSequence()
-  // resetPlayers()
 })
+
 let useSampleFiles = null
+
 onMounted(() => {
   useSampleFiles = new Tone.ToneAudioBuffers({
     urls: store.sampleObjectMidi,
@@ -350,18 +127,15 @@ onMounted(() => {
     }
   })
 
-  // Tone.start()
-  // configSequence()
   Tone.Transport.on('start', () => {
     if (!isStarted.value) setStarted(true)
   })
+
   Tone.Transport.on('stop', () => {
     setCurrentStepIndex(-1)
-    // setStarted(false)
   })
-  window.addEventListener('keydown', onKeyDown)
 
-  console.log(useSampleFiles.get('101'))
+  window.addEventListener('keydown', onKeyDown)
 })
 
 whenever(store.bufferLoaded, () => {
@@ -401,38 +175,12 @@ onUnmounted(() => {
   </div>
   <div class="controlls">
     <InputBpm />
-    <div>
-      <!-- <button @click="store.chorusTypeList.prev()">prev</button>
-        <p>{{ chorusType }}</p>
-        <button @click="store.chorusTypeList.next()">next</button> -->
-    </div>
-
-    <!-- <label for="pitch-shift">Pitch Shift:</label>
-    <input
-      id="pitch-shift"
-      type="range"
-      min="-12"
-      max="12"
-      v-model.number.lazy="pitchShiftValue"
-      step="1"
-    />
-
-    <label for="reverb">reverb</label>
-    <input
-      id="reverb"
-      type="number"
-      min="0"
-      max="10"
-      v-model.number.lazy="reverb.decay"
-      step="0.5"
-    /> -->
     <Suspense>
       <BaseButton
         :disabled="!isSamplesLoaded"
         @click="togglePlay($event)"
         :icon="isPlaying ? 'pause' : 'play_arrow'"
       />
-      <!-- <BaseButton v-else @click="togglePlay" icon="pause" /> -->
     </Suspense>
   </div>
 </template>
@@ -445,9 +193,7 @@ onUnmounted(() => {
 
 .controlls {
   display: flex;
-  // position: sticky;
   bottom: 1em;
-  // position: sticky;
   bottom: 0.5em;
   z-index: 2;
   justify-content: center;
@@ -477,14 +223,10 @@ onUnmounted(() => {
   margin-top: 0.1em;
   margin-bottom: 0.1em;
 }
-// .step:first-child {
-//   height: 10rem;
-// }
 .step {
   width: 3em;
   height: 3em;
   border: 1px solid var(--color-black);
-  // transition: all 1ms ease-in-out;
   position: absolute;
 
   &.highlighted {
@@ -508,8 +250,6 @@ svg {
 
 .highlighted {
   stroke-opacity: 50%;
-
-  // stroke: green;
 }
 
 .highlighted.active {
@@ -520,19 +260,8 @@ svg {
   position: relative;
   display: flex;
   flex-direction: column;
-  // grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* see notes below */
   grid-gap: 2rem;
   padding: var(--padding-l);
-
-  // div {
-  //   display: flex;
-  //   flex-wrap: wrap;
-  //   flex-direction: row;
-
-  //   div {
-  //     display: flex;
-  //   }
-  // }
 }
 .row {
   display: flex;
