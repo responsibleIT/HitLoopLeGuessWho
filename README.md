@@ -1,4 +1,4 @@
-<img align="left" width="70" height="70" src="./src/assets/logo.svg" alt="Resume application project app icon">   
+<img align="left" width="90" height="90" src="./src/assets/logo.svg" alt="Resume application project app icon">   
 
 # HitLoop
   
@@ -26,6 +26,8 @@ Thunderboom https://www.thunderboomrecords.com/
 <!-- How about a section that describes how to install this project? 🤓 -->
 
 <!-- ...but how does one use this project? What are its features 🤔 -->
+
+
 
 <!-- Maybe a checklist of done stuff and stuff still on your wishlist? ✅ -->
 
