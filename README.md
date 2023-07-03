@@ -1,4 +1,4 @@
-<img align="left" width="80" height="80" src="./src/assets/logo.svg" alt="Resume application project app icon">   
+<img align="left" width="70" height="70" src="./src/assets/logo.svg" alt="Resume application project app icon">   
 
 # HitLoop
   
