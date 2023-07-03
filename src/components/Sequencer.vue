@@ -232,7 +232,7 @@ return y.value = 100
 .controlls {
   display: flex;
   position: fixed;
-  bottom: 0.75em;
+  bottom: 1em;
   left: 0;
   right: 0;
   // position: sticky;
