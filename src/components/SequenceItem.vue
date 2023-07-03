@@ -255,6 +255,14 @@ onUnmounted(() => {
               />
             </div>
           </template>
+            <template #arc>
+            <SequenceItemArc
+              :columns="columns"
+              :row="item"
+              :highlighted="highlighted"
+              @toggle-step="toggleStep"
+            />
+          </template>
         </Modal>
       </Teleport>
     </div>
@@ -277,6 +285,10 @@ onUnmounted(() => {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
+  transition: all 0.5ms;
+  @media only screen and (max-width: 790px) {
+    flex-wrap: wrap;
+  }
 }
 
 .sample-select {
@@ -289,7 +301,17 @@ onUnmounted(() => {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
+   flex-direction: row;
+  // flex-wrap: wrap;
+
+  label {
+    font-size: 16px;
+  }
+  @media only screen and (max-width: 400px) {
+    flex-direction: column;
+  }
 }
+
 
 .active-sample-title {
   color: #2ecd71;
