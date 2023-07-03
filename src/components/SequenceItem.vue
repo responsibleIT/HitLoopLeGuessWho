@@ -259,7 +259,7 @@ onUnmounted(() => {
             <SequenceItemArc
               :columns="columns"
               :row="item"
-              :highlighted="highlighted"
+              :highlighted="currentStepIndex"
               @toggle-step="toggleStep"
             />
           </template>

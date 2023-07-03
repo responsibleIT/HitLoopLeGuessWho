@@ -63,7 +63,7 @@ function getEndAngle(index) {
         class="arc-item"
         :key="stepIndex"
         :d="describeArc(0, 0, 80, getStartAngle(stepIndex), getEndAngle(stepIndex))"
-        :class="{ active: row.steps[stepIndex], highlighted: stepIndex === currentStepIndex }"
+        :class="{ active: row.steps[stepIndex], highlighted: stepIndex === highlighted }"
         @click="toggleStep(row, stepIndex)"
         stroke-width="15"
         stroke="blue"
@@ -78,7 +78,7 @@ function getEndAngle(index) {
 <style lang="scss" scoped>
 .arc-item {
   stroke: #fff ;
-  transition: all 0.5s;
+  transition: all 0.2s;
 }
 .active {
   stroke-opacity: 50%;
@@ -88,13 +88,14 @@ function getEndAngle(index) {
 }
 
 .highlighted {
-  // stroke-opacity: 50%;
+  stroke-opacity: 10%;
   stroke: var(--color-text)
 
   // stroke: green;
 }
 
 .highlighted.active {
+  stroke-opacity: 100%;
   stroke-width: 22;
   transform: scale(1.75);
   stroke: var(--color-text)
