@@ -2,7 +2,6 @@
 <script async setup>
 import {
   ref,
-  reactive,
   watch,
   onMounted,
   onUnmounted,
@@ -19,7 +18,8 @@ import InputBpm from '@/components/InputBpm.vue'
 import { createSequenceArrayIndex } from '@/helpers/toneHelpers.js'
 import BaseButton from '@/components/BaseButton.vue'
 import SequenceItem from '@/components/SequenceItem.vue'
-import { whenever } from '@vueuse/core'
+
+import { useElementBounding, useScroll, useShare, whenever } from '@vueuse/core'
 
 // store values to vuejs ref
 const store = useSequenceStore()
@@ -56,7 +56,7 @@ const tick = (time, col) => {
   }, time)
 }
 
-sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(Tone.now())
+sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n').start(0)
 
 Tone.Transport.bpm.value = bpm.value
 
@@ -105,14 +105,13 @@ const resetSamples = () => {
         console.log('resetted sampler done')
       }
     }).toDestination()
+
+    // sampler.sync()
   }
 }
 
 watchEffect(() => {
   bpm.value
-  chorus.value
-  reverb.value
-  resetSamples()
   resetSequence()
 })
 
@@ -127,6 +126,8 @@ onMounted(() => {
     }
   })
 
+  // Tone.start()
+  // configSequence()
   Tone.Transport.on('start', () => {
     if (!isStarted.value) setStarted(true)
   })
@@ -136,19 +137,48 @@ onMounted(() => {
   })
 
   window.addEventListener('keydown', onKeyDown)
-})
 
-whenever(store.bufferLoaded, () => {
-  console.log(useSampleFiles.get('101'))
 })
 
 onUnmounted(() => {
   window.removeEventListener('keydown', onKeyDown)
 })
+
+const { share, isSupported } = useShare()
+
+function startShare() {
+  share({
+    title: 'HitLoop',
+    text: 'Hello my friend! HitLoop is Awesome, check this out',
+    url: location.href
+  })
+}
+
+const controlRef = ref(null)
+const sequencerRef = ref(null)
+
+
+
+const controlHeight = computed(() => {
+  const height = useElementBounding(controlRef).height.value
+  return height + 'px'
+})
+
+
+const { x, y } = useScroll(sequencerRef);
+function clickAndScroll(e) {
+addSequence();
+
+
+
+return y.value = 100
+
+}
+
 </script>
 
 <template>
-  <div id="sequencer" v-if="sequenceData && store.sampleData">
+  <div id="sequencer" ref="sequencerRef" v-if="sequenceData && store.sampleData">
     <Suspense>
       <TransitionGroup name="fade" v-if="store.bufferLoaded.value">
         <SequenceItem
@@ -164,24 +194,30 @@ onUnmounted(() => {
           <BaseButton
             icon="add"
             v-show="sequenceData.length !== availableNotes.length"
-            @click="addSequence()"
+            @click="clickAndScroll()"
           >
-            <!-- <BaseIcon name="add" /> -->
           </BaseButton>
         </div>
       </TransitionGroup>
     </Suspense>
     <Transition> </Transition>
   </div>
-  <div class="controlls">
-    <InputBpm />
-    <Suspense>
-      <BaseButton
-        :disabled="!isSamplesLoaded"
-        @click="togglePlay($event)"
-        :icon="isPlaying ? 'pause' : 'play_arrow'"
-      />
-    </Suspense>
+  <div ref="controlRef" class="controlls">
+    <div class="start">
+      <BaseButton v-if="isSupported" @click="startShare" icon="ios_share" />
+    </div>
+
+    <div class="end">
+      <InputBpm />
+      <Suspense>
+        <BaseButton
+          :disabled="!isSamplesLoaded"
+          @click="togglePlay($event)"
+          :icon="isPlaying ? 'pause' : 'play_arrow'"
+        />
+        <!-- <BaseButton v-else @click="togglePlay" icon="pause" /> -->
+      </Suspense>
+    </div>
   </div>
 </template>
 
@@ -189,24 +225,49 @@ onUnmounted(() => {
 .add-sequence {
   margin-inline: auto;
   transition: all 0.5s;
+  position: sticky;
+  bottom: 0;
 }
 
 .controlls {
   display: flex;
-  bottom: 1em;
-  bottom: 0.5em;
+  position: fixed;
+  bottom: 0.75em;
+  left: 0;
+  right: 0;
+  // position: sticky;
+  // bottom: 0.5em;
+  margin-left: 1em;
+  margin-right: 1em;
   z-index: 2;
-  justify-content: center;
+  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
   align-content: center;
   gap: 1em;
+  // max-width: 100%;
   width: 100%;
+
   background-color: #343434;
   border-radius: 8px;
-  padding: 1em 2em;
+  // padding: 1em 2em;
   padding: var(--padding-l);
+  width: calc(100% - 2em);
+
+  div.end {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
+    gap: 1em;
+  }
 }
 .sequencer {
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+
   position: relative;
   display: flex;
   flex-direction: column;
@@ -258,10 +319,24 @@ svg {
 
 #sequencer {
   position: relative;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
   grid-gap: 2rem;
   padding: var(--padding-l);
+  margin-bottom: calc(v-bind(controlHeight) + 1em);
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  // div {
+  //   display: flex;
+  //   flex-wrap: wrap;
+  //   flex-direction: row;
+
+  //   div {
+  //     display: flex;
+  //   }
+  // }
 }
 .row {
   display: flex;

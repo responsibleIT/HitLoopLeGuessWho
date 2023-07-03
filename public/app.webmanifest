@@ -15,5 +15,6 @@
     ],
     "theme_color": "#343434",
     "background_color": "#343434",
-    "display": "minimal-ui"
+    "start_url": "https://giovannidw.github.io/HitLoop/",
+    "display": "standalone"
 }
