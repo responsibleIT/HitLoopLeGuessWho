@@ -1,6 +1,6 @@
-<img align="left" width="90" height="90" src="./src/assets/logo.svg" alt="Resume application project app icon">   
+<img align="left" width="90" height="90" src="./src/assets/logo.svg" alt="Resume application project app icon">
 
-# HitLoop
+# [HitLoop](https://giovannidw.github.com/HitLoop/)
   
 <img width="1420" alt="image" src="https://github.com/GiovanniDw/HitLoop/assets/10939082/bea9cb4a-1f24-4b50-800a-dba4f1c38167">
 
@@ -25,10 +25,44 @@ Thunderboom https://www.thunderboomrecords.com/
 
 <!-- How about a section that describes how to install this project? 🤓 -->
 
+## Getting Started
+
+Local Dev Server  
+```zsh
+$ yarn install
+```
+
+```zsh
+$ yarn dev
+```
+
+Open in browser  
+[http://localhost:3000](http://localhost:3000)
+
+
+Build & Preview  
+```zsh
+$ yarn build
+```
+
+
+
+```zsh
+$ yarn preview
+```
+
+
+
 <!-- ...but how does one use this project? What are its features 🤔 -->
+## Features & Wishlist
+- [x] Edit Sample  
+- [x] State
+- [ ] Animate Sample Sounds
 
 
 
 <!-- Maybe a checklist of done stuff and stuff still on your wishlist? ✅ -->
+
+
 
 <!-- How about a license here? 📜 (or is it a licence?) 🤷 -->
