@@ -28,38 +28,32 @@ Thunderboom https://www.thunderboomrecords.com/
 ## Installation
 
 1. Clone the Repo
-```zsh
+	```zsh
 git clone https://github.com/your-username/HitLoop.git
-
 ```
 2. Navigate to the project directory.
-```zsh
+	```zsh
 cd HitLoop
 ```
-
 3. Install the dependencies using npm, yarn or pnpm.
-```zsh
+	```zsh
 yarn install
 ```
-
 4. Start the dev server.
-```zsh
+	```zsh
 yarn dev
 ```
-
 5. Open the application in your web browser.
-```zsh
+	```zsh
 http://localhost:3000
 ```
-
 6. Build the Project
 Local Dev Server  
-```zsh
+	```zsh
 $ yarn build
 ```
-
 7. Preview the Project Build
-```zsh
+	```zsh
 $ yarn preview
 ```
 
@@ -74,22 +68,22 @@ Contributions to HitLoop are welcome! If you want to suggest improvements, repor
 
 1. Fork the repository.
 2. Create a new branch with a meaningful name.
-    ```zsh
-      git checkout -b my-feature
-    ```
+	```zsh
+git checkout -b my-feature
+```
 3. Make the desired changes to the code.
 4. Apply Formatting 
-    ```zsh
-    yarn format
-    ```
+		```zsh
+yarn format
+```
 5. Commit your changes with clear commit messages.
     ```zsh
-      git commit -m "Add my feature"
-    ```
+git commit -m "Add my feature"
+```
 6. Push your branch to your forked repository.
     ```zsh
-    git push origin my-feature
-    ```
+git push origin my-feature
+```
 7. Open a pull request on the original repository and describe your proposed changes.
 
 
@@ -121,7 +115,6 @@ Contributions to HitLoop are welcome! If you want to suggest improvements, repor
   - [ ] Offline Acces
 - [ ] Preview Sample Audio on Select or Click
 - [ ] Animate Audio
-
 - [ ] Save & Share Sequence
 
 
