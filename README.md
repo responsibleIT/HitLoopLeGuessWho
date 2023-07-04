@@ -28,39 +28,44 @@ Thunderboom https://www.thunderboomrecords.com/
 ## Installation
 
 1. Clone the Repo
-	```zsh
-git clone https://github.com/your-username/HitLoop.git
-```
+    ```zsh
+    git clone https://github.com/your-username/HitLoop.git
+    ```
 2. Navigate to the project directory.
-	```zsh
-cd HitLoop
-```
+    ```zsh
+    cd HitLoop
+    ```
+
 3. Install the dependencies using npm, yarn or pnpm.
-	```zsh
-yarn install
-```
+    ```zsh
+    yarn install
+    ```
+
 4. Start the dev server.
-	```zsh
-yarn dev
-```
+    ```zsh
+    yarn dev
+    ```
+
 5. Open the application in your web browser.
-	```zsh
-http://localhost:3000
-```
+    ```zsh
+    http://localhost:3000
+    ```
+
 6. Build the Project
 Local Dev Server  
-	```zsh
-$ yarn build
-```
+    ```zsh
+    $ yarn build
+    ```
+
 7. Preview the Project Build
-	```zsh
-$ yarn preview
-```
+    ```zsh
+    $ yarn preview
+    ```
 
 Apply prettier formatting on `./src` 
-```zsh
-yarn format
-```
+    ```zsh
+    yarn format
+    ```
 
 ## Contributing
 
@@ -68,22 +73,22 @@ Contributions to HitLoop are welcome! If you want to suggest improvements, repor
 
 1. Fork the repository.
 2. Create a new branch with a meaningful name.
-	```zsh
-git checkout -b my-feature
-```
+    ```zsh
+    git checkout -b my-feature
+    ```
 3. Make the desired changes to the code.
 4. Apply Formatting 
-		```zsh
-yarn format
-```
+    ```zsh
+    yarn format
+    ```
 5. Commit your changes with clear commit messages.
     ```zsh
-git commit -m "Add my feature"
-```
+    git commit -m "Add my feature"
+    ```
 6. Push your branch to your forked repository.
     ```zsh
-git push origin my-feature
-```
+    git push origin my-feature
+    ```
 7. Open a pull request on the original repository and describe your proposed changes.
 
 
@@ -94,9 +99,9 @@ git push origin my-feature
 <!-- ...but how does one use this project? What are its features 🤔 -->
 ## Features & Wishlist
 - [x] Data Cleaning
+  - [x] Create Object per sample
   - [x] Categorize Sample Data
   - [x] Add Midi # per Sample
-  - [ ] 
 - [x] Add & Remove Sequence
 - [x] Edit Sequence Steps
 - [x] Randomize Sequence Steps
@@ -109,6 +114,7 @@ git push origin my-feature
 - [x] Share HitLoop
 - [ ] Undo & Redo
 - [ ] Clear Changes
+- [x] Create SampleObject URL Map
 - [ ] Progressive Web App
   - [x] Add to Homescreen
   - [ ] Service Worker
