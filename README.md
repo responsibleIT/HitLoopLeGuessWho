@@ -74,22 +74,22 @@ Contributions to HitLoop are welcome! If you want to suggest improvements, repor
 
 1. Fork the repository.
 2. Create a new branch with a meaningful name.
-```zsh
-git checkout -b my-feature
-```
+    ```zsh
+      git checkout -b my-feature
+    ```
 3. Make the desired changes to the code.
 4. Apply Formatting 
-```zsh
-yarn format
-```
+    ```zsh
+    yarn format
+    ```
 5. Commit your changes with clear commit messages.
-```zsh
-  git commit -m "Add my feature"
-```
+    ```zsh
+      git commit -m "Add my feature"
+    ```
 6. Push your branch to your forked repository.
-```zsh
-git push origin my-feature
-```
+    ```zsh
+    git push origin my-feature
+    ```
 7. Open a pull request on the original repository and describe your proposed changes.
 
 
