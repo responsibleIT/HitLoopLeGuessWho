@@ -1,6 +1,6 @@
 <img align="left" width="90" height="90" src="./src/assets/logo.svg" alt="Resume application project app icon">
 
-# [HitLoop](https://giovannidw.github.com/HitLoop/)
+# [HitLoop](https://giovannidw.github.io/HitLoop/)
   
 <img width="1420" alt="image" src="https://github.com/GiovanniDw/HitLoop/assets/10939082/bea9cb4a-1f24-4b50-800a-dba4f1c38167">
 
@@ -25,39 +25,104 @@ Thunderboom https://www.thunderboomrecords.com/
 
 <!-- How about a section that describes how to install this project? 🤓 -->
 
-## Getting Started
+## Installation
 
+1. Clone the Repo
+```zsh
+git clone https://github.com/your-username/HitLoop.git
+
+```
+2. Navigate to the project directory.
+```zsh
+cd HitLoop
+```
+
+3. Install the dependencies using npm, yarn or pnpm.
+```zsh
+yarn install
+```
+
+4. Start the dev server.
+```zsh
+yarn dev
+```
+
+5. Open the application in your web browser.
+```zsh
+http://localhost:3000
+```
+
+6. Build the Project
 Local Dev Server  
-```zsh
-$ yarn install
-```
-
-```zsh
-$ yarn dev
-```
-
-Open in browser  
-[http://localhost:3000](http://localhost:3000)
-
-
-Build & Preview  
 ```zsh
 $ yarn build
 ```
 
-
-
+7. Preview the Project Build
 ```zsh
 $ yarn preview
 ```
 
+Apply prettier formatting on `./src` 
+```zsh
+yarn format
+```
 
+## Contributing
+
+Contributions to HitLoop are welcome! If you want to suggest improvements, report issues, or add new features, please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch with a meaningful name.
+```zsh
+git checkout -b my-feature
+```
+3. Make the desired changes to the code.
+4. Apply Formatting 
+```zsh
+yarn format
+```
+5. Commit your changes with clear commit messages.
+```zsh
+  git commit -m "Add my feature"
+```
+6. Push your branch to your forked repository.
+```zsh
+git push origin my-feature
+```
+7. Open a pull request on the original repository and describe your proposed changes.
+
+
+
+## Usage
+   
 
 <!-- ...but how does one use this project? What are its features 🤔 -->
 ## Features & Wishlist
-- [x] Edit Sample  
-- [x] State
-- [ ] Animate Sample Sounds
+- [x] Data Cleaning
+  - [x] Categorize Sample Data
+  - [x] Add Midi # per Sample
+  - [ ] 
+- [x] Add & Remove Sequence
+- [x] Edit Sequence Steps
+- [x] Randomize Sequence Steps
+- [ ] Edits Per Sequence
+  - [x] Sample Select
+  - [x] Reverb
+  - [x] Volume
+  - [x] Sequence Steps
+  - [ ] More audio effects
+- [x] Share HitLoop
+- [ ] Undo & Redo
+- [ ] Clear Changes
+- [ ] Progressive Web App
+  - [x] Add to Homescreen
+  - [ ] Service Worker
+  - [ ] Offline Acces
+- [ ] Preview Sample Audio on Select or Click
+- [ ] Animate Audio
+
+- [ ] Save & Share Sequence
 
 
 
@@ -66,3 +131,7 @@ $ yarn preview
 
 
 <!-- How about a license here? 📜 (or is it a licence?) 🤷 -->
+
+
+## Licence
+ [MIT Licence](./LICENSE)
