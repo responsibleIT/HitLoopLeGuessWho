@@ -1,9 +1,11 @@
 <img align="left" width="90" height="90" src="./src/assets/logo.svg" alt="Resume application project app icon">
 
-# [HitLoop](https://giovannidw.github.io/HitLoop/)
-  
-<img width="1420" alt="image" src="https://github.com/GiovanniDw/HitLoop/assets/10939082/bea9cb4a-1f24-4b50-800a-dba4f1c38167">
+# HitLoop
 
+<a href="https://giovannidw.github.io/HitLoop/" target="_blank">
+<img width="1306" alt="HitLoop-Preview" src="https://github.com/GiovanniDw/HitLoop/assets/10939082/9b362a13-8e3a-48c4-87f3-ded5da6a67d7">
+<a/>
+  
 ## Assignment
 Jouw team ontwikkelt werkende prototypes van een grafische en auditieve interface waarmee een gebruiker snel en gemakkelijk deuntjes kan maken. Je **moet** experimenteren. Onderzoek interfaces die nergens anders op lijken, en leg je niet vast op één idee of concept, maar experimenteer met mogelijke interacties.
 
