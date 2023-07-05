@@ -2,7 +2,7 @@
 
 # HitLoop
 
-<a href="https://giovannidw.github.io/HitLoop/" target="_blank">
+<a href="https://giovannidw.github.io/HitLoop/">
 <img width="1306" alt="HitLoop-Preview" src="https://github.com/GiovanniDw/HitLoop/assets/10939082/9b362a13-8e3a-48c4-87f3-ded5da6a67d7">
 <a/>
   
