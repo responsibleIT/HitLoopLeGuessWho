@@ -34,27 +34,12 @@ const {
   randomSequenceSteps
 } = store
 
-const itemData = toReactive(sequenceData.value[props.id])
-
 defineEmits(['update:volume', 'update:reverb'])
 
 let sequence = null
 const showModal = ref(false)
 const isThisLoaded = ref(false)
-console.log('props.item')
-console.log(props.item)
-const sampleObject = computed(() => {
-  let newObj = {}
-  if (props.item) {
-    let obj = props.item
-    if (obj && obj.sampleId && obj.url) {
-      newObj[obj.sampleId] = obj.url
-    }
-  }
-  return newObj
-})
-console.log('sampleObject.value')
-console.log(sampleObject.value)
+
 let sampler = null
 
 sampler = new Tone.Sampler({
@@ -66,44 +51,11 @@ sampler = new Tone.Sampler({
   .toDestination()
   .sync()
 
-// sampler = new Tone.Sampler().toDestination().sync()
-
-// sampler.buffer = props.sampleFiles.get(props.item.sampleId)
-console.log('sampler.get(props.item.sampleId.toString())')
-console.log(sampler.get(props.item.sampleDataId))
-sampler.get(props.item.sampleId.toString())
-console.log('sampler.buffer')
-console.log(sampler.buffer)
-
-const currentStep = ref(currentStepIndex.value)
 const vol = new Tone.Volume(props.volume).toDestination()
-let rev = new Tone.Reverb({
-  ready: () => {
-    // if (props.reverb !== 0) {
-    //   // console.log(sampler.connect(rev))
-    //   sampler.connect(rev)
-    // }
-
-    if (props.reverb < 0) {
-      console.log('<0')
-    }
-  }
-}).toDestination()
+let rev = new Tone.Reverb().toDestination()
 
 const tick = (time, col) => {
-  console.log(rev.get())
-
-  if (props.reverb >= 0.001) {
-    // sampler.connect(rev)
-    // rev.set({ decay: props.reverb })
-  } else {
-    // sampler.disconnect(rev)
-  }
-
-  // vol.set(itemData.volume)
-
   sampler.connect(vol)
-
   if (props.item.steps[col] === true) {
     sampler.triggerAttackRelease(props.item.sampleId, '16n', time)
   }
@@ -112,10 +64,6 @@ const tick = (time, col) => {
 sequence = new Tone.Sequence(tick, createSequenceArrayIndex(columns.value), '16n')
 sequence.humanize = true
 sequence.start(0)
-
-const resetSequence = () => {
-  // fires only when state.someObject is replaced
-}
 
 const resetSamples = () => {
   // fires only when state.someObject is replaced
@@ -130,7 +78,7 @@ const resetSamples = () => {
   }
 }
 
-watch(sampleObject, () => {
+watch(store.sampleObjectMidi, () => {
   return resetSamples()
 })
 
@@ -147,8 +95,6 @@ watch(
 watch(
   () => props.reverb,
   (newRev) => {
-    console.log(newRev)
-
     if (newRev > 0.001 && newRev !== 0 && newRev !== null) {
       rev.set({ decay: newRev })
       sampler.connect(rev)
@@ -255,7 +201,7 @@ onUnmounted(() => {
               />
             </div>
           </template>
-            <template #arc>
+          <template #arc>
             <SequenceItemArc
               :columns="columns"
               :row="item"
@@ -301,7 +247,7 @@ onUnmounted(() => {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;
-   flex-direction: row;
+  flex-direction: row;
   // flex-wrap: wrap;
 
   label {
@@ -312,10 +258,8 @@ onUnmounted(() => {
   }
 }
 
-
 .active-sample-title {
   color: #2ecd71;
   text-transform: uppercase;
 }
 </style>
- 

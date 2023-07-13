@@ -32,22 +32,33 @@ const {
 } = storeToRefs(store)
 const { toggleStep, updateSequenceURL, addSequence, togglePlayPause, setCurrentStepIndex } = store
 
-defineProps({
-  togglePlay: Function,
-  secuence: Function
-})
+
+
+const togglePlay = (e) => {
+  togglePlayPause()
+
+  if (isPlaying.value) {
+    Tone.getDestination()
+    Tone.Transport.start(Tone.now())
+  } else {
+    Tone.Transport.pause(Tone.now())
+  }
+}
+
+
 </script>
 
 <template>
   <div class="controlls">
-    <div>
-      <label for="bpm"
-        >BPM:
-        <input id="bpm" type="slider" min="20" max="300" v-model.number="bpm" />
-      </label>
-    </div>
-    <BaseButton v-if="!isPlaying" @click="togglePlay(sequence)" icon="play_arrow" />
-    <BaseButton v-else @click="togglePlay(sequence)" icon="pause" />
+    <InputBpm />
+    <Suspense>
+        <BaseButton
+          :disabled="!isSamplesLoaded"
+          @click="togglePlay($event)"
+          :icon="isPlaying ? 'pause' : 'play_arrow'"
+        />
+        <!-- <BaseButton v-else @click="togglePlay" icon="pause" /> -->
+      </Suspense>
   </div>
 </template>
 
