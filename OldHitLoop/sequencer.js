@@ -82,6 +82,7 @@ fetch(sample_list_url)
   console.error('Error fetching data:', error);
 });
 
+
 // Add an event listener to the select element to detect changes
 sampleSelect_col0.addEventListener('change', (event) => {
   // Update the selectedValue variable with the new value and play this audio
@@ -228,46 +229,46 @@ sampleSelect_col3.addEventListener('change', (event) => {
 
 
 
-// Create col4 selection
-const sampleSelect_col4 = document.getElementById('sampleselect_col4');
-fetch(sample_list_url)
-.then(response => response.json())
-.then(data => {
-  const samples = data.files;
-  // Add empty option at start
-  const option = document.createElement('option');
-  option.value = '';
-  option.textContent = '';
-  sampleSelect_col4.appendChild(option);
-  // Create new option for each sample
-  samples.forEach(sample => {
-    const option = document.createElement('option');
-    option.value = sample;
-    option.textContent = sample;
-    sampleSelect_col4.appendChild(option);
-  });
+// // Create col4 selection
+// const sampleSelect_col4 = document.getElementById('sampleselect_col4');
+// fetch(sample_list_url)
+// .then(response => response.json())
+// .then(data => {
+//   const samples = data.files;
+//   // Add empty option at start
+//   const option = document.createElement('option');
+//   option.value = '';
+//   option.textContent = '';
+//   sampleSelect_col4.appendChild(option);
+//   // Create new option for each sample
+//   samples.forEach(sample => {
+//     const option = document.createElement('option');
+//     option.value = sample;
+//     option.textContent = sample;
+//     sampleSelect_col4.appendChild(option);
+//   });
   
-  // Select a random sample after all samples have been loaded
-  const randomIndex = Math.floor(Math.random() * samples.length);
-  const randomSample = samples[randomIndex];
-  sampleSelect_col4.value = randomSample;
-  selectedValue4 = randomSample;
-})
-.catch(error => {
-  console.error('Error fetching data:', error);
-});
+//   // Select a random sample after all samples have been loaded
+//   const randomIndex = Math.floor(Math.random() * samples.length);
+//   const randomSample = samples[randomIndex];
+//   sampleSelect_col4.value = randomSample;
+//   selectedValue4 = randomSample;
+// })
+// .catch(error => {
+//   console.error('Error fetching data:', error);
+// });
 
-// Add an event listener to the select element to detect changes
-sampleSelect_col4.addEventListener('change', (event) => {
-  // Update the selectedValue variable with the new value
-  selectedValue4 = event.target.value;
-  audio = new Audio(sample_url + selectedValue4);
-  // Play the audio
-  audio.play();
-  console.log(selectedValue4);
-  let newSampleURL = sample_url + selectedValue4;
-  updateSampler("C2", newSampleURL);
-});
+// // Add an event listener to the select element to detect changes
+// sampleSelect_col4.addEventListener('change', (event) => {
+//   // Update the selectedValue variable with the new value
+//   selectedValue4 = event.target.value;
+//   audio = new Audio(sample_url + selectedValue4);
+//   // Play the audio
+//   audio.play();
+//   console.log(selectedValue4);
+//   let newSampleURL = sample_url + selectedValue4;
+//   updateSampler("C2", newSampleURL);
+// });
 
 
 

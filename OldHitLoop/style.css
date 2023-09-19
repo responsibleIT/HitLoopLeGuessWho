@@ -16,10 +16,6 @@ body {
   background-color: #d6d6d6;
 }
 
-h1 {
-  /* text-align: center; */
-}
-
 .bpm {
   display: flex;
 }
@@ -136,10 +132,6 @@ input {
 }
 
 /* Table of beats */ 
-table {
-    /* border-collapse: collapse; */
-  }
-
   th {
     height: 20px;
   }
