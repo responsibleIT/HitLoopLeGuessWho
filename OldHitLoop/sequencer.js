@@ -276,7 +276,6 @@ sampleSelect_col4.addEventListener('change', (event) => {
 	if (sampler === undefined) {
 	sampler = new Tone.Sampler({
 		urls: {
-		  C2: sample_url +selectedValue4,
 		  D2: sample_url +selectedValue3,
 		  E2: sample_url +selectedValue2,
 		  F2: sample_url +selectedValue1,
@@ -326,7 +325,7 @@ sampleSelect_col4.addEventListener('change', (event) => {
 
 
 	// Notes corresponded to each Column of the grid
-	const notes = ['G2', 'F2', 'E2', 'D2', 'C2'];
+	const notes = ['G2', 'F2', 'E2', 'D2'];
 
 	// Decides how long a note can take
 	const noteLength = '8n';
