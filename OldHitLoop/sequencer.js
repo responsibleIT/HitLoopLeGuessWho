@@ -25,6 +25,7 @@ window.addEventListener('load', function () {
 ///////////////// Pipeline for selecting samples/////////////////////////
 // Create button variables
 const loopBtn = document.getElementById('loop-btn');
+const genMuBtn = document.getElementById('gen_music_btn');
 const cells = document.querySelectorAll('.cell');
 const tonebtn = document.getElementById('tone-btn');
 const clearbtn = document.getElementById('clear_sequencer');
@@ -37,7 +38,7 @@ let selectedValue0
 let selectedValue1
 let selectedValue2
 let selectedValue3
-let selectedValue4
+// let selectedValue4
 let sampler
 let audio
 
@@ -318,7 +319,7 @@ sampleSelect_col3.addEventListener('change', (event) => {
 ///////////////////////Sequencer pipeline//////////////////////////////
 	let isLoopPlaying = false;
 
-	const numRows = 5;
+	const numRows = 4;
 	const numCols = 16;
 
 	let col = 0; // Initialize the column index
@@ -370,6 +371,25 @@ sampleSelect_col3.addEventListener('change', (event) => {
     }
   });
 
+  function generateMusic() {
+    fetch(fetchUrl)
+    .then(response => response.json())
+    .then(data => {
+    console.log(data)
+      // 'data' is the 2D array of grid values returned by the API
+      for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < data[i].length; j++) {
+          if (data[i][j] == 1.0) {
+            // Cell is ON
+            document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on');
+          } else {
+            // Cell is not changed
+          }
+        }
+      }
+    });
+  }
+
 
 	
 	// Define function to turn cell on/off
@@ -380,6 +400,10 @@ sampleSelect_col3.addEventListener('change', (event) => {
 		event.target.classList.add('on');
 	  }
 	}
+
+  genMuBtn.addEventListener('click', function () {
+		generateMusic();
+	  });
 
 
 	  function playStep(col) {
@@ -397,6 +421,7 @@ sampleSelect_col3.addEventListener('change', (event) => {
 		  currentHeader.classList.add('current');
 		}
 		
+    //code to randomly fill the cells??
 		for (let row = 0; row < numRows; row++) {
 		  const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
 		  console.log(`Checking cell [${row}, ${col}]. Cell is ${cell.classList.contains('on') ? 'on' : 'off'}.`);
