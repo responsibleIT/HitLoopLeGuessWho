@@ -24,21 +24,31 @@ window.addEventListener('load', function () {
 
 ///////////////// Pipeline for selecting samples/////////////////////////
 // Create button variables
-const loopBtn = document.getElementById('loop-btn');
-const genMuBtn = document.getElementById('gen_music_btn');
-const cells = document.querySelectorAll('.cell');
-const tonebtn = document.getElementById('tone-btn');
-const clearbtn = document.getElementById('clear_sequencer');
-const tempoInput = document.getElementById('tempo-input');
+const loopBtn = document.getElementById('loop-btn'); //Loop button 
+const cells = document.querySelectorAll('.cell'); //Cell (from the sequencer grid) 
+const tonebtn = document.getElementById('tone-btn'); //Tone button 
+const clearbtn = document.getElementById('clear_sequencer'); //Clear sequencer grid button 
+const tempoInput = document.getElementById('tempo-input'); //Tempo button 
 
 
+const genMuBtn = document.getElementById('gen_music_btn'); //Generate music button 
 
-// Create a variable to store the sampler relevant values
+const genBeatBtn = document.getElementById('gen_beat_btn'); //Generate music button 
+const genChordBtn = document.getElementById('gen_chord_btn'); //Generate music button 
+const genBassBtn = document.getElementById('gen_bass_btn'); //Generate music button 
+const genMeloBtn = document.getElementById('gen_melo_btn'); //Generate music button 
+
+
+// Create a variable to store the sampler relevant values for each of the tracks
 let selectedValue0
 let selectedValue1
 let selectedValue2
 let selectedValue3
 // let selectedValue4
+
+
+
+// Create a variable to store the sampler and audio
 let sampler
 let audio
 
@@ -54,7 +64,7 @@ function updateSampler(selectedValue, sampleURL) {
 
 
 ////////  Create selection pipelines for each column (0-4)  ////////
-// Create col0 selection
+// Create col0 selection (Track 1)
 const sampleSelect_col0 = document.getElementById('sampleselect_col0');
 fetch(sample_list_url)
 .then(response => response.json())
@@ -101,7 +111,7 @@ sampleSelect_col0.addEventListener('change', (event) => {
 
 
 
-// Create col1 selection
+// Create col1 selection (Track 2)
 const sampleSelect_col1 = document.getElementById('sampleselect_col1');
 fetch(sample_list_url)
 .then(response => response.json())
@@ -145,7 +155,7 @@ sampleSelect_col1.addEventListener('change', (event) => {
 
 
 
-// Create col2 selection
+// Create col2 selection (Track 3)
 const sampleSelect_col2 = document.getElementById('sampleselect_col2');
 fetch(sample_list_url)
 .then(response => response.json())
@@ -187,7 +197,7 @@ sampleSelect_col2.addEventListener('change', (event) => {1
 });
 
 
-// Create col3 selection
+// Create col3 selection (Track 4)
 const sampleSelect_col3 = document.getElementById('sampleselect_col3');
 fetch(sample_list_url)
 .then(response => response.json())
@@ -287,6 +297,7 @@ sampleSelect_col3.addEventListener('change', (event) => {
 		  console.log("Sampler loaded");
 		}
 	  }).toDestination();
+
 	// change the tonebtn text to 'update samples'
   tonebtn.classList.add('hidden-button');
 
@@ -298,6 +309,7 @@ sampleSelect_col3.addEventListener('change', (event) => {
 
 
 	} else {
+    
 	// Update the sampler
 	sampler.dispose();
 	sampler = new Tone.Sampler({
@@ -332,10 +344,10 @@ sampleSelect_col3.addEventListener('change', (event) => {
 	// Decides how long a note can take
 	const noteLength = '8n';
 
-	// Sets the seed to 1,2,3
+	// Sets the seed to 1,2,3 (random beat set for the first 3 tracks)
 	let seed = Math.floor(Math.random() * 10)
 	//Static seed
-	// seed = 120 
+	//seed = 120 
 
 	// Uses input BPM to calculate wait-time between columns
 	columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;
@@ -343,6 +355,8 @@ sampleSelect_col3.addEventListener('change', (event) => {
 		const bpm = parseFloat(tempoInput.value);
 		columnTime = (60 / bpm) * 1000;
 	});
+
+  ///////////////////// SEQUENCER INITIALISATION ////////////////////////
 
 	// Initialize the MIDI data from sequencer_json
 	let fetchUrl = ' '
@@ -372,6 +386,15 @@ sampleSelect_col3.addEventListener('change', (event) => {
   });
 
   function generateMusic() {
+    let fetchUrl = ' '
+
+    if (urlParams.has("A")) {
+      fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed
+      }
+      else{
+        fetchUrl = Url + 'sequencer_json' + '?seed=' + seed
+      }
+  
     fetch(fetchUrl)
     .then(response => response.json())
     .then(data => {
@@ -401,9 +424,27 @@ sampleSelect_col3.addEventListener('change', (event) => {
 	  }
 	}
 
+  ////////////////////// CHECK CLICK GENERATE BUTTONS ////////////////////// 
+
   genMuBtn.addEventListener('click', function () {
-		generateMusic();
-	  });
+		console.log("Generate Music Activated");
+	});
+
+  genBeatBtn.addEventListener('click', function () {
+		console.log("Generate Beat Activated");
+	});
+
+  genChordBtn.addEventListener('click', function () {
+		console.log("Generate Chord Activated");
+	});
+
+  genBassBtn.addEventListener('click', function () {
+		console.log("Generate Bassline Activated");
+	});
+
+  genMeloBtn.addEventListener('click', function () {
+		console.log("Generate Melody Activated");
+	});
 
 
 	  function playStep(col) {
