@@ -1,32 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimum-scale=1.0,"
-    />
-    <link
-      crossorigin
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-    <link rel="manifest" href="/app.webmanifest" crossorigin="use-credentials" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="manifest" href="/app.webmanifest" />
-    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#343434" />
-    <meta name="apple-mobile-web-app-title" content="HitLoop" />
-    <meta name="application-name" content="HitLoop" />
-    <meta name="msapplication-TileColor" content="#343434" />
-    <meta name="theme-color" content="#343434" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="#343434" />
-    <title>HitLoop</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<html>
+<head>
+  <title>Audio Sequencer</title>
+  <link rel="stylesheet" href="style/style.css">
+  <script src="scripts/sequencer.js"></script>
+  <script src="libraries/node_modules\tone\build\Tone.js"></script>
+</head>
+
+<body>
+  <h1>Hitloop</h1>
+
+  <div id="bpm">
+    <label for="tempo-input">Tempo (BPM):</label>
+    <input type="number" id="tempo-input" value="120" min="20" max="300">
+  </div>
+
+  <button id="gen_music_btn">Generate Music</button>
+
+  <main>
+    <nav>
+      <!-- <label for="sampleselect_col0">B E A T</label> -->
+      <button id="gen_beat_btn" class="gen-btn">Generate Beat</button>
+      <select id="sampleselect_col0"></select>
+
+      <button id="gen_chord_btn" class="gen-btn">Generate Chord</button>
+      <select id="sampleselect_col1"></select>
+
+      <button id="gen_bass_btn" class="gen-btn">Generate Bassline</button>
+      <select id="sampleselect_col2"></select>
+
+      <button id="gen_melo_btn" class="gen-btn">Generate Melody</button>
+      <select id="sampleselect_col3"></select>
+
+      <!-- <label for="sampleselect_col4">O T H E R</label>
+      <select id="sampleselect_col4"></select> -->
+    </nav>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="cell-header" data-col="0"></th>
+          <th class="cell-header" data-col="1"></th>
+          <th class="cell-header" data-col="2"></th>
+          <th class="cell-header" data-col="3"></th>
+          <th class="cell-header" data-col="4"></th>
+          <th class="cell-header" data-col="5"></th>
+          <th class="cell-header" data-col="6"></th>
+          <th class="cell-header" data-col="7"></th>
+          <th class="cell-header" data-col="8"></th>
+          <th class="cell-header" data-col="9"></th>
+          <th class="cell-header" data-col="10"></th>
+          <th class="cell-header" data-col="11"></th>
+          <th class="cell-header" data-col="12"></th>
+          <th class="cell-header" data-col="13"></th>
+          <th class="cell-header" data-col="14"></th>
+          <th class="cell-header" data-col="15"><a-row="0"/th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Row 1 - Beat Track -->
+        <tr>
+          <td class="cell" data-row="0" data-col="0"></td>
+          <td class="cell" data-row="0" data-col="1"></td>
+          <td class="cell" data-row="0" data-col="2"></td>
+          <td class="cell" data-row="0" data-col="3"></td>
+          <td class="cell" data-row="0" data-col="4"></td>
+          <td class="cell" data-row="0" data-col="5"></td>
+          <td class="cell" data-row="0" data-col="6"></td>
+          <td class="cell" data-row="0" data-col="7"></td>
+          <td class="cell" data-row="0" data-col="8"></td>
+          <td class="cell" data-row="0" data-col="9"></td>
+          <td class="cell" data-row="0" data-col="10"></td>
+          <td class="cell" data-row="0" data-col="11"></td>
+          <td class="cell" data-row="0" data-col="12"></td>
+          <td class="cell" data-row="0" data-col="13"></td>
+          <td class="cell" data-row="0" data-col="14"></td>
+          <td class="cell" data-row="0" data-col="15"></td>
+        </tr>
+        <!-- Row 2 - Chord Track-->
+        <tr>
+          <td class="cell" data-row="1" data-col="0"></td>
+          <td class="cell" data-row="1" data-col="1"></td>
+          <td class="cell" data-row="1" data-col="2"></td>
+          <td class="cell" data-row="1" data-col="3"></td>
+          <td class="cell" data-row="1" data-col="4"></td>
+          <td class="cell" data-row="1" data-col="5"></td>
+          <td class="cell" data-row="1" data-col="6"></td>
+          <td class="cell" data-row="1" data-col="7"></td>
+          <td class="cell" data-row="1" data-col="8"></td>
+          <td class="cell" data-row="1" data-col="9"></td>
+          <td class="cell" data-row="1" data-col="10"></td>
+          <td class="cell" data-row="1" data-col="11"></td>
+          <td class="cell" data-row="1" data-col="12"></td>
+          <td class="cell" data-row="1" data-col="13"></td>
+          <td class="cell" data-row="1" data-col="14"></td>
+          <td class="cell" data-row="1" data-col="15"></td>
+        </tr>
+
+
+        <!-- Row 3 - Bassline Track -->
+        <tr>
+          <td class="cell" data-row="2" data-col="0"></td>
+          <td class="cell" data-row="2" data-col="1"></td>
+          <td class="cell" data-row="2" data-col="2"></td>
+          <td class="cell" data-row="2" data-col="3"></td>
+          <td class="cell" data-row="2" data-col="4"></td>
+          <td class="cell" data-row="2" data-col="5"></td>
+          <td class="cell" data-row="2" data-col="6"></td>
+          <td class="cell" data-row="2" data-col="7"></td>
+          <td class="cell" data-row="2" data-col="8"></td>
+          <td class="cell" data-row="2" data-col="9"></td>
+          <td class="cell" data-row="2" data-col="10"></td>
+          <td class="cell" data-row="2" data-col="11"></td>
+          <td class="cell" data-row="2" data-col="12"></td>
+          <td class="cell" data-row="2" data-col="13"></td>
+          <td class="cell" data-row="2" data-col="14"></td>
+          <td class="cell" data-row="2" data-col="15"></td>
+        </tr>   
+
+        <!-- Row 4 - Melody Track -->
+        <tr>
+          <td class="cell" data-row="3" data-col="0"></td>
+          <td class="cell" data-row="3" data-col="1"></td>
+          <td class="cell" data-row="3" data-col="2"></td>
+          <td class="cell" data-row="3" data-col="3"></td>
+          <td class="cell" data-row="3" data-col="4"></td>
+          <td class="cell" data-row="3" data-col="5"></td>
+          <td class="cell" data-row="3" data-col="6"></td>
+          <td class="cell" data-row="3" data-col="7"></td>
+          <td class="cell" data-row="3" data-col="8"></td>
+          <td class="cell" data-row="3" data-col="9"></td>
+          <td class="cell" data-row="3" data-col="10"></td>
+          <td class="cell" data-row="3" data-col="11"></td>
+          <td class="cell" data-row="3" data-col="12"></td>
+          <td class="cell" data-row="3" data-col="13"></td>
+          <td class="cell" data-row="3" data-col="14"></td>
+          <td class="cell" data-row="3" data-col="15"></td>
+        </tr>     
+      </tbody>
+    </table>
+  </main>
+
+  <div>
+    <button id="tone-btn">Allow Audio</button>
+    <button id="clear_sequencer" class="hidden-button">Clear all</button>
+    <button id="loop-btn" class="hidden-button">Start Loop</button>
+  </div>
+</body>
 </html>

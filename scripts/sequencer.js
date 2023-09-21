@@ -45,7 +45,6 @@ window.addEventListener('load', function () {
   let selectedValue1;
   let selectedValue2;
   let selectedValue3;
-  // let selectedValue4
 
 
 
@@ -54,7 +53,7 @@ window.addEventListener('load', function () {
   let audio;
 
 
-  
+
   // Function to update the sampler with a new sample
   function updateSampler(selectedValue, sampleURL) {
 
@@ -70,46 +69,55 @@ window.addEventListener('load', function () {
   ////////  Create selection pipelines for each column (0-4)  ////////
   // Create col0 selection (Track 1)
   const sampleSelect_col0 = document.getElementById('sampleselect_col0');
+
   fetch(sample_list_url)
-  .then(response => response.json())
-  .then(data => {
-    const samples = data.files;
-    // Add empty option at start
-    const option = document.createElement('option');
-    option.value = '';
-    option.textContent = '';
-    sampleSelect_col0.appendChild(option);
-    // Create new option for each sample
-    samples.forEach(sample => {
+
+    .then(response => response.json())
+
+    .then(data => {
+      const samples = data.files;
+      // Add empty option at start
       const option = document.createElement('option');
-      option.value = sample;
-      option.textContent = sample;
+      option.value = '';
+      option.textContent = '';
       sampleSelect_col0.appendChild(option);
-    });
+
+      // Create new option for each sample
+      samples.forEach(sample => {
+        const option = document.createElement('option');
+        option.value = sample;
+        option.textContent = sample;
+        sampleSelect_col0.appendChild(option);
+      });
     
-    // Select a random sample after all samples have been loaded
-    const randomIndex = Math.floor(Math.random() * samples.length);
-    const randomSample = samples[randomIndex];
-    sampleSelect_col0.value = randomSample;
-    selectedValue0 = randomSample;
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
+      // Select a random sample after all samples have been loaded
+      const randomIndex = Math.floor(Math.random() * samples.length);
+      const randomSample = samples[randomIndex];
+      sampleSelect_col0.value = randomSample;
+      selectedValue0 = randomSample;
+    })
+
+    .catch(error => {
+
+      console.error('Error fetching data:', error);
+
+    });
 
 
   // Add an event listener to the select element to detect changes
   sampleSelect_col0.addEventListener('change', (event) => {
+
     // Update the selectedValue variable with the new value and play this audio
     selectedValue0 = event.target.value;
     audio = new Audio(sample_url + selectedValue0);
+
     // Play the audio
     audio.play();
     console.log(selectedValue0);
+
     // Update the sampler with the new sample
     let newSampleURL = sample_url + selectedValue0;
     updateSampler("G2", newSampleURL);
-
 
   });
 
@@ -117,41 +125,51 @@ window.addEventListener('load', function () {
 
   // Create col1 selection (Track 2)
   const sampleSelect_col1 = document.getElementById('sampleselect_col1');
+
   fetch(sample_list_url)
-  .then(response => response.json())
-  .then(data => {
-    const samples = data.files;
-    // Add empty option at start
-    const option = document.createElement('option');
-    option.value = '';
-    option.textContent = '';
-    sampleSelect_col1.appendChild(option);
-    // Create new option for each sample
-    samples.forEach(sample => {
+
+    .then(response => response.json())
+
+    .then(data => {
+      const samples = data.files;
+      // Add empty option at start
       const option = document.createElement('option');
-      option.value = sample;
-      option.textContent = sample;
+      option.value = '';
+      option.textContent = '';
       sampleSelect_col1.appendChild(option);
+      // Create new option for each sample
+      samples.forEach(sample => {
+        const option = document.createElement('option');
+        option.value = sample;
+        option.textContent = sample;
+        sampleSelect_col1.appendChild(option);
+      });
+      
+      // Select a random sample after all samples have been loaded
+      const randomIndex = Math.floor(Math.random() * samples.length);
+      const randomSample = samples[randomIndex];
+      sampleSelect_col1.value = randomSample;
+      selectedValue1 = randomSample;
+
+    })
+
+    .catch(error => {
+
+      console.error('Error fetching data:', error);
+
     });
-    
-    // Select a random sample after all samples have been loaded
-    const randomIndex = Math.floor(Math.random() * samples.length);
-    const randomSample = samples[randomIndex];
-    sampleSelect_col1.value = randomSample;
-    selectedValue1 = randomSample;
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
 
   // Add an event listener to the select element to detect changes
   sampleSelect_col1.addEventListener('change', (event) => {
+
     // Update the selectedValue variable with the new value
     selectedValue1 = event.target.value;
+
     audio = new Audio(sample_url + selectedValue1);
-    // Play the audio
-    audio.play();
+    audio.play();  // Play the audio
+
     console.log(selectedValue1);
+
     let newSampleURL = sample_url + selectedValue1;
     updateSampler("F2", newSampleURL);
 
@@ -161,35 +179,42 @@ window.addEventListener('load', function () {
 
   // Create col2 selection (Track 3)
   const sampleSelect_col2 = document.getElementById('sampleselect_col2');
+
   fetch(sample_list_url)
-  .then(response => response.json())
-  .then(data => {
-    const samples = data.files;
-    // Add empty option at start
-    const option = document.createElement('option');
-    option.value = '';
-    option.textContent = '';
-    sampleSelect_col2.appendChild(option);
-    // Create new option for each sample
-    samples.forEach(sample => {
+
+    .then(response => response.json())
+
+    .then(data => {
+      const samples = data.files;
+      // Add empty option at start
       const option = document.createElement('option');
-      option.value = sample;
-      option.textContent = sample;
+      option.value = '';
+      option.textContent = '';
       sampleSelect_col2.appendChild(option);
+      // Create new option for each sample
+      samples.forEach(sample => {
+        const option = document.createElement('option');
+        option.value = sample;
+        option.textContent = sample;
+        sampleSelect_col2.appendChild(option);
+      });
+      
+      // Select a random sample after all samples have been loaded
+      const randomIndex = Math.floor(Math.random() * samples.length);
+      const randomSample = samples[randomIndex];
+      sampleSelect_col2.value = randomSample;
+      selectedValue2 = randomSample;
+    })
+
+    .catch(error => {
+
+      console.error('Error fetching data:', error);
+
     });
-    
-    // Select a random sample after all samples have been loaded
-    const randomIndex = Math.floor(Math.random() * samples.length);
-    const randomSample = samples[randomIndex];
-    sampleSelect_col2.value = randomSample;
-    selectedValue2 = randomSample;
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
 
   // Add an event listener to the select element to detect changes
-  sampleSelect_col2.addEventListener('change', (event) => {1
+  sampleSelect_col2.addEventListener('change', (event) => {
+
     // Update the selectedValue variable with the new value
     selectedValue2 = event.target.value;
     audio = new Audio(sample_url + selectedValue2);
@@ -203,35 +228,41 @@ window.addEventListener('load', function () {
 
   // Create col3 selection (Track 4)
   const sampleSelect_col3 = document.getElementById('sampleselect_col3');
+
   fetch(sample_list_url)
-  .then(response => response.json())
-  .then(data => {
-    const samples = data.files;
-    // Add empty option at start
-    const option = document.createElement('option');
-    option.value = '';
-    option.textContent = '';
-    sampleSelect_col3.appendChild(option);
-    // Create new option for each sample
-    samples.forEach(sample => {
+    .then(response => response.json())
+
+    .then(data => {
+      const samples = data.files;
+
+      // Add empty option at start
       const option = document.createElement('option');
-      option.value = sample;
-      option.textContent = sample;
+      option.value = '';
+      option.textContent = '';
       sampleSelect_col3.appendChild(option);
+
+      // Create new option for each sample
+      samples.forEach(sample => {
+        const option = document.createElement('option');
+        option.value = sample;
+        option.textContent = sample;
+        sampleSelect_col3.appendChild(option);
+      });
+      
+      // Select a random sample after all samples have been loaded
+      const randomIndex = Math.floor(Math.random() * samples.length);
+      const randomSample = samples[randomIndex];
+      sampleSelect_col3.value = randomSample;
+      selectedValue3 = randomSample;
+    })
+
+    .catch(error => {
+      console.error('Error fetching data:', error);
     });
-    
-    // Select a random sample after all samples have been loaded
-    const randomIndex = Math.floor(Math.random() * samples.length);
-    const randomSample = samples[randomIndex];
-    sampleSelect_col3.value = randomSample;
-    selectedValue3 = randomSample;
-  })
-  .catch(error => {
-    console.error('Error fetching data:', error);
-  });
 
   // Add an event listener to the select element to detect changes
   sampleSelect_col3.addEventListener('change', (event) => {
+
     // Update the selectedValue variable with the new value
     selectedValue3 = event.target.value;
     audio = new Audio(sample_url + selectedValue3);
@@ -241,49 +272,6 @@ window.addEventListener('load', function () {
     let newSampleURL = sample_url + selectedValue3;
     updateSampler("D2", newSampleURL);
   });
-
-
-
-  // // Create col4 selection
-  // const sampleSelect_col4 = document.getElementById('sampleselect_col4');
-  // fetch(sample_list_url)
-  // .then(response => response.json())
-  // .then(data => {
-  //   const samples = data.files;
-  //   // Add empty option at start
-  //   const option = document.createElement('option');
-  //   option.value = '';
-  //   option.textContent = '';
-  //   sampleSelect_col4.appendChild(option);
-  //   // Create new option for each sample
-  //   samples.forEach(sample => {
-  //     const option = document.createElement('option');
-  //     option.value = sample;
-  //     option.textContent = sample;
-  //     sampleSelect_col4.appendChild(option);
-  //   });
-    
-  //   // Select a random sample after all samples have been loaded
-  //   const randomIndex = Math.floor(Math.random() * samples.length);
-  //   const randomSample = samples[randomIndex];
-  //   sampleSelect_col4.value = randomSample;
-  //   selectedValue4 = randomSample;
-  // })
-  // .catch(error => {
-  //   console.error('Error fetching data:', error);
-  // });
-
-  // // Add an event listener to the select element to detect changes
-  // sampleSelect_col4.addEventListener('change', (event) => {
-  //   // Update the selectedValue variable with the new value
-  //   selectedValue4 = event.target.value;
-  //   audio = new Audio(sample_url + selectedValue4);
-  //   // Play the audio
-  //   audio.play();
-  //   console.log(selectedValue4);
-  //   let newSampleURL = sample_url + selectedValue4;
-  //   updateSampler("C2", newSampleURL);
-  // });
 
 
 
@@ -332,7 +320,11 @@ window.addEventListener('load', function () {
   });
 
 
-  ///////////////////////Sequencer pipeline//////////////////////////////
+
+
+  /////////////////////// SEQUENCER PIPELINE //////////////////////////////
+
+
     let isLoopPlaying = false;
 
     const numRows = 4;
@@ -355,10 +347,16 @@ window.addEventListener('load', function () {
 
     // Uses input BPM to calculate wait-time between columns
     columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;
+
+
     tempoInput.addEventListener('input', function () {
       const bpm = parseFloat(tempoInput.value);
       columnTime = (60 / bpm) * 1000;
     });
+
+
+
+
 
     ///////////////////// SEQUENCER INITIALISATION ////////////////////////
 
@@ -422,6 +420,40 @@ window.addEventListener('load', function () {
       });
     }
 
+    function generateTrack(dataRow) {
+      console.log("this is generate track");
+
+      let seed = Math.floor(Math.random() * 10);   
+      let fetchUrl = ' ';
+
+      if (urlParams.has("A")) {
+        fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
+      }
+      else {
+          fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
+      }
+    
+      fetch(fetchUrl)
+
+        .then(response => response.json())
+
+        .then(data => {
+        //console.log(data)
+          // 'data' is the 2D array of grid values returned by the API
+          for (let i = 0; i < data.length; i++) {
+
+            if (data[i][dataRow] == 1.0) {
+
+              // Cell is ON
+              document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on');
+
+            } 
+          }
+          
+        });
+    }
+
+
 
     
     // Define function to turn cell on/off
@@ -442,22 +474,26 @@ window.addEventListener('load', function () {
 
     genBeatBtn.addEventListener('click', function () {
       console.log("Generate Beat Activated");
+      generateTrack(0);
     });
 
     genChordBtn.addEventListener('click', function () {
       console.log("Generate Chord Activated");
+      generateTrack(1);
     });
 
     genBassBtn.addEventListener('click', function () {
       console.log("Generate Bassline Activated");
+      generateTrack(2);
     });
 
     genMeloBtn.addEventListener('click', function () {
       console.log("Generate Melody Activated");
+      generateTrack(3);
     });
 
 
-      function playStep(col) {
+    function playStep(col) {
       const playedNotes = {};
       
       // Remove 'current' class from all header elements
@@ -484,7 +520,7 @@ window.addEventListener('load', function () {
         }
         }
       }
-      }
+    }
 
 
 
@@ -493,6 +529,13 @@ window.addEventListener('load', function () {
     intervalId = setInterval(function() {
       if (isLoopPlaying) { // Check if isLoopPlaying is true
         playStep(col);
+
+        const cell = document.querySelector(`.cell[data-row="${0}"][data-col="${col}"]`);
+
+        if (cell.classList.contains('on')) {
+          cell.classList.add('white'); // turns white
+        }
+        
       }
       col++; // Increment the column index
 
@@ -512,21 +555,30 @@ window.addEventListener('load', function () {
     
     loopBtn.addEventListener('click', function () {
       if (loopBtn.classList.contains('btn-pos')) {
+
         loopBtn.classList.remove('btn-pos');
         loopBtn.classList.add('btn-med');
         loopBtn.textContent = 'Stop Loop';
+
         Tone.start();
         isLoopPlaying = true;
+
         playLoop();
+
       }
       else if (loopBtn.classList.contains('btn-med')) {
+
         loopBtn.classList.remove('btn-med');
         loopBtn.classList.add('btn-pos');
         loopBtn.textContent = 'Start Loop';
+
         isLoopPlaying = false;
+
         Tone.Transport.stop()
+
         clearInterval(intervalId); 
         col = 0;
+
       }
     });
     
@@ -552,13 +604,45 @@ window.addEventListener('load', function () {
       }
     }
   }
+
+  function removeOnClassRow(idRow, numCols) {
+
+    for (let col = 0; col <= numCols; col++) {
+
+    const cell = document.querySelector(`.cell[data-row="${idRow}"][data-col="${col}"]`);
+
+      if (cell.classList.contains('on')) {
+        cell.classList.remove('on');
+        cell.classList.add('playing');
+      }
+    }
+    
+  }
   
+  
+
   clear_sequencer.addEventListener('click', function() {
 	  removeOnClass(4, 15);
   });
 
   genMuBtn.addEventListener('click', function() {
 	  removeOnClass(4, 15);
+  });
+
+  genBeatBtn.addEventListener('click', function() {
+	  removeOnClassRow(0, 15);
+  });
+
+  genChordBtn.addEventListener('click', function() {
+	  removeOnClassRow(1, 15);
+  });
+
+  genBassBtn.addEventListener('click', function() {
+	  removeOnClassRow(2, 15);
+  });
+
+  genMeloBtn.addEventListener('click', function() {
+	  removeOnClassRow(3, 15);
   });
   
 });
