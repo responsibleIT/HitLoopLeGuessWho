@@ -8,10 +8,10 @@
 </head>
 
 <body>
-  <h1>Hitloop</h1>
+  <h1>HitLoop</h1>
 
   <div id="bpm">
-    <label for="tempo-input">Tempo (BPM):</label>
+    <label for="tempo-input">BPM</label>
     <input type="number" id="tempo-input" value="120" min="20" max="300">
   </div>
 
@@ -20,12 +20,11 @@
 
 
 
-  <!-- Add a pop up window to the project to start
-  <div class="pop-up">
-      <a href="#" class="gen_start">Generate Music</a>
-      <br><br>
-      <a href="#" class="scratch_start">Or start from scratch</a>
-  </div> -->
+  <!-- Add a pop up window to the project to start -->
+  <div id="popup" class="popup">
+      <button class="popup_button" id="gen_start">Generate Music</button>
+      <button class="popup_button" id="scratch_start">Or start from scratch</button>
+  </div>
 
 
 
@@ -71,7 +70,7 @@
           <th class="cell-header" data-col="15"><a-row="0"/th>
         </tr>
       </thead>
-      
+
       <tbody>
         <!-- Row 1 - Beat Track -->
         <tr>

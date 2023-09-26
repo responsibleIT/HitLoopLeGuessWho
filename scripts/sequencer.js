@@ -43,7 +43,10 @@ window.addEventListener('load', function () {
   const genStart = document.getElementById('gen_start'); //Generate music at start button 
   const scratchStart = document.getElementById('scratch_start'); //Start music from scratch at start button 
 
+  const popupStart = document.getElementById('popup');
+
   
+  console.log("this is the popupStart " + popupStart);
 
   // Create a variable to store the sampler relevant values for each of the tracks
   let selectedValue0;
@@ -60,17 +63,21 @@ window.addEventListener('load', function () {
 
   // Function to update the sampler with a new sample
   function updateSampler(selectedValue, sampleURL) {
-
-    // Remove the existing sample
-    sampler.releaseAll();
-
-    // Add the new sample
-    sampler.add(selectedValue, sampleURL);
+    sampler.releaseAll(); // Remove the existing sample
+    sampler.add(selectedValue, sampleURL);  // Add the new sample
   }
 
+  genStart.addEventListener('click', function() {
+    popupStart.classList.replace('popup', 'popup_hidden');
+    initialSequence();
+  });
 
+  scratchStart.addEventListener('click', function() {
+    popupStart.classList.replace('popup', 'popup_hidden');
+  });
 
-  ////////  Create selection pipelines for each column (0-4)  ////////
+  ////////////////  Create selection pipelines for each column (0-4)  ////////////////
+
   // Create the selection for column 0 (Track 1)
   const sampleSelect_col0 = document.getElementById('sampleselect_col0');
 
@@ -107,17 +114,13 @@ window.addEventListener('load', function () {
 
   // Add an event listener to the select element to detect changes
   sampleSelect_col0.addEventListener('change', (event) => {
-
-    // Update the selectedValue variable with the new value and play this audio
-    selectedValue0 = event.target.value;
+    selectedValue0 = event.target.value; // Update the selectedValue variable with the new value and play this audio
     audio = new Audio(sample_url + selectedValue0);
 
-    // Play the audio
-    audio.play();
+    audio.play();   // Play the audio
     console.log(selectedValue0);
 
-    // Update the sampler with the new sample
-    let newSampleURL = sample_url + selectedValue0;
+    let newSampleURL = sample_url + selectedValue0; // Update the sampler with the new sample
     updateSampler("G2", newSampleURL);
   });
 
@@ -130,31 +133,27 @@ window.addEventListener('load', function () {
     .then(response => response.json())
     .then(data => {
       const samples = data.files;
-      // Add empty option at start
-      const option = document.createElement('option');
+      
+      const option = document.createElement('option');  // Add empty option at start
       option.value = '';
       option.textContent = '';
       sampleSelect_col1.appendChild(option);
-      // Create new option for each sample
-      samples.forEach(sample => {
+      
+      samples.forEach(sample => {  // Create new option for each sample
         const option = document.createElement('option');
         option.value = sample;
         option.textContent = sample;
         sampleSelect_col1.appendChild(option);
       });
       
-      // Select a random sample after all samples have been loaded
-      const randomIndex = Math.floor(Math.random() * samples.length);
+      const randomIndex = Math.floor(Math.random() * samples.length);  // Select a random sample after all samples have been loaded
       const randomSample = samples[randomIndex];
       sampleSelect_col1.value = randomSample;
       selectedValue1 = randomSample;
-
     })
 
     .catch(error => {
-
       console.error('Error fetching data:', error);
-
     });
 
   // Add an event listener to the select element to detect changes
@@ -184,30 +183,26 @@ window.addEventListener('load', function () {
 
     .then(data => {
       const samples = data.files;
-      // Add empty option at start
-      const option = document.createElement('option');
+      const option = document.createElement('option');   // Add empty option at start
       option.value = '';
       option.textContent = '';
       sampleSelect_col2.appendChild(option);
-      // Create new option for each sample
-      samples.forEach(sample => {
+      
+      samples.forEach(sample => {  // Create new option for each sample
         const option = document.createElement('option');
         option.value = sample;
         option.textContent = sample;
         sampleSelect_col2.appendChild(option);
       });
       
-      // Select a random sample after all samples have been loaded
-      const randomIndex = Math.floor(Math.random() * samples.length);
+      const randomIndex = Math.floor(Math.random() * samples.length);   // Select a random sample after all samples have been loaded
       const randomSample = samples[randomIndex];
       sampleSelect_col2.value = randomSample;
       selectedValue2 = randomSample;
     })
 
     .catch(error => {
-
       console.error('Error fetching data:', error);
-
     });
 
   // Add an event listener to the select element to detect changes
@@ -229,26 +224,21 @@ window.addEventListener('load', function () {
 
   fetch(sample_list_url)
     .then(response => response.json())
-
     .then(data => {
       const samples = data.files;
-
-      // Add empty option at start
-      const option = document.createElement('option');
+      const option = document.createElement('option'); // Add empty option at start
       option.value = '';
       option.textContent = '';
       sampleSelect_col3.appendChild(option);
-
-      // Create new option for each sample
-      samples.forEach(sample => {
+      
+      samples.forEach(sample => {  // Create new option for each sample
         const option = document.createElement('option');
         option.value = sample;
         option.textContent = sample;
         sampleSelect_col3.appendChild(option);
       });
       
-      // Select a random sample after all samples have been loaded
-      const randomIndex = Math.floor(Math.random() * samples.length);
+      const randomIndex = Math.floor(Math.random() * samples.length);  // Select a random sample after all samples have been loaded
       const randomSample = samples[randomIndex];
       sampleSelect_col3.value = randomSample;
       selectedValue3 = randomSample;
@@ -274,9 +264,8 @@ window.addEventListener('load', function () {
 
 
 
-    // Initialize the sampler when tonebtn is pressed //
-    tonebtn.addEventListener('click', function () {
-
+  // Initialize the sampler when tonebtn is pressed //
+  tonebtn.addEventListener('click', function () {
     if (sampler === undefined) {
       sampler = new Tone.Sampler({
         urls: {
@@ -301,20 +290,20 @@ window.addEventListener('load', function () {
     } 
 
     else {
-    // Update the sampler
-    sampler.dispose();
-    sampler = new Tone.Sampler({
-      urls: {
-              C2: sample_url +selectedValue4,
-              D2: sample_url +selectedValue3,
-              E2: sample_url +selectedValue2,
-              F2: sample_url +selectedValue1,
-              G2: sample_url +selectedValue0,
-            },
-            onload: () => {
-                          console.log("Sampler loaded");
-            }
-    }).toDestination();
+      // Update the sampler
+      sampler.dispose();
+      sampler = new Tone.Sampler({
+        urls: {
+                // C2: sample_url +selectedValue4,
+                D2: sample_url +selectedValue3,
+                E2: sample_url +selectedValue2,
+                F2: sample_url +selectedValue1,
+                G2: sample_url +selectedValue0,
+              },
+              onload: () => {
+                            console.log("Sampler loaded");
+              }
+      }).toDestination();
     }
   });
 
@@ -358,31 +347,32 @@ window.addEventListener('load', function () {
 
     ///////////////////// SEQUENCER INITIALISATION ////////////////////////
 
-    // Initialize the MIDI data from sequencer_json [Data coming from the AIs]
-    let fetchUrl = ' '
+    function initialSequence () {
+            // Initialize the MIDI data from sequencer_json [Data coming from the AIs]
+      let fetchUrl = ' '
 
-    if (urlParams.has("A")) {
-      fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
-    }
-    else {
-        fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
-    }
+      if (urlParams.has("A")) {
+        fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
+      }
+      else {
+          fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
+      }
 
-    fetch(fetchUrl)
-      .then(response => response.json())
-      .then(data => {
-        // 'data' is the 2D array of grid values returned by the API
-        for (let i = 0; i < data.length; i++) {
-          for (let j = 0; j < data[i].length; j++) {
-            if (data[i][j] == 1.0) {
-              document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
-            } 
+      fetch(fetchUrl)
+        .then(response => response.json())
+        .then(data => {
+          // 'data' is the 2D array of grid values returned by the API
+          for (let i = 0; i < data.length; i++) {
+            for (let j = 0; j < data[i].length; j++) {
+              if (data[i][j] == 1.0) {
+                document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+              } 
+            }
           }
-        }
-      });
+        });
 
-    generateRandomTrack(3); // generate for the tracks after
-
+      generateRandomTrack(3); // generate for the tracks after
+    }
 
 
 
@@ -426,8 +416,6 @@ window.addEventListener('load', function () {
       }
     
 
-
-
       fetch(fetchUrl)
         .then(response => response.json())
         .then(data => {
@@ -465,14 +453,10 @@ window.addEventListener('load', function () {
     function toggleCell(event) {
 
       if (event.target.classList.contains('on')) {
-
         event.target.classList.remove('on');
-
       } 
       else {
-
         event.target.classList.add('on');
-
       }
     }
 
@@ -551,19 +535,32 @@ window.addEventListener('load', function () {
         }
       }
 
-      col++; // Increment the column index
-
-      const previousCell = document.querySelector(`.cell[data-row="${0}"][data-col="${(col-1)}"]`);
-      console.log("Column count " + col);
-
-      if (previousCell.classList.contains('playing')) {
-        console.log("Previous cell is played");
-        previousCell.classList.remove('playing');
-        previousCell.classList.add('on'); // turns white
+      col++; 
+      
+      for (let col = 0; col <= numCols; col++) {
+        const cell = document.querySelector(`.cell[data-row="${idRow}"][data-col="${col}"]`);
+  
+        if (cell.classList.contains('playing')) {
+          cell.classList.remove('playing');
+          //cell.classList.add('on');
+        }
       }
+      
+      // Increment the column index
+
+      // const previousCell = document.querySelector(`.cell[data-row="${0}"][data-col="${(col-1)}"]`);
+      // console.log("Column count " + col);
+
+      // if (previousCell.classList.contains('playing')) {
+      //   console.log("Previous cell is played");
+      //   previousCell.classList.remove('playing');
+      //   previousCell.classList.add('on'); // turns white
+      // }
+
       if (col === numCols) {
         col = 0; // Reset the index to 0
       }
+      
     }, columnTime);
 
     // Set the loopEnd to repeat indefinitely
@@ -591,7 +588,6 @@ window.addEventListener('load', function () {
         loopBtn.textContent = 'Start Loop';
 
         isLoopPlaying = false;
-
         Tone.Transport.stop()
 
         clearInterval(intervalId); 
@@ -628,7 +624,6 @@ window.addEventListener('load', function () {
         cell.classList.remove('on');
       }
     }
-    
   }
   
 
