@@ -26,34 +26,36 @@ else {
 window.addEventListener('load', function () {
 
   // Create button variables
-  const loopBtn = document.getElementById('loop-btn'); //Loop button 
-  const cells = document.querySelectorAll('.cell'); //Cell (from the sequencer grid) 
-  const tonebtn = document.getElementById('tone-btn'); //Tone button 
-  const clearbtn = document.getElementById('clear_sequencer'); //Clear sequencer grid button 
-  const tempoInput = document.getElementById('tempo-input'); //Tempo button 
+  const loopBtn = document.getElementById('loop-btn'); // Loop button 
+  const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
+  const tonebtn = document.getElementById('tone-btn'); // Tone button 
+  const clearbtn = document.getElementById('clear_sequencer'); // Clear sequencer grid button 
+  const tempoInput = document.getElementById('tempo-input'); // Tempo button 
 
+  const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
 
-  const genMuBtn = document.getElementById('gen_music_btn'); //Generate music button 
+  const genBeatBtn = document.getElementById('gen_beat_btn'); // Generate music button 
+  const genChordBtn = document.getElementById('gen_chord_btn'); // Generate music button 
+  const genBassBtn = document.getElementById('gen_bass_btn'); // Generate music button 
+  const genMeloBtn = document.getElementById('gen_melo_btn'); // Generate music button 
 
-  const genBeatBtn = document.getElementById('gen_beat_btn'); //Generate music button 
-  const genChordBtn = document.getElementById('gen_chord_btn'); //Generate music button 
-  const genBassBtn = document.getElementById('gen_bass_btn'); //Generate music button 
-  const genMeloBtn = document.getElementById('gen_melo_btn'); //Generate music button 
+  const genStart = document.getElementById('gen_start'); // Generate music at start button 
+  const scratchStart = document.getElementById('scratch_start'); // Start music from scratch at start button 
 
-  const genStart = document.getElementById('gen_start'); //Generate music at start button 
-  const scratchStart = document.getElementById('scratch_start'); //Start music from scratch at start button 
+  const howGenButn = document.getElementById('how-gen-btn');
 
-  const popupStart = document.getElementById('popup');
+  const popupStart = document.getElementById('popup'); // Popup window at the launch of the app
+  const popupHow = document.getElementById('how-popup');
 
-  
-  console.log("this is the popupStart " + popupStart);
+  const totalRow = 4; // Total amount of rows in the sequencer
+
+  const closeBtn = document.getElementById('close-btn');
 
   // Create a variable to store the sampler relevant values for each of the tracks
-  let selectedValue0;
-  let selectedValue1;
-  let selectedValue2;
-  let selectedValue3;
-
+  let selectedValue0; // track 1
+  let selectedValue1; // track 2
+  let selectedValue2; // track 3
+  let selectedValue3; // track 4
 
 
   // Create a variable to store the sampler and audio
@@ -67,14 +69,18 @@ window.addEventListener('load', function () {
     sampler.add(selectedValue, sampleURL);  // Add the new sample
   }
 
+  // If the popup button to start with a generated button is selected
   genStart.addEventListener('click', function() {
-    popupStart.classList.replace('popup', 'popup_hidden');
-    initialSequence();
+    popupStart.classList.replace('popup', 'popup_hidden'); // hide the popup
+    initialSequence(); // generate the initial sequence
   });
 
+    // If the popup button to start from scratch is selected
   scratchStart.addEventListener('click', function() {
-    popupStart.classList.replace('popup', 'popup_hidden');
+    popupStart.classList.replace('popup', 'popup_hidden'); // hide the popup (Grid starts empty)
   });
+
+
 
   ////////////////  Create selection pipelines for each column (0-4)  ////////////////
 
@@ -158,15 +164,10 @@ window.addEventListener('load', function () {
 
   // Add an event listener to the select element to detect changes
   sampleSelect_col1.addEventListener('change', (event) => {
-
-    // Update the selectedValue variable with the new value
-    selectedValue1 = event.target.value;
-
+    selectedValue1 = event.target.value; // Update the selectedValue variable with the new value
     audio = new Audio(sample_url + selectedValue1);
     audio.play();  // Play the audio
-
-    console.log(selectedValue1);
-
+    // console.log(selectedValue1);
     let newSampleURL = sample_url + selectedValue1;
     updateSampler("F2", newSampleURL);
 
@@ -176,7 +177,6 @@ window.addEventListener('load', function () {
 
   // Create the selection for column 2 (Track 3)
   const sampleSelect_col2 = document.getElementById('sampleselect_col2');
-
   fetch(sample_list_url)
 
     .then(response => response.json())
@@ -311,8 +311,6 @@ window.addEventListener('load', function () {
 
 
   /////////////////////// SEQUENCER PIPELINE //////////////////////////////
-
-
     let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
 
     const numRows = 4; // number of rows
@@ -399,12 +397,10 @@ window.addEventListener('load', function () {
             }
           }
         });
-
         generateRandomTrack(3);
     }
 
     function generateTrack(dataRow) {
-      // console.log("this is generate track");
       let seed = Math.floor(Math.random() * 10);  
       let fetchUrl = ' ';
 
@@ -419,7 +415,7 @@ window.addEventListener('load', function () {
       fetch(fetchUrl)
         .then(response => response.json())
         .then(data => {
-        //console.log("This is the data : " + data)
+
           // 'data' is the 2D array of grid values returned by the API
           for (let i = 0; i < data.length; i++) {
             if (data[i][dataRow] == 1.0) {
@@ -451,7 +447,6 @@ window.addEventListener('load', function () {
     
     // Define function to turn cell on/off
     function toggleCell(event) {
-
       if (event.target.classList.contains('on')) {
         event.target.classList.remove('on');
       } 
@@ -460,16 +455,6 @@ window.addEventListener('load', function () {
       }
     }
 
-    ////////////////////// START BUTTONS ////////////////////// 
-
-    // genStart.addEventListener('click', function () {
-
-    //   genStart.target.classList.add('hidden-button');
-    //   generateMusic();
-
-    // });
-
-    ////////////////////// CLICK GENERATE BUTTONS ////////////////////// 
 
     genMuBtn.addEventListener('click', function () { // Call the generate functionality for the whole music
       generateMusic();
@@ -479,15 +464,15 @@ window.addEventListener('load', function () {
       generateTrack(0);
     });
 
-    genChordBtn.addEventListener('click', function () {
+    genChordBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
       generateTrack(1);
     });
 
-    genBassBtn.addEventListener('click', function () {
+    genBassBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
       generateTrack(2);
     });
 
-    genMeloBtn.addEventListener('click', function () {
+    genMeloBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
       generateRandomTrack(3);
     });
 
@@ -509,7 +494,7 @@ window.addEventListener('load', function () {
 
       for (let row = 0; row < numRows; row++) {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
-        //console.log(`Checking cell [${row}, ${col}]. Cell is ${cell.classList.contains('on') ? 'on' : 'off'}.`);
+
         if (cell && cell.classList.contains('on')) {
           const note = notes[row];
           if (!playedNotes[note]) {
@@ -524,38 +509,50 @@ window.addEventListener('load', function () {
 
   // Define function for playing a loop
   function playLoop() {
+
     intervalId = setInterval(function() {
       if (isLoopPlaying) { // Check if isLoopPlaying is true
         playStep(col);
-        const cell = document.querySelector(`.cell[data-row="${0}"][data-col="${col}"]`);
+        
+        // for every row in the sequence
+        for (row = 0; row < totalRow; row++) {
+          
+          const previousCol = col-1; // holds the indicator of the cell right before the one currently played
+          const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
+          const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
+          
+          if (cell.classList.contains('on')) {
+            cell.classList.remove('on');
+            cell.classList.add('playing'); // turns white
+          }
 
-        if (cell.classList.contains('on')) {
-          cell.classList.remove('on');
-          cell.classList.add('playing'); // turns white
+          if (row == 0) {
+            col++;
+          }
+
+          if (previousCell.classList.contains('playing')) {
+            previousCell.classList.remove('playing');
+            previousCell.classList.add('on'); // turns white
+          }
+        }
+
+        
+        
+        console.log("Col is " + col + " previousCol is " + (previousCol));
+
+         // increment the column by 1
+
+        // for every row in the sequence
+        for (row = 0; row < totalRow; row++) {
+          
+
+
+            // Increment the column index
+          
         }
       }
 
-      col++; 
       
-      for (let col = 0; col <= numCols; col++) {
-        const cell = document.querySelector(`.cell[data-row="${idRow}"][data-col="${col}"]`);
-  
-        if (cell.classList.contains('playing')) {
-          cell.classList.remove('playing');
-          //cell.classList.add('on');
-        }
-      }
-      
-      // Increment the column index
-
-      // const previousCell = document.querySelector(`.cell[data-row="${0}"][data-col="${(col-1)}"]`);
-      // console.log("Column count " + col);
-
-      // if (previousCell.classList.contains('playing')) {
-      //   console.log("Previous cell is played");
-      //   previousCell.classList.remove('playing');
-      //   previousCell.classList.add('on'); // turns white
-      // }
 
       if (col === numCols) {
         col = 0; // Reset the index to 0
@@ -568,8 +565,6 @@ window.addEventListener('load', function () {
     Tone.Transport.start();
     Tone.Transport.loop = true;
     }
-      
-
     
     loopBtn.addEventListener('click', function () {
       if (loopBtn.classList.contains('btn-pos')) {
@@ -590,7 +585,7 @@ window.addEventListener('load', function () {
         isLoopPlaying = false;
         Tone.Transport.stop()
 
-        clearInterval(intervalId); 
+        clearInterval(intervalId); // clear the time interval
         col = 0;
       }
     });
@@ -603,7 +598,11 @@ window.addEventListener('load', function () {
 
 
 
-  // Function for clearing all on cells in the sequencer
+    /* Function for clearing all cells from the sequencer
+  
+  param numRows: amount of rows - usually same amount for each column
+  param numCols: amount of columns - usually same amount for each row
+  return: none */
   function removeOnClass(numRows, numCols) {
     for (let row = 0; row <= numRows; row++) {
       for (let col = 0; col <= numCols; col++) {
@@ -616,6 +615,11 @@ window.addEventListener('load', function () {
     }
   }
 
+  /* Function to remove all the cells that are turned 'ON' on one row
+
+  param idRow: the row where "ON" cells are going to be removed
+  param numCols: amount of columns - usually same amount for each row
+  return: none */
   function removeOnClassRow(idRow, numCols) {
     for (let col = 0; col <= numCols; col++) {
       const cell = document.querySelector(`.cell[data-row="${idRow}"][data-col="${col}"]`);
@@ -626,7 +630,17 @@ window.addEventListener('load', function () {
     }
   }
   
+  ///////////////// POPUPS EVENTS  ///////////////// 
+  // Make a popup appear to show how the composition was generated
+  howGenButn.addEventListener('click', function() {
+    popupHow.classList.remove('popup_hidden');
+    popupHow.classList.add('popup');
+  });
 
+  closeBtn.addEventListener('click', function() {
+    popupHow.classList.remove('popup');
+    popupHow.classList.add('popup_hidden');
+  });
 
 
   ///////////////// CLEAN CELLS  ///////////////// 

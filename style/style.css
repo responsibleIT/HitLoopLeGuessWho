@@ -68,6 +68,27 @@ button {
   padding: 20px 50px;
 }
 
+#close-btn {
+  position: relative;
+  left: 45%;
+}
+
+#how-gen-btn {
+  /* display: block; */
+  position: relative;
+  left: 320px;
+  top: -55px;
+  width: 100px;
+  height: 55px;
+  font-size: 10px;
+  background-color: #eb343476;
+}
+
+#how-popup {
+  width: 600px;
+  left: 32%;
+  top: 300px;
+}
 /* Hidden buttons */ 
 .hidden-button {
   display: none;
@@ -202,6 +223,8 @@ td.on {
 .popup_hidden {
   display: none;
 }
+
+
 
 
 /* Add animation (fade in the popup) */
