@@ -513,58 +513,50 @@ window.addEventListener('load', function () {
     intervalId = setInterval(function() {
       if (isLoopPlaying) { // Check if isLoopPlaying is true
         playStep(col);
-        
+
+        const firstRound = true;
+
         // for every row in the sequence
         for (row = 0; row < totalRow; row++) {
-          
           const previousCol = col-1; // holds the indicator of the cell right before the one currently played
           const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
           const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
-          
+
           if (cell.classList.contains('on')) {
             cell.classList.remove('on');
             cell.classList.add('playing'); // turns white
           }
 
+          console.log("Row is " + row + " previousCol is " + previousCol + " and col is " + col);
+
           if (row == 0) {
-            col++;
+            col++;  // increment the column by 1
           }
 
           if (previousCell.classList.contains('playing')) {
             previousCell.classList.remove('playing');
             previousCell.classList.add('on'); // turns white
           }
-        }
 
-        
-        
-        console.log("Col is " + col + " previousCol is " + (previousCol));
+          if (col === numCols) {
+            col = 0; // Reset the index to 0
+          }
 
-         // increment the column by 1
+          if (previousCol == (numCols-1)) {
+            previousCol = 15;
+          }
 
-        // for every row in the sequence
-        for (row = 0; row < totalRow; row++) {
           
 
-
-            // Increment the column index
-          
         }
-      }
-
-      
-
-      if (col === numCols) {
-        col = 0; // Reset the index to 0
-      }
-      
+      }  
     }, columnTime);
 
-    // Set the loopEnd to repeat indefinitely
-    Tone.Transport.loopEnd = numCols - 1;
-    Tone.Transport.start();
-    Tone.Transport.loop = true;
-    }
+      // Set the loopEnd to repeat indefinitely
+      Tone.Transport.loopEnd = numCols - 1;
+      Tone.Transport.start();
+      Tone.Transport.loop = true;
+  }
     
     loopBtn.addEventListener('click', function () {
       if (loopBtn.classList.contains('btn-pos')) {
