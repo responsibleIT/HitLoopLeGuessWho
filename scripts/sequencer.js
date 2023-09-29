@@ -319,6 +319,7 @@ window.addEventListener('load', function () {
     let col = 0; // Initialize the column index
     let colPrevious = 0;
     let intervalId; // Initialize the intervalId
+    let firstRoundDone = false;
 
     // Notes corresponded to each Column of the grid
     const notes = ['G2', 'F2', 'E2', 'D2']; // 128 official notes in tone.js
@@ -514,41 +515,40 @@ window.addEventListener('load', function () {
       if (isLoopPlaying) { // Check if isLoopPlaying is true
         playStep(col);
 
-        const firstRound = true;
+        let previousCol = 1;
+
+        if (col == 0) {
+          previousCol = numCols-1;
+        }
+
+        if (col > 0) {
+          previousCol = col-1; // Holds the indicator of the cell right before the one currently played
+        }
+        
 
         // for every row in the sequence
-        for (row = 0; row < totalRow; row++) {
-          const previousCol = col-1; // holds the indicator of the cell right before the one currently played
+        for (row = 0; row < totalRow; row++) {  
           const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
           const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
+
 
           if (cell.classList.contains('on')) {
             cell.classList.remove('on');
             cell.classList.add('playing'); // turns white
           }
 
-          console.log("Row is " + row + " previousCol is " + previousCol + " and col is " + col);
-
-          if (row == 0) {
-            col++;  // increment the column by 1
-          }
-
           if (previousCell.classList.contains('playing')) {
             previousCell.classList.remove('playing');
             previousCell.classList.add('on'); // turns white
           }
-
-          if (col === numCols) {
-            col = 0; // Reset the index to 0
-          }
-
-          if (previousCol == (numCols-1)) {
-            previousCol = 15;
-          }
-
-          
-
         }
+
+        col++;
+
+        if (col === numCols) {
+          col = 0; // Reset the index to 0
+        }
+
       }  
     }, columnTime);
 
@@ -576,6 +576,7 @@ window.addEventListener('load', function () {
 
         isLoopPlaying = false;
         Tone.Transport.stop()
+        removePlayingClass(numRows, numCols);
 
         clearInterval(intervalId); // clear the time interval
         col = 0;
@@ -602,6 +603,20 @@ window.addEventListener('load', function () {
 
         if (cell.classList.contains('on')) {
           cell.classList.remove('on');
+        }
+      }
+    }
+  }
+
+  function removePlayingClass(numRows, numCols) {
+    console.log("Inside remove Playing Class");
+    for (let row = 0; row < numRows; row++) {
+      for (let col = 0; col < numCols; col++) {
+        const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+        console.log("Cell was playing : ", cell);
+        if (cell.classList.contains('playing')) {
+          cell.classList.remove('playing');
+          cell.classList.add('on');
         }
       }
     }
