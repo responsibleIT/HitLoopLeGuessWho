@@ -8,6 +8,7 @@ h1 {
 }
 
 body {
+  
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -34,7 +35,7 @@ main {
 
 nav {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 70px 160px;
   width: fit-content;
   padding-top: 24px;
 }
@@ -63,20 +64,23 @@ button {
 
 /* Generate music button */ 
 #gen_music_btn {
-  display:block;
   background-color: #eb3434;
   width: 300px;
   margin-top: 20px;
   padding: 20px 50px;
 }
 
-#close-btn {
+.close {
   position: relative;
+  left: 36%;
+  top: 10px;
+}
+
+#close-how-btn {
   left: 45%;
 }
 
 #how-gen-btn {
-  /* display: block; */
   position: relative;
   left: 13rem;
   top: -55px;
@@ -87,9 +91,9 @@ button {
 }
 
 #how-popup {
+  position: absolute;
   width: 600px;
-  left: 32%;
-  top: 300px;
+  height: 400px;
 }
 /* Hidden buttons */ 
 .hidden-button {
@@ -109,26 +113,32 @@ button {
 }
 
 .og-btn {
+  position: relative;
   width: 70px;
+  height: 70px;
   font-size: 10px;
-  background-color: #c36f6f;
+  background-color: #ac5e8b;
   color: #ffffff;
   box-shadow: none;
-  display: grid;
   margin: 1px;
   padding: 20px;
+  border-radius: 50%;
+}
+
+.og-btn:hover {
+  background-color: #753e5e;
 }
 
 .sampleselect {
   position: relative;
   left: 2px;
-  width: 6rem;
+  width: 100px;
   margin: 5px;;
+  margin-right: 1px;
 }
 
 
 /* Sequence control buttons */
-
 .btn-neg {
   background-color: #9b8181;
   box-shadow: 0 4px #585454;
@@ -221,15 +231,51 @@ td.on {
 }
 
 .popup {
-  position: fixed;
-  width: 200px;
+  position: absolute;
+  width: 300px;
+  height: 200px;
   padding: 20px 30px;
-  left: 45%;
-  right: 45%;
   z-index: 2;
   background-color: white;
   border-radius: 10%;
 }
+
+.popup_start {
+  position: absolute;
+  width: 300px;
+  height: 150px;
+  padding: 20px 30px;
+  z-index: 2;
+  background-color: white;
+  border-radius: 10%;
+  backdrop-filter: blur(10px);
+}
+
+#gen_start {
+  position: absolute;
+  width: 220px;
+  height: 60px;
+  left: 35px;
+  background-color:#c56f6f;
+  font-size: 20px;
+}
+
+#gen_start:hover {
+  background-color: #eb3434;
+}
+
+#scratch_start {
+  position: absolute;
+  left: 75px;
+  top: 100px;
+  background-color: transparent;
+  box-shadow: none;
+}
+
+#scratch_start:hover {
+  color: #8d8d8d;
+}
+
 
 .popup_button {
   margin: 5px;
@@ -240,14 +286,3 @@ td.on {
 }
 
 
-
-/* Add animation (fade in the popup)
-@-webkit-keyframes fadeOut {
-  from {opacity: 1;}
-  to {opacity: 0;}
-}
-
-@keyframes fadeOut {
-  from {opacity: 1;}
-  to {opacity:0 ;}
-} */

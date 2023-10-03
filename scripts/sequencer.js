@@ -34,13 +34,26 @@ window.addEventListener('load', function () {
 
   const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
 
-  const genBeatBtn = document.getElementById('gen_beat_btn'); // Generate music button 
-  const genChordBtn = document.getElementById('gen_chord_btn'); // Generate music button 
-  const genBassBtn = document.getElementById('gen_bass_btn'); // Generate music button 
-  const genMeloBtn = document.getElementById('gen_melo_btn'); // Generate music button 
+  const genBeatBtn = document.getElementById('gen_beat_btn'); // Generate track 0 button 
+  const genChordBtn = document.getElementById('gen_chord_btn'); 
+  const genBassBtn = document.getElementById('gen_bass_btn');
+  const genMeloBtn = document.getElementById('gen_melo_btn'); 
+
+  const ogSample_0 = document.getElementById('og-btn0'); // origin sample track 0 button 
+  const ogSample_1 = document.getElementById('og-btn1'); 
+  const ogSample_2 = document.getElementById('og-btn2');  
+  const ogSample_3 = document.getElementById('og-btn3'); 
+
+  const ogPopup_0 = this.document.getElementById('og-popup0'); // pop origin sample track 0
+  const ogPopup_1 = this.document.getElementById('og-popup1'); // pop origin sample track 0
+  const ogPopup_2 = this.document.getElementById('og-popup2'); // pop origin sample track 0
+  const ogPopup_3 = this.document.getElementById('og-popup3'); // pop origin sample track 0
 
   const genStart = document.getElementById('gen_start'); // Generate music at start button 
   const scratchStart = document.getElementById('scratch_start'); // Start music from scratch at start button 
+
+  const body = document.body;
+  // console.log(body);
 
   const howGenButn = document.getElementById('how-gen-btn');
 
@@ -49,7 +62,12 @@ window.addEventListener('load', function () {
 
   const totalRow = 4; // Total amount of rows in the sequencer
 
-  const closeBtn = document.getElementById('close-btn');
+  const closeHowBtn = document.getElementById('close-how-btn');
+
+  const closeSampleBtn_0 = document.getElementById('close-btn-0');
+  const closeSampleBtn_1 = document.getElementById('close-btn-1');
+  const closeSampleBtn_2 = document.getElementById('close-btn-2');
+  const closeSampleBtn_3 = document.getElementById('close-btn-3');
 
   // Create a variable to store the sampler relevant values for each of the tracks
   let selectedValue0; // track 1
@@ -71,13 +89,15 @@ window.addEventListener('load', function () {
 
   // If the popup button to start with a generated button is selected
   genStart.addEventListener('click', function() {
-    popupStart.classList.replace('popup', 'popup_hidden'); // hide the popup
+    popupStart.classList.replace('popup_start', 'popup_hidden'); // hide the popup
+    genMuBtn.classList.remove('hidden-button');
+    body
     initialSequence(); // generate the initial sequence
   });
 
     // If the popup button to start from scratch is selected
   scratchStart.addEventListener('click', function() {
-    popupStart.classList.replace('popup', 'popup_hidden'); // hide the popup (Grid starts empty)
+    popupStart.classList.replace('popup_start', 'popup_hidden'); // hide the popup (Grid starts empty)
   });
 
 
@@ -305,6 +325,7 @@ window.addEventListener('load', function () {
               }
       }).toDestination();
     }
+
   });
 
 
@@ -510,7 +531,7 @@ window.addEventListener('load', function () {
 
   // Define function for playing a loop
   function playLoop() {
-
+    console.log("Play loop");
     intervalId = setInterval(function() {
       if (isLoopPlaying) { // Check if isLoopPlaying is true
         playStep(col);
@@ -644,11 +665,34 @@ window.addEventListener('load', function () {
     popupHow.classList.add('popup');
   });
 
-  closeBtn.addEventListener('click', function() {
+
+  
+
+  closeHowBtn.addEventListener('click', function() {
     popupHow.classList.remove('popup');
     popupHow.classList.add('popup_hidden');
   });
 
+  closeSampleBtn_0.addEventListener('click', function() {
+    ogPopup_0.classList.remove('popup');
+    ogPopup_0.classList.add('popup_hidden');
+  });
+
+  closeSampleBtn_1.addEventListener('click', function() {
+    ogPopup_1.classList.remove('popup');
+    ogPopup_1.classList.add('popup_hidden');
+  });
+
+  closeSampleBtn_2.addEventListener('click', function() {
+    ogPopup_2.classList.remove('popup');
+    ogPopup_2.classList.add('popup_hidden');
+  });
+
+  closeSampleBtn_3.addEventListener('click', function() {
+    ogPopup_3.classList.remove('popup');
+    ogPopup_3.classList.add('popup_hidden');
+  });
+  
 
   ///////////////// CLEAN CELLS  ///////////////// 
 
@@ -661,10 +705,6 @@ window.addEventListener('load', function () {
   genMuBtn.addEventListener('click', function() {
 	  removeOnClass(4, 15);
   });
-
-
-
-
 
 
   ///////////////// CLEAN CELLS BY ROW   ///////////////// 
@@ -687,6 +727,22 @@ window.addEventListener('load', function () {
   // clear the fourth row of the sequence grid when the generate melody button is pressed
   genMeloBtn.addEventListener('click', function() {
 	  removeOnClassRow(3, 15);
+  });
+
+  ogSample_0.addEventListener('click', function() {
+    ogPopup_0.classList.replace('popup_hidden', 'popup');
+  });
+
+  ogSample_1.addEventListener('click', function() {
+    ogPopup_1.classList.replace('popup_hidden', 'popup');
+  });
+
+  ogSample_2.addEventListener('click', function() {
+    ogPopup_2.classList.replace('popup_hidden', 'popup');
+  });
+
+  ogSample_3.addEventListener('click', function() {
+    ogPopup_3.classList.replace('popup_hidden', 'popup');
   });
   
 });
