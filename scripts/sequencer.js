@@ -49,6 +49,13 @@ window.addEventListener('load', function () {
   const ogPopup_2 = this.document.getElementById('og-popup2'); // pop origin sample track 0
   const ogPopup_3 = this.document.getElementById('og-popup3'); // pop origin sample track 0
 
+  const slowTempo = this.document.getElementById('slow_btn');
+  const fastTempo = this.document.getElementById('fast_btn');
+
+  let bpm = 100;
+  let slowBpm = 80;
+  let fastBpm = 120;
+
   const genStart = document.getElementById('gen_start'); // Generate music at start button 
   const scratchStart = document.getElementById('scratch_start'); // Start music from scratch at start button 
 
@@ -91,7 +98,7 @@ window.addEventListener('load', function () {
   genStart.addEventListener('click', function() {
     popupStart.classList.replace('popup_start', 'popup_hidden'); // hide the popup
     genMuBtn.classList.remove('hidden-button');
-    body
+    body.classList.add
     initialSequence(); // generate the initial sequence
   });
 
@@ -356,9 +363,12 @@ window.addEventListener('load', function () {
     // Uses input BPM to calculate wait-time between columns
     columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;
 
+   
+
     // determines the tempo
-    tempoInput.addEventListener('input', function () {
-      const bpm = parseFloat(tempoInput.value);
+    tempoInput.addEventListener('input', function (bpm) {
+      bpm = parseFloat(tempoInput.value);
+      console.log("Tempo ", bpm);
       columnTime = (60 / bpm) * 1000;
     });
 
