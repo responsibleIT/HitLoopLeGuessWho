@@ -49,8 +49,8 @@ window.addEventListener('load', function () {
   const ogPopup_2 = this.document.getElementById('og-popup2'); // pop origin sample track 0
   const ogPopup_3 = this.document.getElementById('og-popup3'); // pop origin sample track 0
 
-  const slowBtn = this.document.getElementById('slow_btn');
-  const fastBtn = this.document.getElementById('fast_btn');
+  let slowBtn = this.document.getElementById('slow_btn');
+  let fastBtn = this.document.getElementById('fast_btn');
 
   let bpm = 100;
   let slowBpm = 80;
@@ -108,7 +108,13 @@ window.addEventListener('load', function () {
     genMuBtn.classList.remove('hidden-button');
   });
 
+  slowTempoBtn.addEventListener('click', function() {
+    tempoInput = slowBpm;
+  })
 
+  fastTempoBtn.addEventListener('click', function() {
+    tempoInput = fastBpm;
+  })
 
   ////////////////  Create selection pipelines for each column (0-4)  ////////////////
 
