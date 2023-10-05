@@ -52,7 +52,7 @@ window.addEventListener('load', function () {
   let slowBtn = this.document.getElementById('slow_btn');
   let fastBtn = this.document.getElementById('fast_btn');
 
-  let bpm = 100;
+  // let bpm = 100;
   let slowBpm = 80;
   let fastBpm = 120;
 

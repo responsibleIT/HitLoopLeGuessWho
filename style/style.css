@@ -145,7 +145,7 @@ button {
   /* box-shadow: 0 4px #585454; */
 }
   .btn-neg:hover {
-    background-color: #414141;
+    background-color: #565656;
   }
   .btn-neg:active {
     background-color: #737373;
@@ -291,6 +291,10 @@ td.on {
   background-color: #d8a537;
 }
 
+#slow_btn:focus {
+  background-color: #d8a537;
+}
+
 #fast_btn {
   background-color: #93b1396b;
 }
@@ -298,6 +302,11 @@ td.on {
 #fast_btn:hover {
   background-color: #93b139;
 }
+
+#fast_btn:focus {
+  background-color: #93b139;
+}
+
 
 
 .popup_button {
