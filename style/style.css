@@ -277,10 +277,18 @@ td.on {
 }
 
 #slow_btn {
+  background-color: #d8a5377e;
+}
+
+#slow_btn:hover {
   background-color: #d8a537;
 }
 
 #fast_btn {
+  background-color: #93b1396b;
+}
+
+#fast_btn:hover {
   background-color: #93b139;
 }
 

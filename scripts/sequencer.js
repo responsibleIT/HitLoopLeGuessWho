@@ -49,8 +49,8 @@ window.addEventListener('load', function () {
   const ogPopup_2 = this.document.getElementById('og-popup2'); // pop origin sample track 0
   const ogPopup_3 = this.document.getElementById('og-popup3'); // pop origin sample track 0
 
-  const slowTempo = this.document.getElementById('slow_btn');
-  const fastTempo = this.document.getElementById('fast_btn');
+  const slowBtn = this.document.getElementById('slow_btn');
+  const fastBtn = this.document.getElementById('fast_btn');
 
   let bpm = 100;
   let slowBpm = 80;
@@ -105,6 +105,7 @@ window.addEventListener('load', function () {
     // If the popup button to start from scratch is selected
   scratchStart.addEventListener('click', function() {
     popupStart.classList.replace('popup_start', 'popup_hidden'); // hide the popup (Grid starts empty)
+    genMuBtn.classList.remove('hidden-button');
   });
 
 
@@ -234,7 +235,6 @@ window.addEventListener('load', function () {
 
   // Add an event listener to the select element to detect changes
   sampleSelect_col2.addEventListener('change', (event) => {
-
     // Update the selectedValue variable with the new value
     selectedValue2 = event.target.value;
     audio = new Audio(sample_url + selectedValue2);
@@ -339,286 +339,282 @@ window.addEventListener('load', function () {
 
 
   /////////////////////// SEQUENCER PIPELINE //////////////////////////////
-    let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
+  let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
 
-    const numRows = 4; // number of rows
-    const numCols = 16; // number of columns
+  const numRows = 4; // number of rows
+  const numCols = 16; // number of columns
 
-    let col = 0; // Initialize the column index
-    let colPrevious = 0;
-    let intervalId; // Initialize the intervalId
-    let firstRoundDone = false;
+  let col = 0; // Initialize the column index
+  let colPrevious = 0;
+  let intervalId; // Initialize the intervalId
+  let firstRoundDone = false;
 
-    // Notes corresponded to each Column of the grid
-    const notes = ['G2', 'F2', 'E2', 'D2']; // 128 official notes in tone.js
+  // Notes corresponded to each Column of the grid
+  const notes = ['G2', 'F2', 'E2', 'D2']; // 128 official notes in tone.js
 
-    // Decides how long a note can take
-    const noteLength = '8n';
+  // Decides how long a note can take
+  const noteLength = '8n';
 
-    // Sets the seed to 1,2,3 (random beat set for the first 3 tracks)
-    let seed = Math.floor(Math.random() * 10);
-    //Static seed
-    //seed = 120 
+  // Sets the seed to 1,2,3 (random beat set for the first 3 tracks)
+  let seed = Math.floor(Math.random() * 10);
+  //Static seed
+  //seed = 120 
 
-    // Uses input BPM to calculate wait-time between columns
-    columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;
+  // Uses input BPM to calculate wait-time between columns
+  columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;
 
-   
+  
 
-    // determines the tempo
-    tempoInput.addEventListener('input', function (bpm) {
-      bpm = parseFloat(tempoInput.value);
-      console.log("Tempo ", bpm);
-      columnTime = (60 / bpm) * 1000;
-    });
-
-
-
-
-    ///////////////////// SEQUENCER INITIALISATION ////////////////////////
-
-    function initialSequence () {
-            // Initialize the MIDI data from sequencer_json [Data coming from the AIs]
-      let fetchUrl = ' '
-
-      if (urlParams.has("A")) {
-        fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
-      }
-      else {
-          fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
-      }
-
-      fetch(fetchUrl)
-        .then(response => response.json())
-        .then(data => {
-          // 'data' is the 2D array of grid values returned by the API
-          for (let i = 0; i < data.length; i++) {
-            for (let j = 0; j < data[i].length; j++) {
-              if (data[i][j] == 1.0) {
-                document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
-              } 
-            }
-          }
-        });
-
-      generateRandomTrack(3); // generate for the tracks after
-    }
+  // determines the tempo
+  tempoInput.addEventListener('input', function (bpm) {
+    bpm = parseFloat(tempoInput.value);
+    console.log("Tempo ", bpm);
+    columnTime = (60 / bpm) * 1000;
+  });
 
 
 
 
-    function generateMusic() {
-      let seed = Math.floor(Math.random()*1000);
-      let fetchUrl = ' ';
-      if (urlParams.has("A")) {
-        fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
-      }
-      else {
-        fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
-      }
+  ///////////////////// SEQUENCER INITIALISATION ////////////////////////
 
-      fetch(fetchUrl)
-        .then(response => response.json())
-        .then(data => {
-          // 'data' is the 2D array of grid values returned by the API
-          for (let i = 0; i < data.length; i++) {
-            for (let j = 0; j < data[i].length; j++) {
-              if (data[i][j] == 1.0) {
-                document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
-              } 
-            }
-          }
-        });
-        generateRandomTrack(3);
-    }
+  function initialSequence () {
+          // Initialize the MIDI data from sequencer_json [Data coming from the AIs]
+    let fetchUrl = ' '
 
-    function generateTrack(dataRow) {
-      let seed = Math.floor(Math.random() * 10);  
-      let fetchUrl = ' ';
-
-      if (urlParams.has("A")) {
-        fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
-      }
-      else {
-          fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
-      }
-    
-
-      fetch(fetchUrl)
-        .then(response => response.json())
-        .then(data => {
-
-          // 'data' is the 2D array of grid values returned by the API
-          for (let i = 0; i < data.length; i++) {
-            if (data[i][dataRow] == 1.0) {
-              // Cell is ON
-              document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on');
-            } 
-          }
-        });
-    }
-
-    function generateRandomTrack(dataRow) {
-      // console.log("this is generate track");
-      let seed = Math.floor(Math.random() * 10);  
-      let fetchUrl = ' ';
+    if (urlParams.has("A")) {
       fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
-    
-      fetch(fetchUrl)
-        .then(response => response.json())
-        .then(data => {
+    }
+    else {
+        fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
+    }
 
-          // 'data' is the 2D array of grid values returned by the API
-          for (let i = 0; i < data.length; i++) {
-            if (data[i][dataRow] == 1.0) {
-              document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+    fetch(fetchUrl)
+      .then(response => response.json())
+      .then(data => {
+        // 'data' is the 2D array of grid values returned by the API
+        for (let i = 0; i < data.length; i++) {
+          for (let j = 0; j < data[i].length; j++) {
+            if (data[i][j] == 1.0) {
+              document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
             } 
-          }  
-        });
-    }
-    
-    // Define function to turn cell on/off
-    function toggleCell(event) {
-      if (event.target.classList.contains('on')) {
-        event.target.classList.remove('on');
-      } 
-      else {
-        event.target.classList.add('on');
-      }
-    }
-
-
-    genMuBtn.addEventListener('click', function () { // Call the generate functionality for the whole music
-      generateMusic();
-    });
-
-    genBeatBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
-      generateTrack(0);
-    });
-
-    genChordBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
-      generateTrack(1);
-    });
-
-    genBassBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
-      generateTrack(2);
-    });
-
-    genMeloBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
-      generateRandomTrack(3);
-    });
-
-
-    function playStep(col) {
-      const playedNotes = {}; 
-      const headerElements = document.querySelectorAll('.cell-header'); // Remove 'current' class from all header elements
-
-      headerElements.forEach((header) => {
-        header.classList.remove('current');
+          }
+        }
       });
-      
-      const currentHeader = document.querySelector(`.cell-header[data-col="${col}"]`); // Set the 'current' class for the header element corresponding to the given column
-
-      if (currentHeader) {
-        currentHeader.classList.add('current');
-      }
-      
-
-      for (let row = 0; row < numRows; row++) {
-        const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
-
-        if (cell && cell.classList.contains('on')) {
-          const note = notes[row];
-          if (!playedNotes[note]) {
-            sampler.triggerAttackRelease(note, noteLength);
-            playedNotes[note] = true;
-          }
-        }
-      }
-    }
-
-
-
-  // Define function for playing a loop
-  function playLoop() {
-    console.log("Play loop");
-    intervalId = setInterval(function() {
-      if (isLoopPlaying) { // Check if isLoopPlaying is true
-        playStep(col);
-
-        let previousCol = 1;
-
-        if (col == 0) {
-          previousCol = numCols-1;
-        }
-
-        if (col > 0) {
-          previousCol = col-1; // Holds the indicator of the cell right before the one currently played
-        }
-        
-
-        // for every row in the sequence
-        for (row = 0; row < totalRow; row++) {  
-          const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
-          const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
-
-
-          if (cell.classList.contains('on')) {
-            cell.classList.remove('on');
-            cell.classList.add('playing'); // turns white
-          }
-
-          if (previousCell.classList.contains('playing')) {
-            previousCell.classList.remove('playing');
-            previousCell.classList.add('on'); // turns white
-          }
-        }
-
-        col++;
-
-        if (col === numCols) {
-          col = 0; // Reset the index to 0
-        }
-
-      }  
-    }, columnTime);
-
-      // Set the loopEnd to repeat indefinitely
-      Tone.Transport.loopEnd = numCols - 1;
-      Tone.Transport.start();
-      Tone.Transport.loop = true;
+    generateRandomTrack(3); // generate for the tracks after
   }
-    
-    loopBtn.addEventListener('click', function () {
-      if (loopBtn.classList.contains('btn-pos')) {
-        loopBtn.classList.remove('btn-pos');
-        loopBtn.classList.add('btn-med');
-        loopBtn.textContent = 'Stop Loop';
 
-        Tone.start();
-        isLoopPlaying = true;
 
-        playLoop();
-      }
-      else if (loopBtn.classList.contains('btn-med')) {
-        loopBtn.classList.remove('btn-med');
-        loopBtn.classList.add('btn-pos');
-        loopBtn.textContent = 'Start Loop';
+  function generateMusic() {
+    let seed = Math.floor(Math.random()*1000);
+    let fetchUrl = ' ';
+    if (urlParams.has("A")) {
+      fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
+    }
+    else {
+      fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
+    }
 
-        isLoopPlaying = false;
-        Tone.Transport.stop()
-        removePlayingClass(numRows, numCols);
-
-        clearInterval(intervalId); // clear the time interval
-        col = 0;
-      }
-    });
-    
-    cells.forEach(function (cell) {
-      cell.addEventListener('click', function (event) {
-        toggleCell(event);
+    fetch(fetchUrl)
+      .then(response => response.json())
+      .then(data => {
+        for (let i = 0; i < data.length; i++) { // 'data' is the 2D array of grid values returned by the API
+          for (let j = 0; j < data[i].length; j++) {
+            if (data[i][j] == 1.0) {
+              document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+            } 
+          }
+        }
       });
+      generateRandomTrack(3);
+  }
+
+  function generateTrack(dataRow) {
+    let seed = Math.floor(Math.random() * 10);  
+    let fetchUrl = ' ';
+
+    if (urlParams.has("A")) {
+      fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
+    }
+    else {
+        fetchUrl = Url + 'sequencer_json' + '?seed=' + seed;
+    }
+  
+
+    fetch(fetchUrl)
+      .then(response => response.json())
+      .then(data => {
+
+        // 'data' is the 2D array of grid values returned by the API
+        for (let i = 0; i < data.length; i++) {
+          if (data[i][dataRow] == 1.0) {
+            // Cell is ON
+            document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on');
+          } 
+        }
+      });
+  }
+
+  function generateRandomTrack(dataRow) {
+    // console.log("this is generate track");
+    let seed = Math.floor(Math.random() * 10);  
+    let fetchUrl = ' ';
+    fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
+  
+    fetch(fetchUrl)
+      .then(response => response.json())
+      .then(data => {
+
+        // 'data' is the 2D array of grid values returned by the API
+        for (let i = 0; i < data.length; i++) {
+          if (data[i][dataRow] == 1.0) {
+            document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+          } 
+        }  
+      });
+  }
+  
+  // Define function to turn cell on/off
+  function toggleCell(event) {
+    if (event.target.classList.contains('on')) {
+      event.target.classList.remove('on');
+    } 
+    else {
+      event.target.classList.add('on');
+    }
+  }
+
+
+  genMuBtn.addEventListener('click', function () { // Call the generate functionality for the whole music
+    generateMusic();
+  });
+
+  genBeatBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
+    generateTrack(0);
+  });
+
+  genChordBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
+    generateTrack(1);
+  });
+
+  genBassBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
+    generateTrack(2);
+  });
+
+  genMeloBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
+    generateRandomTrack(3);
+  });
+
+
+  function playStep(col) {
+    const playedNotes = {}; 
+    const headerElements = document.querySelectorAll('.cell-header'); // Remove 'current' class from all header elements
+
+    headerElements.forEach((header) => {
+      header.classList.remove('current');
     });
+    
+    const currentHeader = document.querySelector(`.cell-header[data-col="${col}"]`); // Set the 'current' class for the header element corresponding to the given column
+
+    if (currentHeader) {
+      currentHeader.classList.add('current');
+    }
+    
+
+    for (let row = 0; row < numRows; row++) {
+      const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+
+      if (cell && cell.classList.contains('on')) {
+        const note = notes[row];
+        if (!playedNotes[note]) {
+          sampler.triggerAttackRelease(note, noteLength);
+          playedNotes[note] = true;
+        }
+      }
+    }
+  }
+
+
+
+// Define function for playing a loop
+function playLoop() {
+  console.log("Play loop");
+  intervalId = setInterval(function() {
+    if (isLoopPlaying) { // Check if isLoopPlaying is true
+      playStep(col);
+
+      let previousCol = 1;
+
+      if (col == 0) {
+        previousCol = numCols-1;
+      }
+
+      if (col > 0) {
+        previousCol = col-1; // Holds the indicator of the cell right before the one currently played
+      }
+      
+
+      // for every row in the sequence
+      for (row = 0; row < totalRow; row++) {  
+        const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
+        const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
+
+
+        if (cell.classList.contains('on')) {
+          cell.classList.remove('on');
+          cell.classList.add('playing'); // turns white
+        }
+
+        if (previousCell.classList.contains('playing')) {
+          previousCell.classList.remove('playing');
+          previousCell.classList.add('on'); // turns white
+        }
+      }
+
+      col++;
+
+      if (col === numCols) {
+        col = 0; // Reset the index to 0
+      }
+
+    }  
+  }, columnTime);
+
+    // Set the loopEnd to repeat indefinitely
+    Tone.Transport.loopEnd = numCols - 1;
+    Tone.Transport.start();
+    Tone.Transport.loop = true;
+}
+  
+  loopBtn.addEventListener('click', function () {
+    if (loopBtn.classList.contains('btn-pos')) {
+      loopBtn.classList.remove('btn-pos');
+      loopBtn.classList.add('btn-med');
+      loopBtn.textContent = 'Stop Loop';
+
+      Tone.start();
+      isLoopPlaying = true;
+
+      playLoop();
+    }
+    else if (loopBtn.classList.contains('btn-med')) {
+      loopBtn.classList.remove('btn-med');
+      loopBtn.classList.add('btn-pos');
+      loopBtn.textContent = 'Start Loop';
+
+      isLoopPlaying = false;
+      Tone.Transport.stop()
+      removePlayingClass(numRows, numCols);
+
+      clearInterval(intervalId); // clear the time interval
+      col = 0;
+    }
+  });
+  
+  cells.forEach(function (cell) {
+    cell.addEventListener('click', function (event) {
+      toggleCell(event);
+    });
+  });
 
 
 
