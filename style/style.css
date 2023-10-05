@@ -139,39 +139,45 @@ button {
 
 /* Sequence control buttons */
 .btn-neg {
-  background-color: #9b8181;
-  box-shadow: 0 4px #585454;
+  background-color: #888888;
+  width: 150px;
+  height: 50px;
+  /* box-shadow: 0 4px #585454; */
 }
   .btn-neg:hover {
-    background-color: #888888;
+    background-color: #414141;
   }
   .btn-neg:active {
     background-color: #737373;
-    box-shadow: 0 0 #454545;
+    /* box-shadow: 0 0 #454545; */
   }
 
 .btn-med {
   background-color: #f69323;
-  box-shadow: 0 4px #d07813;
+  width: 150px;
+  height: 50px;
+  /* box-shadow: 0 4px #d07813; */
 }
   .btn-med:hover {
-    background-color: #d7811f;
+    /* background-color: #d7811f; */
   }
   .btn-med:active {
     background-color: #d07813;
-    box-shadow: 0 0 #d07813;
+    /* box-shadow: 0 0 #d07813; */
   }
 
 .btn-pos {
   background-color: #7bbb7b;
-  box-shadow: 0 4px #468846;
+  width: 150px;
+  height: 50px;
+  /* box-shadow: 0 4px #468846; */
 }
   .btn-pos:hover {
     background-color: #569656;
   }
   .btn-pos:active {
     background-color: #468846;
-    box-shadow: 0 0 #468846;
+    /* box-shadow: 0 0 #468846; */
   }
 
 
@@ -312,5 +318,13 @@ td.on {
   border-color: transparent;
 }
 
+#tone-btn {
+  width: 150px;
+  height: 50px;
+  background-color: #00000000;
+  border: #cacaca 3px solid;
+}
 
-
+#tone-btn:hover {
+  background-color: #cacaca;
+}
