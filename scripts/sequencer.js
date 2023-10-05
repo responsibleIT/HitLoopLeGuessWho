@@ -30,7 +30,7 @@ window.addEventListener('load', function () {
   const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
   const tonebtn = document.getElementById('tone-btn'); // Tone button 
   const clearbtn = document.getElementById('clear_sequencer'); // Clear sequencer grid button 
-  const tempoInput = document.getElementById('tempo-input'); // Tempo button 
+  let tempoInput = document.getElementById('tempo-input'); // Tempo button 
 
   const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
 
@@ -108,12 +108,14 @@ window.addEventListener('load', function () {
     genMuBtn.classList.remove('hidden-button');
   });
 
-  slowTempoBtn.addEventListener('click', function() {
+  slowBtn.addEventListener('click', function() {
     tempoInput = slowBpm;
+    console.log("This is the starting tempo : " + tempoInput);
   })
 
-  fastTempoBtn.addEventListener('click', function() {
+  fastBtn.addEventListener('click', function() {
     tempoInput = fastBpm;
+    console.log("This is the starting tempo : " + tempoInput);
   })
 
   ////////////////  Create selection pipelines for each column (0-4)  ////////////////
