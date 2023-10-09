@@ -49,8 +49,8 @@ window.addEventListener('load', function () {
   const ogPopup_2 = this.document.getElementById('og-popup2'); // pop origin sample track 0
   const ogPopup_3 = this.document.getElementById('og-popup3'); // pop origin sample track 0
 
-  let slowBtn = this.document.getElementById('slow_btn');
-  let fastBtn = this.document.getElementById('fast_btn');
+  const slowBtn = this.document.getElementById('slow_btn');
+  const fastBtn = this.document.getElementById('fast_btn');
 
   // let bpm = 100;
   let slowBpm = 80;
@@ -60,7 +60,6 @@ window.addEventListener('load', function () {
   const scratchStart = document.getElementById('scratch_start'); // Start music from scratch at start button 
 
   const body = document.body;
-  // console.log(body);
 
   const howGenButn = document.getElementById('how-gen-btn');
 
@@ -109,13 +108,13 @@ window.addEventListener('load', function () {
   });
 
   slowBtn.addEventListener('click', function() {
-    tempoInput = slowBpm;
-    console.log("This is the starting tempo : " + tempoInput);
+    tempoInput.value = slowBpm;
+    columnTime = (60 / slowBpm) * 1000;
   })
 
   fastBtn.addEventListener('click', function() {
-    tempoInput = fastBpm;
-    console.log("This is the starting tempo : " + tempoInput);
+    tempoInput.value = fastBpm;
+    columnTime = (60 / fastBpm) * 1000;
   })
 
   ////////////////  Create selection pipelines for each column (0-4)  ////////////////
@@ -160,7 +159,6 @@ window.addEventListener('load', function () {
     audio = new Audio(sample_url + selectedValue0);
 
     audio.play();   // Play the audio
-    console.log(selectedValue0);
 
     let newSampleURL = sample_url + selectedValue0; // Update the sampler with the new sample
     updateSampler("G2", newSampleURL);
@@ -203,7 +201,6 @@ window.addEventListener('load', function () {
     selectedValue1 = event.target.value; // Update the selectedValue variable with the new value
     audio = new Audio(sample_url + selectedValue1);
     audio.play();  // Play the audio
-    // console.log(selectedValue1);
     let newSampleURL = sample_url + selectedValue1;
     updateSampler("F2", newSampleURL);
 
@@ -248,7 +245,6 @@ window.addEventListener('load', function () {
     audio = new Audio(sample_url + selectedValue2);
     // Play the audio
     audio.play();
-    console.log(selectedValue2);
     let newSampleURL = sample_url + selectedValue2;
     updateSampler("E2", newSampleURL);
   });
@@ -292,12 +288,9 @@ window.addEventListener('load', function () {
     audio = new Audio(sample_url + selectedValue3);
     audio.play(); // Play the audio
 
-    console.log(selectedValue3);
     let newSampleURL = sample_url + selectedValue3;
     updateSampler("D2", newSampleURL);
   });
-
-
 
   // Initialize the sampler when tonebtn is pressed //
   tonebtn.addEventListener('click', function () {
@@ -329,7 +322,6 @@ window.addEventListener('load', function () {
       sampler.dispose();
       sampler = new Tone.Sampler({
         urls: {
-                // C2: sample_url +selectedValue4,
                 D2: sample_url +selectedValue3,
                 E2: sample_url +selectedValue2,
                 F2: sample_url +selectedValue1,
@@ -344,8 +336,6 @@ window.addEventListener('load', function () {
   });
 
 
-
-
   /////////////////////// SEQUENCER PIPELINE //////////////////////////////
   let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
 
@@ -353,9 +343,7 @@ window.addEventListener('load', function () {
   const numCols = 16; // number of columns
 
   let col = 0; // Initialize the column index
-  let colPrevious = 0;
   let intervalId; // Initialize the intervalId
-  let firstRoundDone = false;
 
   // Notes corresponded to each Column of the grid
   const notes = ['G2', 'F2', 'E2', 'D2']; // 128 official notes in tone.js
@@ -365,18 +353,14 @@ window.addEventListener('load', function () {
 
   // Sets the seed to 1,2,3 (random beat set for the first 3 tracks)
   let seed = Math.floor(Math.random() * 10);
-  //Static seed
-  //seed = 120 
 
   // Uses input BPM to calculate wait-time between columns
   columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;
 
-  
 
   // determines the tempo
-  tempoInput.addEventListener('input', function (bpm) {
-    bpm = parseFloat(tempoInput.value);
-    console.log("Tempo ", bpm);
+  tempoInput.addEventListener('input', function () {
+   let bpm = parseFloat(tempoInput.value);
     columnTime = (60 / bpm) * 1000;
   });
 
@@ -451,7 +435,6 @@ window.addEventListener('load', function () {
     fetch(fetchUrl)
       .then(response => response.json())
       .then(data => {
-
         // 'data' is the 2D array of grid values returned by the API
         for (let i = 0; i < data.length; i++) {
           if (data[i][dataRow] == 1.0) {
@@ -463,7 +446,6 @@ window.addEventListener('load', function () {
   }
 
   function generateRandomTrack(dataRow) {
-    // console.log("this is generate track");
     let seed = Math.floor(Math.random() * 10);  
     let fetchUrl = ' ';
     fetchUrl = Url + 'sequencer_random_json' + '?seed=' + seed;
@@ -471,7 +453,6 @@ window.addEventListener('load', function () {
     fetch(fetchUrl)
       .then(response => response.json())
       .then(data => {
-
         // 'data' is the 2D array of grid values returned by the API
         for (let i = 0; i < data.length; i++) {
           if (data[i][dataRow] == 1.0) {
@@ -490,7 +471,6 @@ window.addEventListener('load', function () {
       event.target.classList.add('on');
     }
   }
-
 
   genMuBtn.addEventListener('click', function () { // Call the generate functionality for the whole music
     generateMusic();
@@ -511,7 +491,6 @@ window.addEventListener('load', function () {
   genMeloBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
     generateRandomTrack(3);
   });
-
 
   function playStep(col) {
     const playedNotes = {}; 
@@ -566,7 +545,6 @@ function playLoop() {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
         const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
 
-
         if (cell.classList.contains('on')) {
           cell.classList.remove('on');
           cell.classList.add('playing'); // turns white
@@ -587,10 +565,11 @@ function playLoop() {
     }  
   }, columnTime);
 
-    // Set the loopEnd to repeat indefinitely
-    Tone.Transport.loopEnd = numCols - 1;
-    Tone.Transport.start();
-    Tone.Transport.loop = true;
+  // Set the loopEnd to repeat indefinitely
+  Tone.Transport.loopEnd = numCols - 1;
+  Tone.Transport.start();
+  Tone.Transport.loop = true;
+
 }
   
   loopBtn.addEventListener('click', function () {
@@ -644,11 +623,9 @@ function playLoop() {
   }
 
   function removePlayingClass(numRows, numCols) {
-    console.log("Inside remove Playing Class");
     for (let row = 0; row < numRows; row++) {
       for (let col = 0; col < numCols; col++) {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
-        console.log("Cell was playing : ", cell);
         if (cell.classList.contains('playing')) {
           cell.classList.remove('playing');
           cell.classList.add('on');
