@@ -28,7 +28,7 @@ window.addEventListener('load', function () {
   // Create button variables
   const loopBtn = document.getElementById('loop-btn'); // Loop button 
   const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
-  const tonebtn = document.getElementById('tone-btn'); // Tone button 
+  // const tonebtn = document.getElementById('tone-btn'); // Tone button 
   const clearbtn = document.getElementById('clear_sequencer'); // Clear sequencer grid button 
   let tempoInput = document.getElementById('tempo-input'); // Tempo button 
 
@@ -125,6 +125,7 @@ window.addEventListener('load', function () {
   fetch(sample_list_url)
     .then(response => response.json())
     .then(data => {
+      console.log(data)
       const samples = data.files;
 
       // Add empty option at start
@@ -293,47 +294,47 @@ window.addEventListener('load', function () {
   });
 
   // Initialize the sampler when tonebtn is pressed //
-  tonebtn.addEventListener('click', function () {
-    if (sampler === undefined) {
-      sampler = new Tone.Sampler({
-        urls: {
-          D2: sample_url +selectedValue3,
-          E2: sample_url +selectedValue2,
-          F2: sample_url +selectedValue1,
-          G2: sample_url +selectedValue0,
-        },
-        onload: () => {
-          console.log("Sampler loaded");
-        }
-      }).toDestination();
+  // tonebtn.addEventListener('click', function () {
+  //   if (sampler === undefined) {
+  //     sampler = new Tone.Sampler({
+  //       urls: {
+  //         D2: sample_url +selectedValue3,
+  //         E2: sample_url +selectedValue2,
+  //         F2: sample_url +selectedValue1,
+  //         G2: sample_url +selectedValue0,
+  //       },
+  //       onload: () => {
+  //         console.log("Sampler loaded");
+  //       }
+  //     }).toDestination();
 
-    // change the tonebtn text to 'update samples'
-    tonebtn.classList.add('hidden-button');
+  //   // change the tonebtn text to 'update samples'
+  //   tonebtn.classList.add('hidden-button');
 
-    loopBtn.classList.remove('hidden-button');
-    loopBtn.classList.add('btn-pos');
+  //   loopBtn.classList.remove('hidden-button');
+  //   loopBtn.classList.add('btn-pos');
     
-    clearbtn.classList.remove('hidden-button');
-    clearbtn.classList.add('btn-neg');
-    } 
+  //   clearbtn.classList.remove('hidden-button');
+  //   clearbtn.classList.add('btn-neg');
+  //   } 
 
-    else {
-      // Update the sampler
-      sampler.dispose();
-      sampler = new Tone.Sampler({
-        urls: {
-                D2: sample_url +selectedValue3,
-                E2: sample_url +selectedValue2,
-                F2: sample_url +selectedValue1,
-                G2: sample_url +selectedValue0,
-              },
-              onload: () => {
-                            console.log("Sampler loaded");
-              }
-      }).toDestination();
-    }
+  //   else {
+  //     // Update the sampler
+  //     sampler.dispose();
+  //     sampler = new Tone.Sampler({
+  //       urls: {
+  //               D2: sample_url +selectedValue3,
+  //               E2: sample_url +selectedValue2,
+  //               F2: sample_url +selectedValue1,
+  //               G2: sample_url +selectedValue0,
+  //             },
+  //             onload: () => {
+  //                           console.log("Sampler loaded");
+  //             }
+  //     }).toDestination();
+  //   }
 
-  });
+  // });
 
 
   /////////////////////// SEQUENCER PIPELINE //////////////////////////////
@@ -472,6 +473,8 @@ window.addEventListener('load', function () {
     }
   }
 
+  console.log("Loop status before pressing ", loopBtn);
+
   genMuBtn.addEventListener('click', function () { // Call the generate functionality for the whole music
     generateMusic();
   });
@@ -573,28 +576,64 @@ function playLoop() {
 }
   
   loopBtn.addEventListener('click', function () {
-    if (loopBtn.classList.contains('btn-pos')) {
-      loopBtn.classList.remove('btn-pos');
-      loopBtn.classList.add('btn-med');
-      loopBtn.textContent = 'Stop Loop';
-
-      Tone.start();
-      isLoopPlaying = true;
-
-      playLoop();
-    }
-    else if (loopBtn.classList.contains('btn-med')) {
+    if (loopBtn.classList.contains('btn-med')) {
+      console.log("LoopBtn is med");
       loopBtn.classList.remove('btn-med');
       loopBtn.classList.add('btn-pos');
-      loopBtn.textContent = 'Start Loop';
+      loopBtn.textContent = 'Play';
 
       isLoopPlaying = false;
-      Tone.Transport.stop()
+
+      Tone.Transport.stop();
       removePlayingClass(numRows, numCols);
 
       clearInterval(intervalId); // clear the time interval
       col = 0;
     }
+
+    else if (loopBtn.classList.contains('btn-pos')) {
+      if (sampler === undefined) {
+        sampler = new Tone.Sampler({
+          urls: {
+            D2: sample_url +selectedValue3,
+            E2: sample_url +selectedValue2,
+            F2: sample_url +selectedValue1,
+            G2: sample_url +selectedValue0,
+          },
+          onload: () => {
+            console.log("Sampler loaded");
+          }
+        }).toDestination();
+  
+      } 
+  
+      else {
+        // Update the sampler
+        sampler.dispose();
+        sampler = new Tone.Sampler({
+          urls: {
+                  D2: sample_url +selectedValue3,
+                  E2: sample_url +selectedValue2,
+                  F2: sample_url +selectedValue1,
+                  G2: sample_url +selectedValue0,
+                },
+                onload: () => {
+                              console.log("Sampler loaded");
+                }
+        }).toDestination();
+      }
+      loopBtn.classList.remove('btn-pos');
+      loopBtn.classList.add('btn-med');
+      loopBtn.textContent = 'Stop';
+  
+      Tone.start();
+      isLoopPlaying = true;
+
+      playLoop();
+
+    }
+
+  
   });
   
   cells.forEach(function (cell) {
