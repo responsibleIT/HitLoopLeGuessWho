@@ -29,6 +29,8 @@ body {
 
 #tempo-input {
   color: rgb(0, 0, 0);
+  position: relative;
+  left: -215px;
 }
 
 main {
@@ -42,6 +44,7 @@ nav {
   grid-template-columns: 1fr 70px 160px;
   width: fit-content;
   padding-top: 20px;
+  margin-left: 35px;
 }
 
 select {
@@ -67,7 +70,9 @@ button {
 
 /* Generate music button */ 
 #gen_music_btn {
+  position: relative;
   background-color: #eb3434;
+  left: -200px;
   width: 300px;
   margin-top: 20px;
   padding: 20px 50px;
@@ -85,8 +90,8 @@ button {
 
 #how-gen-btn {
   position: relative;
-  left: 13rem;
-  top: -55px;
+  left: 16rem;
+  top: 0px;
   width: 100px;
   height: 55px;
   font-size: 10px;
@@ -195,7 +200,7 @@ input {
 /* Table of beats */
 table {
   position: relative;
-  left: -3rem;
+  left: -20rem;
 }
 
 th {
@@ -341,10 +346,19 @@ td.on {
 
 #loop-btn {
   position: relative;
-  left: -60px;
+  left: -280px;
 }
 
 #clear_sequencer {
   position: relative;
-  left: 550px;
+  left: 40px;
+}
+
+#side-menu {
+  position: absolute;
+  height: 100%;
+  right: 0px;
+  width: 400px;
+  background-color: #3eff2c;
+  z-index: 1;
 }
