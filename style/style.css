@@ -22,15 +22,17 @@ body {
   background-color: #000000;
 }
 
-.bpm {
+/* .bpm {
   display: flex;
   position: relative;
-}
+  left: 200px;
+} */
 
 #tempo-input {
   color: rgb(0, 0, 0);
   position: relative;
-  left: -215px;
+  left: 160px;
+  top: 80px;
 }
 
 main {
@@ -40,11 +42,13 @@ main {
 }
 
 nav {
+  position: relative;
   display: grid;
   grid-template-columns: 1fr 70px 160px;
   width: fit-content;
   padding-top: 20px;
   margin-left: 35px;
+  top: 200px;
 }
 
 select {
@@ -72,7 +76,8 @@ button {
 #gen_music_btn {
   position: relative;
   background-color: #eb3434;
-  left: -200px;
+  left: 45px;
+  top: 30px;
   width: 300px;
   margin-top: 20px;
   padding: 20px 50px;
@@ -90,8 +95,8 @@ button {
 
 #how-gen-btn {
   position: relative;
-  left: 16rem;
-  top: 0px;
+  left: 150px;
+  top: 250px;
   width: 100px;
   height: 55px;
   font-size: 10px;
@@ -168,25 +173,22 @@ button {
   /* box-shadow: 0 4px #d07813; */
 }
   .btn-med:hover {
-    /* background-color: #d7811f; */
+    background-color: #d7811f;
   }
   .btn-med:active {
-    background-color: #ff8d0b;
-    /* box-shadow: 0 0 #d07813; */
+    background-color: #d7811f;
   }
 
 .btn-pos {
-  background-color: #4fff4f;
+  background-color: #b0ff55;
   width: 150px;
   height: 50px;
-  /* box-shadow: 0 4px #468846; */
 }
   .btn-pos:hover {
-    background-color: #569656;
+    background-color: #88d530;
   }
   .btn-pos:active {
-    background-color: #468846;
-    /* box-shadow: 0 0 #468846; */
+    background-color: #88d530;
   }
 
 
@@ -200,7 +202,7 @@ input {
 /* Table of beats */
 table {
   position: relative;
-  left: -20rem;
+  left: -13rem;
 }
 
 th {
@@ -333,7 +335,7 @@ td.on {
   border-color: transparent;
 }
 
-#tone-btn {
+/* #tone-btn {
   width: 150px;
   height: 50px;
   background-color: #00000000;
@@ -342,16 +344,17 @@ td.on {
 
 #tone-btn:hover {
   background-color: #cacaca;
-}
+} */
 
 #loop-btn {
   position: relative;
-  left: -280px;
+  left: 125px;
 }
 
 #clear_sequencer {
   position: relative;
-  left: 40px;
+  left: 20px;
+  top: 120px;
 }
 
 #side-menu {
