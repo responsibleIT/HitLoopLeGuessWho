@@ -203,6 +203,8 @@ input {
 table {
   position: relative;
   left: -13rem;
+  transform: rotate(90deg);
+  top: 10px;
 }
 
 th {
@@ -226,8 +228,8 @@ tr:nth-of-type(4) td.on {
 
 
 td {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
 }
 
 td.on {
@@ -266,7 +268,8 @@ td.on {
   border-radius: 10%;
   backdrop-filter: blur(10px);
   text-align:center;
-  top: 410px;
+  top: 350px;
+  left: 500px;
   color: white;
 }
 
