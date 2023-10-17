@@ -349,6 +349,7 @@ window.addEventListener('load', function () {
           for (let j = 0; j < data[i].length; j++) {
             if (data[i][j] == 1.0) {
               document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+              document.querySelector(`.cell2[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
             } 
           }
         }
@@ -374,6 +375,7 @@ window.addEventListener('load', function () {
           for (let j = 0; j < data[i].length; j++) {
             if (data[i][j] == 1.0) {
               document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+              document.querySelector(`.cell2[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
             } 
           }
         }
@@ -401,6 +403,7 @@ window.addEventListener('load', function () {
           if (data[i][dataRow] == 1.0) {
             // Cell is ON
             document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on');
+            document.querySelector(`.cell2[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
           } 
         }
       });
@@ -418,6 +421,7 @@ window.addEventListener('load', function () {
         for (let i = 0; i < data.length; i++) {
           if (data[i][dataRow] == 1.0) {
             document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+            document.querySelector(`.cell2[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
           } 
         }  
       });
@@ -493,7 +497,7 @@ function playLoop() {
 
       // Shift the grid down by the height of the cells every tempo
       let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table1.style.top = (Number (tableTop1) + 57) + "px"; // increment the position from the top by the height of the cells (55)
+      table1.style.top = (Number(tableTop1) + 57) + "px"; // increment the position from the top by the height of the cells (55)
       tableTop1 = table1.style.top; // update the value stored in the value
 
       console.log("Table1 top : " + tableTop1);
@@ -502,8 +506,14 @@ function playLoop() {
       table2.style.top = (Number (tableTop2) + 57) + "px"; // increment the position from the top by the height of the cells (55)
       tableTop2 = table2.style.top; // update the value stored in the value
 
-      if (tableTop1 == "1229px") {
-        table1.style.top = "-594px";
+      console.log("Table2 top : " + tableTop2);
+
+      if (Number(tableTop1.replace("px", "")) >= 1229) {
+        table1.style.top = "-595px";
+      }
+
+      if (Number(tableTop2.replace("px", "")) >= 1229) {
+        table2.style.top = "-594px";
       }
 
       let previousCol = 1; // variable to store the index of the previous column
@@ -520,6 +530,9 @@ function playLoop() {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
         const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
 
+        const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
+        const previousCell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
+
         if (cell.classList.contains('on')) {
           cell.classList.remove('on');
           cell.classList.add('playing'); // turns white
@@ -528,6 +541,16 @@ function playLoop() {
         if (previousCell.classList.contains('playing')) {
           previousCell.classList.remove('playing');
           previousCell.classList.add('on'); // turns white
+        }
+
+        if (cell2.classList.contains('on')) {
+          cell2.classList.remove('on');
+          cell2.classList.add('playing'); // turns white
+        }
+
+        if (previousCell2.classList.contains('playing')) {
+          previousCell2.classList.remove('playing');
+          previousCell2.classList.add('on'); // turns white
         }
       }
 
@@ -620,9 +643,12 @@ function playLoop() {
     for (let row = 0; row <= numRows; row++) {
       for (let col = 0; col <= numCols; col++) {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
-
+        const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`);
         if (cell.classList.contains('on')) {
           cell.classList.remove('on');
+        }
+        if (cell2.classList.contains('on')) {
+          cell2.classList.remove('on');
         }
       }
     }
@@ -632,9 +658,14 @@ function playLoop() {
     for (let row = 0; row < numRows; row++) {
       for (let col = 0; col < numCols; col++) {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+        const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`);
         if (cell.classList.contains('playing')) {
           cell.classList.remove('playing');
           cell.classList.add('on');
+        }
+        if (cell2.classList.contains('playing')) {
+          cell2.classList.remove('playing');
+          cell2.classList.add('on');
         }
       }
     }
@@ -648,9 +679,14 @@ function playLoop() {
   function removeOnClassRow(idRow, numCols) {
     for (let col = 0; col <= numCols; col++) {
       const cell = document.querySelector(`.cell[data-row="${idRow}"][data-col="${col}"]`);
+      const cell2 = document.querySelector(`.cell2[data-row="${idRow}"][data-col="${col}"]`);
 
       if (cell.classList.contains('on')) {
         cell.classList.remove('on');
+      }
+
+      if (cell2.classList.contains('on')) {
+        cell2.classList.remove('on');
       }
     }
   }

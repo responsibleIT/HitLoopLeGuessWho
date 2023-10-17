@@ -261,6 +261,14 @@ td.on {
   background-color: #5555559a;
 }
 
+.cell2 {
+  background-color: #2a2a2a9f;
+}
+
+.cell2:hover {
+  background-color: #5555559a;
+}
+
 .playing {
   background-color: white;
 }
