@@ -22,12 +22,6 @@ body {
   background-color: #000000;
 }
 
-/* .bpm {
-  display: flex;
-  position: relative;
-  left: 200px;
-} */
-
 #tempo-input {
   color: rgb(0, 0, 0);
   position: relative;
@@ -191,6 +185,14 @@ button {
     background-color: #88d530;
   }
 
+#play_line {
+  position: absolute;
+  height: 58px;
+  bottom: 0px;
+  background-color: #ffffffbc;
+  width: 100%;
+  z-index: 1;
+}
 
 input {
   padding: 8px 16px;
@@ -201,10 +203,10 @@ input {
 
 /* Table of beats */
 table {
-  position: relative;
-  left: -13rem;
+  position: absolute;
+  left: 13rem;
   transform: rotate(90deg);
-  top: 10px;
+  top: 320px;
 }
 
 th {
@@ -366,5 +368,5 @@ td.on {
   right: 0px;
   width: 400px;
   background-color: #3eff2c;
-  z-index: 1;
+  z-index: 2;
 }

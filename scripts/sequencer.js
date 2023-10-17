@@ -28,11 +28,13 @@ window.addEventListener('load', function () {
   // Create button variables
   const loopBtn = document.getElementById('loop-btn'); // Loop button 
   const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
-  // const tonebtn = document.getElementById('tone-btn'); // Tone button 
-  const clearbtn = document.getElementById('clear_sequencer'); // Clear sequencer grid button 
   let tempoInput = document.getElementById('tempo-input'); // Tempo button 
 
   const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
+
+  const table = document.getElementById("grid");
+  // var tableTop = window.getComputedStyle(table, null).getPropertyValue("top").replace("px", "");
+// console.log("This is table top : ", tableTop);
 
   const genBeatBtn = document.getElementById('gen_beat_btn'); // Generate track 0 button 
   const genChordBtn = document.getElementById('gen_chord_btn'); 
@@ -293,49 +295,6 @@ window.addEventListener('load', function () {
     updateSampler("D2", newSampleURL);
   });
 
-  // Initialize the sampler when tonebtn is pressed //
-  // tonebtn.addEventListener('click', function () {
-  //   if (sampler === undefined) {
-  //     sampler = new Tone.Sampler({
-  //       urls: {
-  //         D2: sample_url +selectedValue3,
-  //         E2: sample_url +selectedValue2,
-  //         F2: sample_url +selectedValue1,
-  //         G2: sample_url +selectedValue0,
-  //       },
-  //       onload: () => {
-  //         console.log("Sampler loaded");
-  //       }
-  //     }).toDestination();
-
-  //   // change the tonebtn text to 'update samples'
-  //   tonebtn.classList.add('hidden-button');
-
-  //   loopBtn.classList.remove('hidden-button');
-  //   loopBtn.classList.add('btn-pos');
-    
-  //   clearbtn.classList.remove('hidden-button');
-  //   clearbtn.classList.add('btn-neg');
-  //   } 
-
-  //   else {
-  //     // Update the sampler
-  //     sampler.dispose();
-  //     sampler = new Tone.Sampler({
-  //       urls: {
-  //               D2: sample_url +selectedValue3,
-  //               E2: sample_url +selectedValue2,
-  //               F2: sample_url +selectedValue1,
-  //               G2: sample_url +selectedValue0,
-  //             },
-  //             onload: () => {
-  //                           console.log("Sampler loaded");
-  //             }
-  //     }).toDestination();
-  //   }
-
-  // });
-
 
   /////////////////////// SEQUENCER PIPELINE //////////////////////////////
   let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
@@ -361,7 +320,7 @@ window.addEventListener('load', function () {
 
   // determines the tempo
   tempoInput.addEventListener('input', function () {
-   let bpm = parseFloat(tempoInput.value);
+    let bpm = parseFloat(tempoInput.value);
     columnTime = (60 / bpm) * 1000;
   });
 
@@ -473,7 +432,7 @@ window.addEventListener('load', function () {
     }
   }
 
-  console.log("Loop status before pressing ", loopBtn);
+/////////////   /////////////   /////////////   TEST FOR MOVEMENT BY CLICK    /////////////   /////////////   /////////////   
 
   genMuBtn.addEventListener('click', function () { // Call the generate functionality for the whole music
     generateMusic();
@@ -508,7 +467,6 @@ window.addEventListener('load', function () {
     if (currentHeader) {
       currentHeader.classList.add('current');
     }
-    
 
     for (let row = 0; row < numRows; row++) {
       const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
@@ -532,16 +490,19 @@ function playLoop() {
     if (isLoopPlaying) { // Check if isLoopPlaying is true
       playStep(col);
 
-      let previousCol = 1;
+      // Shift the grid down by the height of the cells every tempo
+      let tableTop = window.getComputedStyle(table, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      table.style.top = (Number (tableTop) + 57) + "px"; // increment the position from the top by the height of the cells (55)
+      tableTop = table.style.top; // update the value stored in the value
 
-      if (col == 0) {
+      let previousCol = 1; // variable to store the index of the previous column
+
+      if (col == 0) { // if we are currently playing the first column (index 0), the previous column is the last one (index : total amount of coloums - 1)
         previousCol = numCols-1;
       }
-
-      if (col > 0) {
+      if (col > 0) { // if we are currently playing any other column
         previousCol = col-1; // Holds the indicator of the cell right before the one currently played
       }
-      
 
       // for every row in the sequence
       for (row = 0; row < totalRow; row++) {  
@@ -572,19 +533,20 @@ function playLoop() {
   Tone.Transport.loopEnd = numCols - 1;
   Tone.Transport.start();
   Tone.Transport.loop = true;
-
 }
   
   loopBtn.addEventListener('click', function () {
     if (loopBtn.classList.contains('btn-med')) {
-      console.log("LoopBtn is med");
       loopBtn.classList.remove('btn-med');
       loopBtn.classList.add('btn-pos');
       loopBtn.textContent = 'Play';
 
+      table.style.top = "320px";
+
       isLoopPlaying = false;
 
       Tone.Transport.stop();
+
       removePlayingClass(numRows, numCols);
 
       clearInterval(intervalId); // clear the time interval
@@ -604,7 +566,6 @@ function playLoop() {
             console.log("Sampler loaded");
           }
         }).toDestination();
-  
       } 
   
       else {
@@ -631,9 +592,7 @@ function playLoop() {
 
       playLoop();
 
-    }
-
-  
+    }  
   });
   
   cells.forEach(function (cell) {
@@ -641,8 +600,6 @@ function playLoop() {
       toggleCell(event);
     });
   });
-
-
 
     /* Function for clearing all cells from the sequencer
   
@@ -694,9 +651,6 @@ function playLoop() {
     popupHow.classList.remove('popup_hidden');
     popupHow.classList.add('popup');
   });
-
-
-  
 
   closeHowBtn.addEventListener('click', function() {
     popupHow.classList.remove('popup');
