@@ -541,7 +541,7 @@ function playLoop() {
       loopBtn.classList.add('btn-pos');
       loopBtn.textContent = 'Play';
 
-      table.style.top = "320px";
+      table.style.top = "260px";
 
       isLoopPlaying = false;
 

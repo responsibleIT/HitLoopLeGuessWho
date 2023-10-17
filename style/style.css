@@ -205,8 +205,8 @@ input {
 table {
   position: absolute;
   left: 13rem;
-  transform: rotate(90deg);
-  top: 320px;
+  transform: rotate(270deg);
+  top: 260px;
 }
 
 th {
