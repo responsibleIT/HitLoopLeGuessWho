@@ -525,7 +525,6 @@ function playLoop() {
       if (col === numCols) {
         col = 0; // Reset the index to 0
       }
-
     }  
   }, columnTime);
 
@@ -563,7 +562,7 @@ function playLoop() {
             G2: sample_url +selectedValue0,
           },
           onload: () => {
-            console.log("Sampler loaded");
+            // console.log("Sampler loaded");
           }
         }).toDestination();
       } 
@@ -591,7 +590,6 @@ function playLoop() {
       isLoopPlaying = true;
 
       playLoop();
-
     }  
   });
   
