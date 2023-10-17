@@ -32,7 +32,8 @@ window.addEventListener('load', function () {
 
   const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
 
-  const table = document.getElementById("grid");
+  const table1 = document.getElementById("grid");
+  const table2 = document.getElementById("grid2");
   // var tableTop = window.getComputedStyle(table, null).getPropertyValue("top").replace("px", "");
 // console.log("This is table top : ", tableTop);
 
@@ -491,9 +492,19 @@ function playLoop() {
       playStep(col);
 
       // Shift the grid down by the height of the cells every tempo
-      let tableTop = window.getComputedStyle(table, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table.style.top = (Number (tableTop) + 57) + "px"; // increment the position from the top by the height of the cells (55)
-      tableTop = table.style.top; // update the value stored in the value
+      let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      table1.style.top = (Number (tableTop1) + 57) + "px"; // increment the position from the top by the height of the cells (55)
+      tableTop1 = table1.style.top; // update the value stored in the value
+
+      console.log("Table1 top : " + tableTop1);
+
+      let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      table2.style.top = (Number (tableTop2) + 57) + "px"; // increment the position from the top by the height of the cells (55)
+      tableTop2 = table2.style.top; // update the value stored in the value
+
+      if (tableTop1 == "1229px") {
+        table1.style.top = "-594px";
+      }
 
       let previousCol = 1; // variable to store the index of the previous column
 
@@ -540,7 +551,8 @@ function playLoop() {
       loopBtn.classList.add('btn-pos');
       loopBtn.textContent = 'Play';
 
-      table.style.top = "260px";
+      table1.style.top = "260px";
+      table2.style.top = "-652px"
 
       isLoopPlaying = false;
 

@@ -209,6 +209,21 @@ table {
   top: 260px;
 }
 
+#grid {
+  position: absolute;
+  left: 13rem;
+  transform: rotate(270deg);
+  top: 260px;
+}
+
+#grid2 {
+  position: absolute;
+  left: 13rem;
+  transform: rotate(270deg);
+  top: -652px;
+}
+
+
 th {
   height: 20px;
 }
