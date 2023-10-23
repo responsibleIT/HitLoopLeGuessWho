@@ -1,12 +1,14 @@
-* {
+* { /* Setup for the whole page; font and box sizing */
   box-sizing: border-box;
   font-family: sans-serif;
 }
 
+/* Don't show the heading 1 */
 h1 {
   display: none;
 }
 
+/* Parameters for the body of the page */
 body {
   display: flex;
   flex-direction: column;
@@ -22,6 +24,7 @@ body {
   background-color: #000000;
 }
 
+/* Input space for the BPM */
 #tempo-input {
   color: rgb(0, 0, 0);
   position: relative;
@@ -29,12 +32,14 @@ body {
   top: 80px;
 }
 
+/* Main */
 main {
   display: flex;
   flex-direction: row;
   margin-bottom: 30px;
 }
 
+/* Control panel for each different track */
 nav {
   position: relative;
   display: grid;
@@ -45,10 +50,15 @@ nav {
   top: 200px;
 }
 
+/* Sample selection */
 select {
   width: fit-content;
   position: relative;
   left: -50px;
+  border-color: transparent;
+  font-size: 8px;
+  border-radius: 25px;
+  color: #8a8a8a;
 }
 
 /* Buttons */ 
