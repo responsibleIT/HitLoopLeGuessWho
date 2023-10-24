@@ -1,12 +1,14 @@
-* {
+* { /* Setup for the whole page; font and box sizing */
   box-sizing: border-box;
   font-family: sans-serif;
 }
 
+/* Don't show the heading 1 */
 h1 {
   display: none;
 }
 
+/* Parameters for the body of the page */
 body {
   display: flex;
   flex-direction: column;
@@ -22,25 +24,30 @@ body {
   background-color: #000000;
 }
 
-/* .bpm {
-  display: flex;
-  position: relative;
-  left: 200px;
-} */
-
+/* Input space for the BPM */
 #tempo-input {
-  color: rgb(0, 0, 0);
   position: relative;
   left: 160px;
   top: 80px;
+  margin: 5px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: inset 0px 0px 0px 0px;
+  border: 1px solid;
+  border-color: transparent;
+  padding: 8px 16px;
+  border: none;
+  width: fit-content;
 }
 
+/* Main */
 main {
   display: flex;
   flex-direction: row;
   margin-bottom: 30px;
 }
 
+/* Control panel for each different track */
 nav {
   position: relative;
   display: grid;
@@ -51,10 +58,19 @@ nav {
   top: 200px;
 }
 
+/* Sample selection */
 select {
   width: fit-content;
   position: relative;
-  left: -50px;
+  /* left: -50px; */
+  border-color: transparent;
+  font-size: 8px;
+  border-radius: 25px;
+  color: #8a8a8a;
+  left: 2px;
+  width: 100px;
+  margin: 5px;;
+  margin-right: 1px;
 }
 
 /* Buttons */ 
@@ -83,16 +99,19 @@ button {
   padding: 20px 50px;
 }
 
+/* Close buttons */
 .close {
   position: relative;
   left: 36%;
   top: 10px;
 }
 
+/* Close button for the "How whas this music generated" popup */
 #close-how-btn {
   left: 45%;
 }
 
+/* "How whas this music generated" button to open the popup */
 #how-gen-btn {
   position: relative;
   left: 150px;
@@ -103,17 +122,19 @@ button {
   background-color: #ff5d5d;
 }
 
+/* "How whas this music generated" popup */
 #how-popup {
   position: absolute;
   width: 600px;
   height: 400px;
 }
-/* Hidden buttons */ 
+
+/* Hidden buttons: Used to hide / unhide buttons based on JS events */ 
 .hidden-button {
   display: none;
 }
 
-/*Generate buttons*/
+/* Generate buttons */
 .gen-btn {
   width: 150px;
   font-size: 12px;
@@ -125,6 +146,7 @@ button {
   padding: 25px;
 }
 
+/* Origin button (samples) */
 .og-btn {
   position: relative;
   width: 70px;
@@ -142,16 +164,8 @@ button {
   background-color: #753e5e;
 }
 
-.sampleselect {
-  position: relative;
-  left: 2px;
-  width: 100px;
-  margin: 5px;;
-  margin-right: 1px;
-}
-
-
 /* Sequence control buttons */
+/* Clear button properties */
 .btn-neg {
   background-color: #888888;
   width: 150px;
@@ -166,11 +180,11 @@ button {
     /* box-shadow: 0 0 #454545; */
   }
 
+/* Active play (Stop) button properties */
 .btn-med {
   background-color: #ff8d0b;
   width: 150px;
   height: 50px;
-  /* box-shadow: 0 4px #d07813; */
 }
   .btn-med:hover {
     background-color: #d7811f;
@@ -179,6 +193,7 @@ button {
     background-color: #d7811f;
   }
 
+  /* Inactive play button properties */
 .btn-pos {
   background-color: #b0ff55;
   width: 150px;
@@ -191,19 +206,40 @@ button {
     background-color: #88d530;
   }
 
-
-input {
-  padding: 8px 16px;
-  box-shadow: inset 0px 0px 4px #000000;
-  border: none;
-  width: fit-content;
+  /* Line when notes are played */
+#play_line {
+  position: absolute;
+  height: 58px;
+  bottom: 0px;
+  background-color: #ffffffbc;
+  width: 100%;
+  z-index: 1;
 }
 
 /* Table of beats */
 table {
-  position: relative;
-  left: -13rem;
+  position: absolute;
+  left: 13rem;
+  transform: rotate(270deg);
+  top: 260px;
 }
+
+/* First grid; The one on display when the loop is paused */
+#grid {
+  position: absolute;
+  left: 13rem;
+  transform: rotate(270deg);
+  top: 260px;
+}
+
+/* Second grid; Follows the first grid in a loop */
+#grid2 {
+  position: absolute;
+  left: 13rem;
+  transform: rotate(270deg);
+  top: -652px;
+}
+
 
 th {
   height: 20px;
@@ -223,29 +259,36 @@ tr:nth-of-type(4) td.on {
   background-color: #01d42b;
 }
 
-
-
+/* Cells dimensions */
 td {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
 }
 
 td.on {
   background-color: blue;
 }
 
+/* Cells colour */
 .cell {
   background-color: #2a2a2a9f;
 }
-
 .cell:hover {
   background-color: #5555559a;
 }
+.cell2 {
+  background-color: #2a2a2a9f;
+}
+.cell2:hover {
+  background-color: #5555559a;
+}
 
+/* Cells that are currently played turn white */
 .playing {
   background-color: white;
 }
 
+/* Popup windows properties */
 .popup {
   position: absolute;
   width: 300px;
@@ -256,6 +299,7 @@ td.on {
   border-radius: 10%;
 }
 
+/* Start popup window properties */
 .popup_start {
   position: absolute;
   width: 300px;
@@ -266,10 +310,12 @@ td.on {
   border-radius: 10%;
   backdrop-filter: blur(10px);
   text-align:center;
-  top: 410px;
+  top: 350px;
+  left: 500px;
   color: white;
 }
 
+/* Generate music button in the start popup window */
 #gen_start {
   position: relative;
   margin-top: 15px;
@@ -278,90 +324,72 @@ td.on {
   background-color:#ff0707c4;
   font-size: 20px;
 }
-
 #gen_start:hover {
   background-color: #ff0707;
 }
 
+/* Start from scratch button in the start popup window */
 #scratch_start {
   position: relative;
   top: 15px;
   background-color:#ffffff7d;
   box-shadow: none;
 }
-
 #scratch_start:hover {
   color: white;
 }
 
+/* Slow (tempo) button in the start popup window */
 #slow_btn {
   background-color: #ffae00b2;
 }
-
 #slow_btn:hover {
   background-color: #ffae00;
 }
-
 #slow_btn:focus {
   background-color: #ffae00;
 }
 
+/* Fast (tempo) button in the start popup window */
 #fast_btn {
   background-color: #bfff00b3;
 }
-
 #fast_btn:hover {
   background-color: #bfff00;
 }
-
 #fast_btn:focus {
   background-color: #bfff00;
 }
 
+/* popup button property */
 .popup_button {
   margin: auto;
 }
 
+/* Hidden popup property - Used with JS event manager */
 .popup_hidden {
   display: none;
 }
 
-#tempo-input {
-  margin: 5px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: inset 0px 0px 0px 0px;
-  border: 1px solid;
-  border-color: transparent;
-}
-
-/* #tone-btn {
-  width: 150px;
-  height: 50px;
-  background-color: #00000000;
-  border: #cacaca 3px solid;
-}
-
-#tone-btn:hover {
-  background-color: #cacaca;
-} */
-
+/* Position loop button */
 #loop-btn {
   position: relative;
   left: 125px;
 }
 
+/* Position of the clear button */
 #clear_sequencer {
   position: relative;
   left: 20px;
   top: 120px;
 }
 
+/* Side (main) menu properties */
 #side-menu {
   position: absolute;
   height: 100%;
   right: 0px;
   width: 400px;
   background-color: #3eff2c;
-  z-index: 1;
+  z-index: 2;
 }
