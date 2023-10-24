@@ -34,8 +34,6 @@ window.addEventListener('load', function () {
 
   const table1 = document.getElementById("grid");
   const table2 = document.getElementById("grid2");
-  // var tableTop = window.getComputedStyle(table, null).getPropertyValue("top").replace("px", "");
-// console.log("This is table top : ", tableTop);
 
   const genBeatBtn = document.getElementById('gen_beat_btn'); // Generate track 0 button 
   const genChordBtn = document.getElementById('gen_chord_btn'); 
@@ -84,6 +82,12 @@ window.addEventListener('load', function () {
   let selectedValue2; // track 3
   let selectedValue3; // track 4
 
+  let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
+  const numRows = 4; // number of rows
+  const numCols = 16; // number of columns
+
+  let col = 0; // Initialize the column index
+  let intervalId; // Initialize the intervalId
 
   // Create a variable to store the sampler and audio
   let sampler;
@@ -297,26 +301,20 @@ window.addEventListener('load', function () {
   });
 
 
-  /////////////////////// SEQUENCER PIPELINE //////////////////////////////
-  let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
+/////////////   /////////////   /////////////    SEQUENCER PIPELINE    /////////////   /////////////   /////////////   
 
-  const numRows = 4; // number of rows
-  const numCols = 16; // number of columns
+  // let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
+  // const numRows = 4; // number of rows
+  // const numCols = 16; // number of columns
 
-  let col = 0; // Initialize the column index
-  let intervalId; // Initialize the intervalId
+  // let col = 0; // Initialize the column index
+  // let intervalId; // Initialize the intervalId
 
-  // Notes corresponded to each Column of the grid
-  const notes = ['G2', 'F2', 'E2', 'D2']; // 128 official notes in tone.js
+  const notes = ['G2', 'F2', 'E2', 'D2']; // Notes corresponded to each Column of the grid: 128 official notes in tone.js
+  const noteLength = '8n';// Decides how long a note can take
 
-  // Decides how long a note can take
-  const noteLength = '8n';
-
-  // Sets the seed to 1,2,3 (random beat set for the first 3 tracks)
-  let seed = Math.floor(Math.random() * 10);
-
-  // Uses input BPM to calculate wait-time between columns
-  columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;
+  let seed = Math.floor(Math.random() * 10);  // Sets the seed to 1,2,3 (random beat set for the first 3 tracks)
+  columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;// Uses input BPM to calculate wait-time between columns
 
 
   // determines the tempo
@@ -328,7 +326,7 @@ window.addEventListener('load', function () {
 
 
 
-  ///////////////////// SEQUENCER INITIALISATION ////////////////////////
+/////////////   /////////////   /////////////     SEQUENCER INTIALIZATION    /////////////   /////////////   /////////////   
 
   function initialSequence () {
           // Initialize the MIDI data from sequencer_json [Data coming from the AIs]
@@ -437,27 +435,25 @@ window.addEventListener('load', function () {
     }
   }
 
-/////////////   /////////////   /////////////   TEST FOR MOVEMENT BY CLICK    /////////////   /////////////   /////////////   
+/////////////   /////////////   /////////////   GENERATE FUNCTIONS    /////////////   /////////////   /////////////   
 
   genMuBtn.addEventListener('click', function () { // Call the generate functionality for the whole music
     generateMusic();
   });
-
   genBeatBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
     generateTrack(0);
   });
-
   genChordBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
     generateTrack(1);
   });
-
   genBassBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
     generateTrack(2);
   });
-
   genMeloBtn.addEventListener('click', function () { // Call the generate functionality for the beat track
     generateRandomTrack(3);
   });
+
+/////////////   /////////////   /////////////   PLAY STEP   /////////////   /////////////   /////////////   
 
   function playStep(col) {
     const playedNotes = {}; 
@@ -486,11 +482,10 @@ window.addEventListener('load', function () {
     }
   }
 
-
+/////////////   /////////////   /////////////   MUSICAL LOOP  /////////////   /////////////   /////////////   
 
 // Define function for playing a loop
 function playLoop() {
-  console.log("Play loop");
   intervalId = setInterval(function() {
     if (isLoopPlaying) { // Check if isLoopPlaying is true
       playStep(col);
@@ -500,13 +495,9 @@ function playLoop() {
       table1.style.top = (Number(tableTop1) + 57) + "px"; // increment the position from the top by the height of the cells (55)
       tableTop1 = table1.style.top; // update the value stored in the value
 
-      console.log("Table1 top : " + tableTop1);
-
       let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
       table2.style.top = (Number (tableTop2) + 57) + "px"; // increment the position from the top by the height of the cells (55)
       tableTop2 = table2.style.top; // update the value stored in the value
-
-      console.log("Table2 top : " + tableTop2);
 
       if (Number(tableTop1.replace("px", "")) >= 1229) {
         table1.style.top = "-595px";
@@ -533,31 +524,29 @@ function playLoop() {
         const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
         const previousCell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
 
-        if (cell.classList.contains('on')) {
+        if (cell.classList.contains('on')) { // if the current cell played is "on", change it to "playing" (white) [GRID 1]
           cell.classList.remove('on');
-          cell.classList.add('playing'); // turns white
+          cell.classList.add('playing'); 
         }
-
-        if (previousCell.classList.contains('playing')) {
+        if (previousCell.classList.contains('playing')) { // if the cell right before the one currently played is "playing" (white) give it back its original "on" colour [GRID 1]
           previousCell.classList.remove('playing');
-          previousCell.classList.add('on'); // turns white
+          previousCell.classList.add('on'); 
         }
 
-        if (cell2.classList.contains('on')) {
+        if (cell2.classList.contains('on')) { // if the current cell played is "on", change it to "playing" (white) [GRID 2]
           cell2.classList.remove('on');
-          cell2.classList.add('playing'); // turns white
+          cell2.classList.add('playing'); 
         }
-
-        if (previousCell2.classList.contains('playing')) {
+        if (previousCell2.classList.contains('playing')) { // if the cell right before the one currently played is "playing" (white) give it back its original "on" colour [GRID 2]
           previousCell2.classList.remove('playing');
-          previousCell2.classList.add('on'); // turns white
+          previousCell2.classList.add('on'); 
         }
       }
 
-      col++;
+      col++; // Increment the column count
 
-      if (col === numCols) {
-        col = 0; // Reset the index to 0
+      if (col === numCols) { // if the column count is at the end of the grid (total amount of columns) reset it to 0
+        col = 0; 
       }
     }  
   }, columnTime);
@@ -575,7 +564,7 @@ function playLoop() {
       loopBtn.textContent = 'Play';
 
       table1.style.top = "260px";
-      table2.style.top = "-652px"
+      table2.style.top = "-652px";
 
       isLoopPlaying = false;
 
@@ -597,7 +586,7 @@ function playLoop() {
             G2: sample_url +selectedValue0,
           },
           onload: () => {
-            // console.log("Sampler loaded");
+            console.log("Sampler loaded");
           }
         }).toDestination();
       } 
@@ -634,7 +623,7 @@ function playLoop() {
     });
   });
 
-    /* Function for clearing all cells from the sequencer
+  /* Function for clearing all cells from the sequencer
   
   param numRows: amount of rows - usually same amount for each column
   param numCols: amount of columns - usually same amount for each row
@@ -692,87 +681,72 @@ function playLoop() {
   }
   
   ///////////////// POPUPS EVENTS  ///////////////// 
-  // Make a popup appear to show how the composition was generated
-  howGenButn.addEventListener('click', function() {
+  
+  howGenButn.addEventListener('click', function() {  // Make a popup appear to show how the composition was generated
     popupHow.classList.remove('popup_hidden');
     popupHow.classList.add('popup');
   });
-
-  closeHowBtn.addEventListener('click', function() {
+  closeHowBtn.addEventListener('click', function() { 
     popupHow.classList.remove('popup');
     popupHow.classList.add('popup_hidden');
   });
 
-  closeSampleBtn_0.addEventListener('click', function() {
+  /////////////////   OPEN SAMPLE ORIGIN POPUP WINDOWS  ///////////////// 
+
+  ogSample_0.addEventListener('click', function() { // Show popup window about the sample origin of track 1 (index 0)
+    ogPopup_0.classList.replace('popup_hidden', 'popup');
+  });
+  ogSample_1.addEventListener('click', function() { // Show popup window about the sample origin of track 2 (index 1)
+    ogPopup_1.classList.replace('popup_hidden', 'popup');
+  });
+  ogSample_2.addEventListener('click', function() { // Show popup window about the sample origin of track 3 (index 2)
+    ogPopup_2.classList.replace('popup_hidden', 'popup');
+  });
+  ogSample_3.addEventListener('click', function() { // Show popup window about the sample origin of track 4 (index 3)
+    ogPopup_3.classList.replace('popup_hidden', 'popup');
+  });
+
+  closeSampleBtn_0.addEventListener('click', function() { // Close popup window about the sample origin of track 1 (index 0)
     ogPopup_0.classList.remove('popup');
     ogPopup_0.classList.add('popup_hidden');
   });
-
-  closeSampleBtn_1.addEventListener('click', function() {
+  closeSampleBtn_1.addEventListener('click', function() { // Close popup window about the sample origin of track 2 (index 1)
     ogPopup_1.classList.remove('popup');
     ogPopup_1.classList.add('popup_hidden');
   });
-
-  closeSampleBtn_2.addEventListener('click', function() {
+  closeSampleBtn_2.addEventListener('click', function() { // Close popup window about the sample origin of track 3 (index 2)
     ogPopup_2.classList.remove('popup');
     ogPopup_2.classList.add('popup_hidden');
   });
-
-  closeSampleBtn_3.addEventListener('click', function() {
+  closeSampleBtn_3.addEventListener('click', function() { // Close popup window about the sample origin of track 4 (index 3)
     ogPopup_3.classList.remove('popup');
     ogPopup_3.classList.add('popup_hidden');
   });
-  
 
-  ///////////////// CLEAN CELLS  ///////////////// 
+  /////////////////   CLEAN CELLS  ///////////////// 
 
-  //clear the whole sequence grid when the clear button is pressed
-  clear_sequencer.addEventListener('click', function() {
+  clear_sequencer.addEventListener('click', function() {  //clear the whole sequence grid when the clear button is pressed
+	  removeOnClass(4, 15);
+  });
+  genMuBtn.addEventListener('click', function() {  // clear the whole sequence grid when the generate music button is pressed
 	  removeOnClass(4, 15);
   });
 
-  // clear the whole sequence grid when the generate music button is pressed
-  genMuBtn.addEventListener('click', function() {
-	  removeOnClass(4, 15);
-  });
+  /////////////////   CLEAN CELLS BY ROW   ///////////////// 
 
-
-  ///////////////// CLEAN CELLS BY ROW   ///////////////// 
-
-  // clear the first row of the sequence grid when the generate beat button is pressed
-  genBeatBtn.addEventListener('click', function() {
+  genBeatBtn.addEventListener('click', function() {  // clear the first row of the sequence grid when the generate beat button is pressed
 	  removeOnClassRow(0, 15);
   });
-
-  // clear the second row of the sequence grid when the generate chord button is pressed
-  genChordBtn.addEventListener('click', function() {
+  genChordBtn.addEventListener('click', function() { // clear the second row of the sequence grid when the generate chord button is pressed
 	  removeOnClassRow(1, 15);
   });
-
-  // clear the third row of the sequence grid when the generate bass button is pressed
-  genBassBtn.addEventListener('click', function() {
+  genBassBtn.addEventListener('click', function() { // clear the third row of the sequence grid when the generate bass button is pressed
 	  removeOnClassRow(2, 15);
   });
-
-  // clear the fourth row of the sequence grid when the generate melody button is pressed
-  genMeloBtn.addEventListener('click', function() {
+  genMeloBtn.addEventListener('click', function() { // clear the fourth row of the sequence grid when the generate melody button is pressed
 	  removeOnClassRow(3, 15);
   });
 
-  ogSample_0.addEventListener('click', function() {
-    ogPopup_0.classList.replace('popup_hidden', 'popup');
-  });
 
-  ogSample_1.addEventListener('click', function() {
-    ogPopup_1.classList.replace('popup_hidden', 'popup');
-  });
-
-  ogSample_2.addEventListener('click', function() {
-    ogPopup_2.classList.replace('popup_hidden', 'popup');
-  });
-
-  ogSample_3.addEventListener('click', function() {
-    ogPopup_3.classList.replace('popup_hidden', 'popup');
-  });
   
 });
