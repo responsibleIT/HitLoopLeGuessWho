@@ -53,7 +53,6 @@ window.addEventListener('load', function () {
   const slowBtn = this.document.getElementById('slow_btn');
   const fastBtn = this.document.getElementById('fast_btn');
 
-  // let bpm = 100;
   let slowBpm = 80;
   let fastBpm = 120;
 
@@ -489,22 +488,22 @@ function playLoop() {
       playStep(col);
 
       // Shift the grid down by the height of the cells every tempo
-      // let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      // table1.style.top = (Number(tableTop1) + 59) + "px"; // increment the position from the top by the height of the cells (55)
-      // tableTop1 = table1.style.top; // update the value stored in the value
-      // console.log("Table top 1 : " + table1.style.top);
+      let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      table1.style.top = (Number(tableTop1) + 59) + "px"; // increment the position from the top by the height of the cells (55)
+      tableTop1 = table1.style.top; // update the value stored in the value
+      console.log("Table top 1 : " + table1.style.top);
 
-      // let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      // table2.style.top = (Number (tableTop2) + 59) + "px"; // increment the position from the top by the height of the cells (55)
-      // tableTop2 = table2.style.top; // update the value stored in the value
-      // console.log("Table top 2 : " + table2.style.top);
+      let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      table2.style.top = (Number (tableTop2) + 59) + "px"; // increment the position from the top by the height of the cells (55)
+      tableTop2 = table2.style.top; // update the value stored in the value
+      console.log("Table top 2 : " + table2.style.top);
 
       // if (Number(tableTop1.replace("px", "")) >= 1750) {
-      //   table1.style.top = "791px";
+      //   table1.style.top = "50%";
       // }
 
       // if (Number(tableTop2.replace("px", "")) >= 260) {
-      //   table2.style.top = "-400px";
+      //   table2.style.top = "50%";
       // }
 
       let previousCol = 1; // variable to store the index of the previous column
@@ -563,8 +562,12 @@ function playLoop() {
       loopBtn.classList.add('btn-pos');
       loopBtn.textContent = 'Play';
 
-      table1.style.top = "851px";
-      table2.style.top = "-153px";
+      table1.style.top = "50%";
+      table1.style.marginTop = "-605px";
+      console.log("Table margin top 1 : " + table1.style.marginTop);
+
+      table2.style.top = "50%";
+      table2.style.marginTop = "400px";
 
       isLoopPlaying = false;
 
