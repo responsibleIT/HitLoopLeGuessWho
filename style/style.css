@@ -315,8 +315,8 @@ td.on {
   border-radius: 10%;
   backdrop-filter: blur(10px);
   text-align:center;
-  top: 350px;
-  left: 500px;
+  top: 40%;
+  left: 40%;
   color: white;
 }
 
