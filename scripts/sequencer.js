@@ -155,7 +155,6 @@ window.addEventListener('load', function () {
       sampleSelect_col0.value = randomSample;
       selectedValue0 = randomSample;
     })
-
     .catch(error => {
       console.error('Error fetching data:', error);
     });
@@ -165,7 +164,6 @@ window.addEventListener('load', function () {
   sampleSelect_col0.addEventListener('change', (event) => {
     selectedValue0 = event.target.value; // Update the selectedValue variable with the new value and play this audio
     audio = new Audio(sample_url + selectedValue0);
-
     audio.play();   // Play the audio
 
     let newSampleURL = sample_url + selectedValue0; // Update the sampler with the new sample
@@ -491,21 +489,23 @@ function playLoop() {
       playStep(col);
 
       // Shift the grid down by the height of the cells every tempo
-      let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table1.style.top = (Number(tableTop1) + 57) + "px"; // increment the position from the top by the height of the cells (55)
-      tableTop1 = table1.style.top; // update the value stored in the value
+      // let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      // table1.style.top = (Number(tableTop1) + 59) + "px"; // increment the position from the top by the height of the cells (55)
+      // tableTop1 = table1.style.top; // update the value stored in the value
+      // console.log("Table top 1 : " + table1.style.top);
 
-      let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table2.style.top = (Number (tableTop2) + 57) + "px"; // increment the position from the top by the height of the cells (55)
-      tableTop2 = table2.style.top; // update the value stored in the value
+      // let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      // table2.style.top = (Number (tableTop2) + 59) + "px"; // increment the position from the top by the height of the cells (55)
+      // tableTop2 = table2.style.top; // update the value stored in the value
+      // console.log("Table top 2 : " + table2.style.top);
 
-      if (Number(tableTop1.replace("px", "")) >= 1229) {
-        table1.style.top = "-595px";
-      }
+      // if (Number(tableTop1.replace("px", "")) >= 1750) {
+      //   table1.style.top = "791px";
+      // }
 
-      if (Number(tableTop2.replace("px", "")) >= 1229) {
-        table2.style.top = "-594px";
-      }
+      // if (Number(tableTop2.replace("px", "")) >= 260) {
+      //   table2.style.top = "-400px";
+      // }
 
       let previousCol = 1; // variable to store the index of the previous column
 
@@ -563,8 +563,8 @@ function playLoop() {
       loopBtn.classList.add('btn-pos');
       loopBtn.textContent = 'Play';
 
-      table1.style.top = "260px";
-      table2.style.top = "-652px";
+      table1.style.top = "851px";
+      table2.style.top = "-153px";
 
       isLoopPlaying = false;
 

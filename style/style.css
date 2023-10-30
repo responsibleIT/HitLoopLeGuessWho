@@ -1,5 +1,6 @@
-* { /* Setup for the whole page; font and box sizing */
-  box-sizing: border-box;
+/* Setup for the whole page; font and box sizing */
+* { 
+  /* box-sizing: border-box; */
   font-family: sans-serif;
 }
 
@@ -51,8 +52,8 @@ main {
 nav {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 70px 160px;
-  width: fit-content;
+  grid-template-columns: 1fr 70px 100px;
+  width: 200px;
   padding-top: 20px;
   margin-left: 35px;
   top: 200px;
@@ -62,7 +63,6 @@ nav {
 select {
   width: fit-content;
   position: relative;
-  /* left: -50px; */
   border-color: transparent;
   font-size: 8px;
   border-radius: 25px;
@@ -209,8 +209,10 @@ button {
   /* Line when notes are played */
 #play_line {
   position: absolute;
-  height: 58px;
-  bottom: 0px;
+  /* height: 58px; */
+  height: 6%;
+  max-height: 6%;
+  top: 50%;
   background-color: #ffffffbc;
   width: 100%;
   z-index: 1;
@@ -219,30 +221,31 @@ button {
 /* Table of beats */
 table {
   position: absolute;
-  left: 13rem;
   transform: rotate(270deg);
-  top: 260px;
 }
 
 /* First grid; The one on display when the loop is paused */
 #grid {
   position: absolute;
-  left: 13rem;
+  left: 0%;
   transform: rotate(270deg);
-  top: 260px;
+  top: 50%;
+  display: none;
+  
 }
 
 /* Second grid; Follows the first grid in a loop */
 #grid2 {
   position: absolute;
-  left: 13rem;
+  left: 0%;
   transform: rotate(270deg);
-  top: -652px;
+  top: 50%;
+  margin-top: 417px;
 }
-
 
 th {
   height: 20px;
+  min-height: 20px;
 }
 
 /* Table row colors */
@@ -263,6 +266,8 @@ tr:nth-of-type(4) td.on {
 td {
   width: 55px;
   height: 55px;
+  min-width: 55px;
+  min-height: 55px;
 }
 
 td.on {
