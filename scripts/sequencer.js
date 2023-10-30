@@ -35,6 +35,9 @@ window.addEventListener('load', function () {
   const table1 = document.getElementById("grid");
   const table2 = document.getElementById("grid2");
 
+  const menuBtn = document.getElementById("menu_btn");
+  const sideMenu = document.getElementById("side-menu");
+
   const genBeatBtn = document.getElementById('gen_beat_btn'); // Generate track 0 button 
   const genChordBtn = document.getElementById('gen_chord_btn'); 
   const genBassBtn = document.getElementById('gen_bass_btn');
@@ -92,6 +95,19 @@ window.addEventListener('load', function () {
   let sampler;
   let audio;
 
+
+  menuBtn.addEventListener('click', function() {
+    // sideMenu.style.display = "none";
+    if (sideMenu.classList == 'popup_hidden') {
+      sideMenu.classList.replace('popup_hidden', 'side-menu'); // hide the popup
+    }
+
+    else if (sideMenu.classList == 'side-menu') {
+      sideMenu.classList.replace('side-menu', 'popup_hidden'); // hide the popup
+    }
+    
+ 
+  });
 
   // Function to update the sampler with a new sample
   function updateSampler(selectedValue, sampleURL) {
@@ -563,11 +579,11 @@ function playLoop() {
       loopBtn.textContent = 'Play';
 
       table1.style.top = "50%";
-      table1.style.marginTop = "-605px";
+      table1.style.marginTop = "-634px";
       console.log("Table margin top 1 : " + table1.style.marginTop);
 
       table2.style.top = "50%";
-      table2.style.marginTop = "345px";
+      table2.style.marginTop = "310px";
 
       isLoopPlaying = false;
 
