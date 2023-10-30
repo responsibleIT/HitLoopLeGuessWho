@@ -567,7 +567,7 @@ function playLoop() {
       console.log("Table margin top 1 : " + table1.style.marginTop);
 
       table2.style.top = "50%";
-      table2.style.marginTop = "400px";
+      table2.style.marginTop = "345px";
 
       isLoopPlaying = false;
 

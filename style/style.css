@@ -209,8 +209,8 @@ button {
   /* Line when notes are played */
 #play_line {
   position: absolute;
-  height: 58px; 
-  min-height: 58px; 
+  height: 2px; 
+  min-height: 2px; 
   max-height: 6%;
   top: 50%;
   background-color: #ffffffbc;
@@ -240,7 +240,7 @@ table {
   left: 0%;
   transform: rotate(270deg);
   top: 50%;
-  margin-top: 400px;
+  margin-top: 345px;
 }
 
 th {
