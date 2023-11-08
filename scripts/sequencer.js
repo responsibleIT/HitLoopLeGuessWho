@@ -28,12 +28,17 @@ window.addEventListener('load', function () {
   // Create button variables
   const loopBtn = document.getElementById('loop-btn'); // Loop button 
   const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
+  const cells2 = document.querySelectorAll('.cell2'); // Cell (from the sequencer grid 2) 
+  const cells3 = document.querySelectorAll('.cell3'); // Cell (from the sequencer grid3) 
+
+
   let tempoInput = document.getElementById('tempo-input'); // Tempo button 
 
   const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
 
   const table1 = document.getElementById("grid");
   const table2 = document.getElementById("grid2");
+  const table3 = document.getElementById("grid3");
 
   const menuBtn = document.getElementById("menu_btn");
   const sideMenu = document.getElementById("side-menu");
@@ -361,6 +366,7 @@ window.addEventListener('load', function () {
             if (data[i][j] == 1.0) {
               document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
               document.querySelector(`.cell2[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+              document.querySelector(`.cell3[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
             } 
           }
         }
@@ -387,6 +393,7 @@ window.addEventListener('load', function () {
             if (data[i][j] == 1.0) {
               document.querySelector(`.cell[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
               document.querySelector(`.cell2[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+              document.querySelector(`.cell3[data-row="${j}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
             } 
           }
         }
@@ -415,6 +422,7 @@ window.addEventListener('load', function () {
             // Cell is ON
             document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on');
             document.querySelector(`.cell2[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+            document.querySelector(`.cell3[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
           } 
         }
       });
@@ -433,18 +441,45 @@ window.addEventListener('load', function () {
           if (data[i][dataRow] == 1.0) {
             document.querySelector(`.cell[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
             document.querySelector(`.cell2[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
+            document.querySelector(`.cell3[data-row="${dataRow}"][data-col="${i}"]`).classList.add('on'); // Cell is ON
           } 
         }  
       });
   }
   
   // Define function to turn cell on/off
-  function toggleCell(event) {
-    if (event.target.classList.contains('on')) {
-      event.target.classList.remove('on');
+  function toggleCell(event, cell) {
+    let row = Number(cell.attributes['data-row'].value);
+    let col = Number(cell.attributes['data-col'].value);
+
+    console.log("this is the column : ", row);
+    console.log("this is the line : ", col);
+
+    const cell1 = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+    console.log("Cell1 : ", cell1);
+    const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`);
+    const cell3 = document.querySelector(`.cell3[data-row="${row}"][data-col="${col}"]`);
+
+    // Sequencer grid 1
+    if (cell1.classList.contains('on')) {
+      cell1.classList.remove('on');
     } 
     else {
-      event.target.classList.add('on');
+      cell1.classList.add('on');
+    }
+    // Sequencer grid 2
+    if (cell2.classList.contains('on')) {
+      cell2.classList.remove('on');
+    } 
+    else {
+      cell2.classList.add('on');
+    }
+    // Sequencer grid 3
+    if (cell3.classList.contains('on')) {
+      cell3.classList.remove('on');
+    } 
+    else {
+      cell3.classList.add('on');
     }
   }
 
@@ -495,35 +530,49 @@ window.addEventListener('load', function () {
     }
   }
 
+// function loopShift(table) {
+//   let tableTop = window.getComputedStyle(table, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+//   table.style.marginTop = (Number(tableTop) + 59) + "px"; // increment the position from the top by the height of the cells (55)
+//   tableTop = table.style.marginTop; // update the value stored in the value
+
+//   return Number(tableTop.replace("px", ""));
+// }
+
 /////////////   /////////////   /////////////   MUSICAL LOOP  /////////////   /////////////   /////////////   
 
-// Define function for playing a loop
+/* Play loop function: Activated when the user presses on the play (loop) button.
+no param */
 function playLoop() {
   intervalId = setInterval(function() {
     if (isLoopPlaying) { // Check if isLoopPlaying is true
       playStep(col);
 
       // Shift the grid down by the height of the cells every tempo
-      let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table1.style.top = (Number(tableTop1) + 59) + "px"; // increment the position from the top by the height of the cells (55)
-      tableTop1 = table1.style.top; // update the value stored in the value
-      console.log("Table top 1 : " + table1.style.top);
+      // loopShift(table1);
+      let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      table1.style.marginTop = (Number(tableTop1) + 59) + "px"; // increment the position from the top by the height of the cells (55)
+      tableTop1 = table1.style.marginTop; // update the value stored in the value
 
-      let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table2.style.top = (Number (tableTop2) + 59) + "px"; // increment the position from the top by the height of the cells (55)
-      tableTop2 = table2.style.top; // update the value stored in the value
-      console.log("Table top 2 : " + table2.style.top);
+      let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      table2.style.marginTop = (Number(tableTop2) + 59) + "px"; // increment the position from the top by the height of the cells (55)
+      tableTop2 = table2.style.marginTop; // update the value stored in the value
 
-      // if (Number(tableTop1.replace("px", "")) >= 1750) {
-      //   table1.style.top = "50%";
-      // }
+      let tableTop3 = window.getComputedStyle(table3, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
+      table3.style.marginTop = (Number(tableTop3) + 59) + "px"; // increment the position from the top by the height of the cells (55)
+      tableTop3 = table3.style.marginTop; // update the value stored in the value
 
-      // if (Number(tableTop2.replace("px", "")) >= 260) {
-      //   table2.style.top = "50%";
-      // }
+      if ((Number(tableTop3.replace("px", "")) <= -630) && (Number(tableTop3.replace("px", "")) >= -640)) {
+        table2.style.marginTop = "-1577px";
+      }
+      if ((Number(tableTop2.replace("px", "")) <= -630) && (Number(tableTop2.replace("px", "")) >= -640)) {
+        table1.style.marginTop = "-1577px";
+      }
+      if ((Number(tableTop1.replace("px", "")) <= -630) && (Number(tableTop1.replace("px", "")) >= -640)) {
+        table3.style.marginTop = "-1577px";
+      }
+      
 
       let previousCol = 1; // variable to store the index of the previous column
-
       if (col == 0) { // if we are currently playing the first column (index 0), the previous column is the last one (index : total amount of coloums - 1)
         previousCol = numCols-1;
       }
@@ -536,8 +585,11 @@ function playLoop() {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
         const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
 
-        const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
+        const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played (for the second grid)
         const previousCell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
+
+        const cell3 = document.querySelector(`.cell3[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played (for the third grid)
+        const previousCell3 = document.querySelector(`.cell3[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
 
         if (cell.classList.contains('on')) { // if the current cell played is "on", change it to "playing" (white) [GRID 1]
           cell.classList.remove('on');
@@ -556,10 +608,18 @@ function playLoop() {
           previousCell2.classList.remove('playing');
           previousCell2.classList.add('on'); 
         }
+
+        if (cell3.classList.contains('on')) { // if the current cell played is "on", change it to "playing" (white) [GRID 2]
+          cell3.classList.remove('on');
+          cell3.classList.add('playing'); 
+        }
+        if (previousCell3.classList.contains('playing')) { // if the cell right before the one currently played is "playing" (white) give it back its original "on" colour [GRID 3]
+          previousCell3.classList.remove('playing');
+          previousCell3.classList.add('on'); 
+        }
       }
 
       col++; // Increment the column count
-
       if (col === numCols) { // if the column count is at the end of the grid (total amount of columns) reset it to 0
         col = 0; 
       }
@@ -580,10 +640,13 @@ function playLoop() {
 
       table1.style.top = "50%";
       table1.style.marginTop = "-634px";
-      console.log("Table margin top 1 : " + table1.style.marginTop);
+      // console.log("Table margin top 1 : " + table1.style.marginTop);
 
       table2.style.top = "50%";
       table2.style.marginTop = "310px";
+
+      table3.style.top = "50%";
+      table3.style.marginTop = "-1577px";
 
       isLoopPlaying = false;
 
@@ -598,7 +661,7 @@ function playLoop() {
     else if (loopBtn.classList.contains('btn-pos')) {
       if (sampler === undefined) {
         sampler = new Tone.Sampler({
-          urls: {
+          urls: { //urls to the sample that are associated with the musical notes D2, E2, F2, G2 with Tone.JS. Each note represents a track in the sequencer
             D2: sample_url +selectedValue3,
             E2: sample_url +selectedValue2,
             F2: sample_url +selectedValue1,
@@ -614,7 +677,7 @@ function playLoop() {
         // Update the sampler
         sampler.dispose();
         sampler = new Tone.Sampler({
-          urls: {
+          urls: { //urls to the sample that are associated with the musical notes D2, E2, F2, G2 with Tone.JS. Each note represents a track in the sequencer
                   D2: sample_url +selectedValue3,
                   E2: sample_url +selectedValue2,
                   F2: sample_url +selectedValue1,
@@ -636,37 +699,63 @@ function playLoop() {
     }  
   });
   
-  cells.forEach(function (cell) {
-    cell.addEventListener('click', function (event) {
-      toggleCell(event);
+  /* Function for when the user manually clicks on a cell in the sequencer to turn it on or off
+  
+  @param {Number} numRows: total amount of rows in a sequencer
+  @param {Number} numCols: total amount of columns in a sequencer
+  @return {void}*/
+  function turnCellOn(cells) {
+    cells.forEach(function (cell) {
+      cell.addEventListener('click', function (event) {
+        // console.log("This is the cell clicked : ", cell);
+        toggleCell(event, cell);
+      });
     });
-  });
+  }
+
+  turnCellOn(cells);
+  turnCellOn(cells2);
+  turnCellOn(cells3);
 
   /* Function for clearing all cells from the sequencer
   
-  param numRows: amount of rows - usually same amount for each column
-  param numCols: amount of columns - usually same amount for each row
-  return: none */
+  @param {Number} numRows: total amount of rows in a sequencer
+  @param {Number} numCols: total amount of columns in a sequencer
+  @return {void}*/
   function removeOnClass(numRows, numCols) {
     for (let row = 0; row <= numRows; row++) {
       for (let col = 0; col <= numCols; col++) {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
         const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`);
-        if (cell.classList.contains('on')) {
+        const cell3 = document.querySelector(`.cell3[data-row="${row}"][data-col="${col}"]`);
+
+        if ((cell.classList.contains('on')) || (cell.classList.contains('playing'))) {
           cell.classList.remove('on');
+          cell.classList.remove('playing');
         }
-        if (cell2.classList.contains('on')) {
+        if ((cell2.classList.contains('on')) || (cell2.classList.contains('playing'))) {
           cell2.classList.remove('on');
+          cell2.classList.remove('playing');
+        }
+        if ((cell3.classList.contains('on')) || (cell3.classList.contains('playing'))) {
+          cell3.classList.remove('on');
+          cell3.classList.remove('playing');
         }
       }
     }
   }
+  /* Function to remove the 'playing' attribute of all cells that have it active
 
+  param numRows: total amount of rows in a sequencer
+  param numCols: total amount of columns in a sequencer
+  return: none */
   function removePlayingClass(numRows, numCols) {
     for (let row = 0; row < numRows; row++) {
       for (let col = 0; col < numCols; col++) {
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
         const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`);
+        const cell3 = document.querySelector(`.cell3[data-row="${row}"][data-col="${col}"]`);
+
         if (cell.classList.contains('playing')) {
           cell.classList.remove('playing');
           cell.classList.add('on');
@@ -674,6 +763,10 @@ function playLoop() {
         if (cell2.classList.contains('playing')) {
           cell2.classList.remove('playing');
           cell2.classList.add('on');
+        }
+        if (cell3.classList.contains('playing')) {
+          cell3.classList.remove('playing');
+          cell3.classList.add('on');
         }
       }
     }
@@ -688,13 +781,16 @@ function playLoop() {
     for (let col = 0; col <= numCols; col++) {
       const cell = document.querySelector(`.cell[data-row="${idRow}"][data-col="${col}"]`);
       const cell2 = document.querySelector(`.cell2[data-row="${idRow}"][data-col="${col}"]`);
+      const cell3 = document.querySelector(`.cell3[data-row="${idRow}"][data-col="${col}"]`);
 
       if (cell.classList.contains('on')) {
         cell.classList.remove('on');
       }
-
       if (cell2.classList.contains('on')) {
         cell2.classList.remove('on');
+      }
+      if (cell3.classList.contains('on')) {
+        cell3.classList.remove('on');
       }
     }
   }

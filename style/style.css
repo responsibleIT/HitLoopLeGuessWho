@@ -18,6 +18,7 @@ body {
   width: fit-content;
   block-size: fit-content;
   height: 100vh;
+  overflow: hidden;
   margin: auto;
   align-items:center;
 
@@ -27,9 +28,9 @@ body {
 
 /* Input space for the BPM */
 #tempo-input {
-  position: relative;
+  position: absolute;
   left: 160px;
-  top: 80px;
+  top: 24.5%;
   margin: 5px;
   background-color: white;
   border-radius: 10px;
@@ -43,20 +44,20 @@ body {
 
 /* Main */
 main {
-  display: flex;
+  /* display: flex; */
   flex-direction: row;
   margin-bottom: 30px;
 }
 
 /* Control panel for each different track */
 nav {
-  position: relative;
+  position: absolute;
   display: grid;
   grid-template-columns: 1fr 70px 100px;
   width: 200px;
   padding-top: 20px;
   margin-left: 35px;
-  top: 200px;
+  top: 50%;
 }
 
 /* Sample selection */
@@ -90,13 +91,17 @@ button {
 
 /* Generate music button */ 
 #gen_music_btn {
-  position: relative;
-  background-color: #eb3434;
-  left: 45px;
-  top: 30px;
-  width: 300px;
+  position: absolute;
+  background-color: transparent;
+  color: #000000;
+  left: 7%;
+  top: 10%;
+  font-size: 25px;
   margin-top: 20px;
-  padding: 20px 50px;
+}
+
+#gen_music_btn:hover {
+  color: white;
 }
 
 /* Close buttons */
@@ -113,13 +118,17 @@ button {
 
 /* "How whas this music generated" button to open the popup */
 #how-gen-btn {
-  position: relative;
-  left: 150px;
-  top: 250px;
-  width: 100px;
-  height: 55px;
-  font-size: 10px;
-  background-color: #ff5d5d;
+  position: absolute;
+  left: 0%;
+  top: 18%;
+  width: 100%;
+  font-size: 25px;
+  color: black;
+  background-color: transparent;
+}
+
+#how-gen-btn:hover {
+  color: white;
 }
 
 /* "How whas this music generated" popup */
@@ -227,25 +236,44 @@ table {
 /* First grid; The one on display when the loop is paused */
 #grid {
   position: absolute;
-  left: 0%;
+  left: -10%;
   transform: rotate(270deg);
   top: 50%;
-  margin-top: -634px;
-  
+  margin-top: -634px; 
+  min-width: 500px;
 }
 
-/* Second grid; Follows the first grid in a loop */
+/* Second grid; Below the first grid in a loop */
 #grid2 {
   position: absolute;
-  left: 0%;
+  left: -10%;
   transform: rotate(270deg);
   top: 50%;
   margin-top: 310px;
+  flex: 0 0 auto;
+  /* display: none; */
+}
+
+/* Second grid; Follows the first grid in a loop */
+#grid3 {
+  position: absolute;
+  left: -10%;
+  transform: rotate(270deg);
+  top: 50%;
+  margin-top: -1577px;
+  flex: 0 0 auto;
+  /* display: none; */
 }
 
 th {
   height: 20px;
   min-height: 20px;
+}
+
+/* Cells dimensions */
+td {
+  width: 55px;
+  height: 55px;
 }
 
 /* Table row colors */
@@ -262,13 +290,7 @@ tr:nth-of-type(4) td.on {
   background-color: #01d42b;
 }
 
-/* Cells dimensions */
-td {
-  width: 55px;
-  height: 55px;
-  min-width: 55px;
-  min-height: 55px;
-}
+
 
 td.on {
   background-color: blue;
@@ -285,6 +307,12 @@ td.on {
   background-color: #2a2a2a9f;
 }
 .cell2:hover {
+  background-color: #5555559a;
+}
+.cell3 {
+  background-color: #2a2a2a9f;
+}
+.cell3:hover {
   background-color: #5555559a;
 }
 
@@ -316,7 +344,7 @@ td.on {
   backdrop-filter: blur(10px);
   text-align:center;
   top: 40%;
-  left: 40%;
+  left: 20%;
   color: white;
 }
 
@@ -378,15 +406,16 @@ td.on {
 
 /* Position loop button */
 #loop-btn {
-  position: relative;
+  position: absolute;
   left: 125px;
+  top: 30%;
 }
 
 /* Position of the clear button */
 #clear_sequencer {
-  position: relative;
-  left: 20px;
-  top: 120px;
+  position: absolute;
+  left: 125px;
+  top: 36%;
 }
 
 /* Side (main) menu properties */
@@ -401,8 +430,9 @@ td.on {
 
 #menu_btn {
   position: absolute;
-  left: 75%;
-  top: 45%;
+  left: 53%;
+  margin-right: 50px;
+  top: 40%;
   width: 50px;
   height: 50px;
   border-radius: 15px;
