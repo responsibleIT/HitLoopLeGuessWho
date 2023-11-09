@@ -31,6 +31,7 @@ window.addEventListener('load', function () {
   const cells2 = document.querySelectorAll('.cell2'); // Cell (from the sequencer grid 2) 
   const cells3 = document.querySelectorAll('.cell3'); // Cell (from the sequencer grid3) 
 
+  const closeMenuBtn = this.document.getElementById('close_menu');
 
   let tempoInput = document.getElementById('tempo-input'); // Tempo button 
 
@@ -127,6 +128,10 @@ window.addEventListener('load', function () {
     body.classList.add
     initialSequence(); // generate the initial sequence
   });
+
+  closeMenuBtn.addEventListener('click', function() {
+    sideMenu.classList.replace('side-menu', 'popup_hidden'); // hide the popup
+  })
 
     // If the popup button to start from scratch is selected
   scratchStart.addEventListener('click', function() {
