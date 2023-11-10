@@ -249,10 +249,10 @@ table {
 #grid {
   position: absolute;
   left: -10%;
-  transform: rotate(270deg);
+  /* transform: rotate(270deg); */
   top: 50%;
-  margin-top: -634px; 
-  transition: margin-top 0.5s ease;
+  margin-top: -603px; 
+  animation: none;
 }
 
 /* Second grid; Below the first grid in a loop */
@@ -261,8 +261,8 @@ table {
   left: -10%;
   transform: rotate(270deg);
   top: 50%;
-  margin-top: 310px;
-  transition: margin-top 0.5s ease;
+  margin-top: 341px;
+  animation: none;
 }
 
 /* Second grid; Follows the first grid in a loop */
@@ -271,8 +271,8 @@ table {
   left: -10%;
   transform: rotate(270deg);
   top: 50%;
-  margin-top: -1577px;
-  transition: margin-top 0.5s ease;
+  margin-top: -1547px;
+  animation: none;
 }
 
 th {
@@ -329,6 +329,7 @@ td.on {
 /* Cells that are currently played turn white */
 .playing {
   background-color: white;
+  transition: 0.05s;
 }
 
 /* Popup windows properties */
@@ -359,13 +360,13 @@ td.on {
 
 /* Generate music button in the start popup window */
 #gen_start {
-  position: relative;
+  position: fixed;
   top: 40%;
-  left: 0%;
-  width: 400px;
-  height: 80px;
+  left: 40%;
+  width: 22%;
+  height: 10%;
   background-color:#ff0707c4;
-  font-size: 40px;
+  font-size: 15px;
 }
 #gen_start:hover {
   background-color: #ff0707;
@@ -373,10 +374,10 @@ td.on {
 
 /* Start from scratch button in the start popup window */
 #scratch_start {
-  position: relative;
-  top: 47%;
-  left: -17%;
-  font-size: 20px;
+  position: fixed;
+  top: 50%;
+  left: 45%;
+  font-size: 15px;
   background-color: transparent;
   color: white;
 }
@@ -385,15 +386,15 @@ td.on {
 }
 
 #slow_btn, #fast_btn {
-  position: relative;
+  position: fixed;
   top: 30%;
-  width: 150px;
-  height: 40px;
+  width: 10%;
+  height: 5%;
 }
 
 /* Slow (tempo) button in the start popup window */
 #slow_btn {
-  left: 19%;
+  left: 40%;
   background-color: #ffae00b2;
 }
 #slow_btn:hover {
@@ -405,7 +406,7 @@ td.on {
 
 /* Fast (tempo) button in the start popup window */
 #fast_btn {
-  left: 20%;
+  left: 52%;
   background-color: #bfff00b3;
 }
 #fast_btn:hover {
@@ -494,33 +495,10 @@ td.on {
   #menu_btn {
     left: 70%;
   }
-  /* #grid, #grid2, #grid3 {
-    left: 18%;
-  }
-  #menu_btn {
-    left: 65%;
-  } */
-}
-
-@media screen and (max-width: 1400px) {
-  #grid, #grid2, #grid3 {
-    left: 11%;
-  }
-  #menu_btn {
-    left: 70%;
-  }
 }
 
 /* RESPONSIVENESS TO FIX */
 @media screen and (max-width: 1070px) {
-  /* table {
-    height: 170px;
-    width: 1000px;
-  }
-  td {
-    width: 25px;
-    height: 55px;
-  } */
   #grid, #grid2, #grid3 {
     left: -20%;
   }
@@ -528,36 +506,32 @@ td.on {
     margin-top: -629px;
   }
   #grid2 {
-    margin-top: 313px;
+    margin-top: 315px;
   }
   #grid3 {
     margin-top: -1571px;
-    display: none;
   }
 }
 
 @media screen and (max-width: 950px) {
   #grid, #grid2, #grid3 {
-    left: -20%;
+    left: -30%;
   }
   table {
-    height: 90px;
-    width: 650px;
+    height: 20px;
+    width: 1000px;
   }
-  td {
-    width: 35px;
-    height: 35px;
-  }
+
   #grid {
-    margin-top: -435px;
+    margin-top: -659px;
   }
   #grid2 {
-    margin-top: 212px;
+    margin-top: 339px;
     /* display: none; */
   }
   #grid3 {
-    margin-top: -538px;
-    display: none;
+    margin-top: -1657px;
+
   }
   #menu_btn {
     width: 20px;
@@ -569,26 +543,26 @@ td.on {
   }
 }
 
-@media screen and (max-width: 460px) {
+@media screen and (max-width: 650px) {
   #grid, #grid2, #grid3 {
-    left: -50%;
+    left: -40%;
   }
   #menu_btn {
     left: 80%;
   }
-  #grid {
-    margin-top: -435px;
+}
+
+@media screen and (max-width: 450px) {
+  #grid, #grid2, #grid3 {
+    left: -90%;
   }
-  #grid2 {
-    margin-top: 212px;
-    /* display: none; */
+}
+
+@keyframes looping {
+  0% {
+    transform: translateY(0) scale(1) rotate(270deg);
   }
-  #grid3 {
-    margin-top: -538px;
-    display: none;
-  }
-  #side-menu {
-    width: 100vw;
-    height: 100vh;
+  100% {
+    transform: translateY(944px) scale(1) rotate(270deg);
   }
 }

@@ -31,11 +31,7 @@ window.addEventListener('load', function () {
   const cells2 = document.querySelectorAll('.cell2'); // Cell (from the sequencer grid 2) 
   const cells3 = document.querySelectorAll('.cell3'); // Cell (from the sequencer grid3) 
 
-  const closeMenuBtn = this.document.getElementById('close_menu');
-
   let tempoInput = document.getElementById('tempo-input'); // Tempo button 
-
-  const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
 
   const table1 = document.getElementById("grid");
   const table2 = document.getElementById("grid2");
@@ -43,7 +39,9 @@ window.addEventListener('load', function () {
 
   const menuBtn = document.getElementById("menu_btn");
   const sideMenu = document.getElementById("side-menu");
+  const closeMenuBtn = this.document.getElementById('close_menu');
 
+  const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
   const genBeatBtn = document.getElementById('gen_beat_btn'); // Generate track 0 button 
   const genChordBtn = document.getElementById('gen_chord_btn'); 
   const genBassBtn = document.getElementById('gen_bass_btn');
@@ -63,7 +61,7 @@ window.addEventListener('load', function () {
   const fastBtn = this.document.getElementById('fast_btn');
 
   let slowBpm = 80;
-  let fastBpm = 120;
+  let fastBpm = 300;
 
   const genStart = document.getElementById('gen_start'); // Generate music at start button 
   const scratchStart = document.getElementById('scratch_start'); // Start music from scratch at start button 
@@ -111,8 +109,6 @@ window.addEventListener('load', function () {
     else if (sideMenu.classList == 'side-menu') {
       sideMenu.classList.replace('side-menu', 'popup_hidden'); // hide the popup
     }
-    
- 
   });
 
   // Function to update the sampler with a new sample
@@ -326,13 +322,6 @@ window.addEventListener('load', function () {
 
 /////////////   /////////////   /////////////    SEQUENCER PIPELINE    /////////////   /////////////   /////////////   
 
-  // let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
-  // const numRows = 4; // number of rows
-  // const numCols = 16; // number of columns
-
-  // let col = 0; // Initialize the column index
-  // let intervalId; // Initialize the intervalId
-
   const notes = ['G2', 'F2', 'E2', 'D2']; // Notes corresponded to each Column of the grid: 128 official notes in tone.js
   const noteLength = '8n';// Decides how long a note can take
 
@@ -345,8 +334,6 @@ window.addEventListener('load', function () {
     let bpm = parseFloat(tempoInput.value);
     columnTime = (60 / bpm) * 1000;
   });
-
-
 
 
 /////////////   /////////////   /////////////     SEQUENCER INTIALIZATION    /////////////   /////////////   /////////////   
@@ -378,7 +365,6 @@ window.addEventListener('load', function () {
       });
     generateRandomTrack(3); // generate for the tracks after
   }
-
 
   function generateMusic() {
     let seed = Math.floor(Math.random()*1000);
@@ -461,7 +447,6 @@ window.addEventListener('load', function () {
     console.log("this is the line : ", col);
 
     const cell1 = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
-    console.log("Cell1 : ", cell1);
     const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`);
     const cell3 = document.querySelector(`.cell3[data-row="${row}"][data-col="${col}"]`);
 
@@ -540,29 +525,38 @@ window.addEventListener('load', function () {
     var destination = Number(value) + distance;
     var frameDistance = distance / (duration / 10);
     function moveAFrame() {
-       elStyle = window.getComputedStyle(element);
-       value = elStyle.getPropertyValue(topOrLeft).replace("px", "");
-       var newLocation = Number(value) + frameDistance;
-       var beyondDestination = ( (!isNegated && newLocation>=destination) || (isNegated && newLocation<=destination) );
-       if (beyondDestination) {
-          element.style[topOrLeft] = destination + "px";
-          clearInterval(movingFrames);
-       }
-       else {
-          element.style[topOrLeft] = newLocation + "px";
-       }
+      elStyle = window.getComputedStyle(element);
+      value = elStyle.getPropertyValue(topOrLeft).replace("px", "");
+      var newLocation = Number(value) + frameDistance;
+      var beyondDestination = ( (!isNegated && newLocation>=destination) || (isNegated && newLocation<=destination) );
+      if (beyondDestination) {
+        element.style[topOrLeft] = destination + "px";
+        clearInterval(movingFrames);
+      }
+      else {
+        element.style[topOrLeft] = newLocation + "px";
+      }
     }
     var movingFrames = setInterval(moveAFrame, 10);
- }
+  }
 
-// function loopShift(table) {
-//   let tableTop = window.getComputedStyle(table, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-//   table.style.marginTop = (Number(tableTop) + 59) + "px"; // increment the position from the top by the height of the cells (55)
-//   tableTop = table.style.marginTop; // update the value stored in the value
+function loopShift(table, tableTop, tableBefore, tableTopBefore, increment, intervalStart, intervalEnd, ogPosition) {
+    console.log("Table before = " + table.style.margin + "tableTop before ; ", tableTop )
 
-//   return Number(tableTop.replace("px", ""));
-// }
+    table.style.marginTop = (Number(tableTop) + increment) + "px"; // increment the position from the top by the height of the cells (55)
+    tableTop = table.style.marginTop; // update the value stored in the value
 
+    console.log("Table after = " + table.style.margin + "tableTop after ; ", tableTop )
+
+    console.log("Number we compare : ", + Number(tableTop.replace("px", "")))
+
+    if ((Number(tableTop.replace("px", "")) <= -intervalStart) && (Number(tableTop.replace("px", "")) >= -intervalEnd)) {
+      console.log("It should go back");
+      tableBefore.style.marginTop = ogPosition;
+    }
+}
+
+// window.screen.width
 /////////////   /////////////   /////////////   MUSICAL LOOP  /////////////   /////////////   /////////////   
 
 /* Play loop function: Activated when the user presses on the play (loop) button.
@@ -571,37 +565,40 @@ function playLoop() {
   intervalId = setInterval(function() {
     if (isLoopPlaying) { // Check if isLoopPlaying is true
       playStep(col);
+      
+      let increment = 0;
+      let ogPosition = "";
+      let intervalStart = 0;
+      let intervalEnd = 0;
+      let gridHeight = 0;
+      let speedLoop = 0;
 
-      // Shift the grid down by the height of the cells every tempo
-      // loopShift(table1);
-      let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table1.style.marginTop = (Number(tableTop1) + 59) + "px"; // increment the position from the top by the height of the cells (55)
-      tableTop1 = table1.style.marginTop; // update the value stored in the value
-
-      // // Update the transition duration dynamically based on the increment value
-      // const transitionDuration = (59 / 1000) + "s"; // Divide by 1000 to convert milliseconds to seconds
-      // table1.style.transitionDuration = transitionDuration;
-
-      // // Request the next animation frame for a smooth transition
-      // requestAnimationFrame(moveTable);
-
-      let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table2.style.marginTop = (Number(tableTop2) + 59) + "px"; // increment the position from the top by the height of the cells (55)
-      tableTop2 = table2.style.marginTop; // update the value stored in the value
-
-      let tableTop3 = window.getComputedStyle(table3, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
-      table3.style.marginTop = (Number(tableTop3) + 59) + "px"; // increment the position from the top by the height of the cells (55)
-      tableTop3 = table3.style.marginTop; // update the value stored in the value
-
-      if ((Number(tableTop3.replace("px", "")) <= -630) && (Number(tableTop3.replace("px", "")) >= -640)) {
-        table2.style.marginTop = "-1577px";
+      if (window.screen.width > 950) {
+        increment = 59;
+        ogPosition = "-1577px";
+        intervalStart = -630;
+        intervalEnd = -640;
+        gridHeight = 944;
       }
-      if ((Number(tableTop2.replace("px", "")) <= -630) && (Number(tableTop2.replace("px", "")) >= -640)) {
-        table1.style.marginTop = "-1577px";
+
+      if (window.screen.width < 950) {
+        increment = 62;
+        ogPosition = "-1657px";
+        intervalStart = -630;
+        intervalEnd = -680;
       }
-      if ((Number(tableTop1.replace("px", "")) <= -630) && (Number(tableTop1.replace("px", "")) >= -640)) {
-        table3.style.marginTop = "-1577px";
-      }
+
+      speedLoop = gridHeight / columnTime;
+
+      console.log("Column time : " + columnTime)
+
+      // console.log("Interval : " + increment + " et ogPosition : " + ogPosition)
+      
+      /////////////   /////////////   /////////////   MOVE THE LOOP  /////////////   /////////////   /////////////   
+
+      table1.style.animation = "looping 3.16s linear infinite";
+      table2.style.animation = "looping 3.16s linear infinite";
+      table3.style.animation = "looping 3.16s linear infinite";
       
 
       let previousCol = 1; // variable to store the index of the previous column
@@ -671,19 +668,20 @@ function playLoop() {
       loopBtn.textContent = 'Play';
 
       table1.style.top = "50%";
+      table1.style.animation = "none";
       table1.style.marginTop = "-634px";
       // console.log("Table margin top 1 : " + table1.style.marginTop);
 
       table2.style.top = "50%";
+      table2.style.animation = "none";
       table2.style.marginTop = "310px";
 
       table3.style.top = "50%";
+      table3.style.animation = "none";
       table3.style.marginTop = "-1577px";
 
       isLoopPlaying = false;
-
       Tone.Transport.stop();
-
       removePlayingClass(numRows, numCols);
 
       clearInterval(intervalId); // clear the time interval
@@ -840,35 +838,30 @@ function playLoop() {
 
   /////////////////   OPEN SAMPLE ORIGIN POPUP WINDOWS  ///////////////// 
 
-  ogSample_0.addEventListener('click', function() { // Show popup window about the sample origin of track 1 (index 0)
-    ogPopup_0.classList.replace('popup_hidden', 'popup');
-  });
-  ogSample_1.addEventListener('click', function() { // Show popup window about the sample origin of track 2 (index 1)
-    ogPopup_1.classList.replace('popup_hidden', 'popup');
-  });
-  ogSample_2.addEventListener('click', function() { // Show popup window about the sample origin of track 3 (index 2)
-    ogPopup_2.classList.replace('popup_hidden', 'popup');
-  });
-  ogSample_3.addEventListener('click', function() { // Show popup window about the sample origin of track 4 (index 3)
-    ogPopup_3.classList.replace('popup_hidden', 'popup');
-  });
+  function popupSample(button, popup, action) {
+    if (action == 1) {
+      button.addEventListener('click', function() { // Show popup window about the sample origin of track 1 (index 0)
+        popup.classList.replace('popup_hidden', 'popup');
+      });
+    }
+    else {
+      button.addEventListener('click', function() { // Show popup window about the sample origin of track 1 (index 0)
+        popup.classList.replace('popup', 'popup_hidden');
+      });
+    }
 
-  closeSampleBtn_0.addEventListener('click', function() { // Close popup window about the sample origin of track 1 (index 0)
-    ogPopup_0.classList.remove('popup');
-    ogPopup_0.classList.add('popup_hidden');
-  });
-  closeSampleBtn_1.addEventListener('click', function() { // Close popup window about the sample origin of track 2 (index 1)
-    ogPopup_1.classList.remove('popup');
-    ogPopup_1.classList.add('popup_hidden');
-  });
-  closeSampleBtn_2.addEventListener('click', function() { // Close popup window about the sample origin of track 3 (index 2)
-    ogPopup_2.classList.remove('popup');
-    ogPopup_2.classList.add('popup_hidden');
-  });
-  closeSampleBtn_3.addEventListener('click', function() { // Close popup window about the sample origin of track 4 (index 3)
-    ogPopup_3.classList.remove('popup');
-    ogPopup_3.classList.add('popup_hidden');
-  });
+  }
+
+  popupSample(ogSample_0, ogPopup_0, 1);
+  popupSample(ogSample_1, ogPopup_1, 1);
+  popupSample(ogSample_2, ogPopup_2, 1);
+  popupSample(ogSample_3, ogPopup_3, 1);
+
+  popupSample(closeSampleBtn_0, ogPopup_0, 0);
+  popupSample(closeSampleBtn_1, ogPopup_1, 0);
+  popupSample(closeSampleBtn_2, ogPopup_2, 0);
+  popupSample(closeSampleBtn_3, ogPopup_3, 0);
+
 
   /////////////////   CLEAN CELLS  ///////////////// 
 
@@ -881,19 +874,15 @@ function playLoop() {
 
   /////////////////   CLEAN CELLS BY ROW   ///////////////// 
 
-  genBeatBtn.addEventListener('click', function() {  // clear the first row of the sequence grid when the generate beat button is pressed
-	  removeOnClassRow(0, 15);
-  });
-  genChordBtn.addEventListener('click', function() { // clear the second row of the sequence grid when the generate chord button is pressed
-	  removeOnClassRow(1, 15);
-  });
-  genBassBtn.addEventListener('click', function() { // clear the third row of the sequence grid when the generate bass button is pressed
-	  removeOnClassRow(2, 15);
-  });
-  genMeloBtn.addEventListener('click', function() { // clear the fourth row of the sequence grid when the generate melody button is pressed
-	  removeOnClassRow(3, 15);
-  });
+  function genTrackOnClick(track, row) {
+    track.addEventListener('click', function() {  // clear the first row of the sequence grid when the generate beat button is pressed
+      removeOnClassRow(row, 15);
+    });
+  }
 
+  genTrackOnClick(genBeatBtn, 0);
+  genTrackOnClick(genChordBtn, 1);
+  genTrackOnClick(genBassBtn, 2);
+  genTrackOnClick(genMeloBtn, 3);
 
-  
 });
