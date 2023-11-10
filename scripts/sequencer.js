@@ -535,6 +535,26 @@ window.addEventListener('load', function () {
     }
   }
 
+  function move(element, direction, distance=20, duration=1000) {
+    var value = elStyle.getPropertyValue(topOrLeft).replace("px", "");
+    var destination = Number(value) + distance;
+    var frameDistance = distance / (duration / 10);
+    function moveAFrame() {
+       elStyle = window.getComputedStyle(element);
+       value = elStyle.getPropertyValue(topOrLeft).replace("px", "");
+       var newLocation = Number(value) + frameDistance;
+       var beyondDestination = ( (!isNegated && newLocation>=destination) || (isNegated && newLocation<=destination) );
+       if (beyondDestination) {
+          element.style[topOrLeft] = destination + "px";
+          clearInterval(movingFrames);
+       }
+       else {
+          element.style[topOrLeft] = newLocation + "px";
+       }
+    }
+    var movingFrames = setInterval(moveAFrame, 10);
+ }
+
 // function loopShift(table) {
 //   let tableTop = window.getComputedStyle(table, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
 //   table.style.marginTop = (Number(tableTop) + 59) + "px"; // increment the position from the top by the height of the cells (55)
@@ -557,6 +577,13 @@ function playLoop() {
       let tableTop1 = window.getComputedStyle(table1, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
       table1.style.marginTop = (Number(tableTop1) + 59) + "px"; // increment the position from the top by the height of the cells (55)
       tableTop1 = table1.style.marginTop; // update the value stored in the value
+
+      // // Update the transition duration dynamically based on the increment value
+      // const transitionDuration = (59 / 1000) + "s"; // Divide by 1000 to convert milliseconds to seconds
+      // table1.style.transitionDuration = transitionDuration;
+
+      // // Request the next animation frame for a smooth transition
+      // requestAnimationFrame(moveTable);
 
       let tableTop2 = window.getComputedStyle(table2, null).getPropertyValue("margin-top").replace("px", ""); // variable taking the number of pixels used for the top property of the table (grid)
       table2.style.marginTop = (Number(tableTop2) + 59) + "px"; // increment the position from the top by the height of the cells (55)

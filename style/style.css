@@ -246,12 +246,13 @@ table {
 }
 
 /* First grid; The one on display when the loop is paused */
-#grid, #grid {
+#grid {
   position: absolute;
   left: -10%;
   transform: rotate(270deg);
   top: 50%;
   margin-top: -634px; 
+  transition: margin-top 0.5s ease;
 }
 
 /* Second grid; Below the first grid in a loop */
@@ -261,6 +262,7 @@ table {
   transform: rotate(270deg);
   top: 50%;
   margin-top: 310px;
+  transition: margin-top 0.5s ease;
 }
 
 /* Second grid; Follows the first grid in a loop */
@@ -270,6 +272,7 @@ table {
   transform: rotate(270deg);
   top: 50%;
   margin-top: -1577px;
+  transition: margin-top 0.5s ease;
 }
 
 th {
@@ -510,30 +513,30 @@ td.on {
 
 /* RESPONSIVENESS TO FIX */
 @media screen and (max-width: 1070px) {
-  table {
-    height: 230px;
-    width: 1300px;
+  /* table {
+    height: 170px;
+    width: 1000px;
   }
   td {
-    width: 55px;
-    height: 75px;
-  }
+    width: 25px;
+    height: 55px;
+  } */
   #grid, #grid2, #grid3 {
-    left: -40%;
+    left: -20%;
   }
   #grid {
-    margin-top: -859px;
+    margin-top: -629px;
   }
   #grid2 {
-    margin-top: 439px;
+    margin-top: 313px;
   }
   #grid3 {
-    margin-top: -2169px;
+    margin-top: -1571px;
     display: none;
   }
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 950px) {
   #grid, #grid2, #grid3 {
     left: -20%;
   }
@@ -544,6 +547,17 @@ td.on {
   td {
     width: 35px;
     height: 35px;
+  }
+  #grid {
+    margin-top: -435px;
+  }
+  #grid2 {
+    margin-top: 212px;
+    /* display: none; */
+  }
+  #grid3 {
+    margin-top: -538px;
+    display: none;
   }
   #menu_btn {
     width: 20px;
