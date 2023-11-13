@@ -95,6 +95,16 @@ window.addEventListener('load', function () {
   let col = 0; // Initialize the column index
   let intervalId; // Initialize the intervalId
 
+  let tableReset1 = "";
+  let tableReset2 = "";
+  let tableReset3 = "";
+
+  let gridHeight = 0;
+  let speedLoop = 0;
+  let animation = "";
+
+  let animStyle = "";
+
   // Create a variable to store the sampler and audio
   let sampler;
   let audio;
@@ -200,7 +210,6 @@ window.addEventListener('load', function () {
     .then(response => response.json())
     .then(data => {
       const samples = data.files;
-      
       const option = document.createElement('option');  // Add empty option at start
       option.value = '';
       option.textContent = '';
@@ -238,9 +247,7 @@ window.addEventListener('load', function () {
   // Create the selection for column 2 (Track 3)
   const sampleSelect_col2 = document.getElementById('sampleselect_col2');
   fetch(sample_list_url)
-
     .then(response => response.json())
-
     .then(data => {
       const samples = data.files;
       const option = document.createElement('option');   // Add empty option at start
@@ -443,9 +450,6 @@ window.addEventListener('load', function () {
     let row = Number(cell.attributes['data-row'].value);
     let col = Number(cell.attributes['data-col'].value);
 
-    console.log("this is the column : ", row);
-    console.log("this is the line : ", col);
-
     const cell1 = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
     const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`);
     const cell3 = document.querySelector(`.cell3[data-row="${row}"][data-col="${col}"]`);
@@ -520,43 +524,6 @@ window.addEventListener('load', function () {
     }
   }
 
-  function move(element, direction, distance=20, duration=1000) {
-    var value = elStyle.getPropertyValue(topOrLeft).replace("px", "");
-    var destination = Number(value) + distance;
-    var frameDistance = distance / (duration / 10);
-    function moveAFrame() {
-      elStyle = window.getComputedStyle(element);
-      value = elStyle.getPropertyValue(topOrLeft).replace("px", "");
-      var newLocation = Number(value) + frameDistance;
-      var beyondDestination = ( (!isNegated && newLocation>=destination) || (isNegated && newLocation<=destination) );
-      if (beyondDestination) {
-        element.style[topOrLeft] = destination + "px";
-        clearInterval(movingFrames);
-      }
-      else {
-        element.style[topOrLeft] = newLocation + "px";
-      }
-    }
-    var movingFrames = setInterval(moveAFrame, 10);
-  }
-
-function loopShift(table, tableTop, tableBefore, tableTopBefore, increment, intervalStart, intervalEnd, ogPosition) {
-    console.log("Table before = " + table.style.margin + "tableTop before ; ", tableTop )
-
-    table.style.marginTop = (Number(tableTop) + increment) + "px"; // increment the position from the top by the height of the cells (55)
-    tableTop = table.style.marginTop; // update the value stored in the value
-
-    console.log("Table after = " + table.style.margin + "tableTop after ; ", tableTop )
-
-    console.log("Number we compare : ", + Number(tableTop.replace("px", "")))
-
-    if ((Number(tableTop.replace("px", "")) <= -intervalStart) && (Number(tableTop.replace("px", "")) >= -intervalEnd)) {
-      console.log("It should go back");
-      tableBefore.style.marginTop = ogPosition;
-    }
-}
-
-// window.screen.width
 /////////////   /////////////   /////////////   MUSICAL LOOP  /////////////   /////////////   /////////////   
 
 /* Play loop function: Activated when the user presses on the play (loop) button.
@@ -565,41 +532,43 @@ function playLoop() {
   intervalId = setInterval(function() {
     if (isLoopPlaying) { // Check if isLoopPlaying is true
       playStep(col);
-      
-      let increment = 0;
-      let ogPosition = "";
-      let intervalStart = 0;
-      let intervalEnd = 0;
-      let gridHeight = 0;
-      let speedLoop = 0;
-
+    
+      // For wide screens
       if (window.screen.width > 950) {
-        increment = 59;
-        ogPosition = "-1577px";
-        intervalStart = -630;
-        intervalEnd = -640;
-        gridHeight = 944;
+        loopPosition = "-1577px";
+        gridHeight = 960;
+
+        tableReset1 = "-603px";
+        tableReset2 = "341px";
+        tableReset3 = "-1547px";
+
+        animStyle = "looping ";
       }
 
+      // For smaller screens
       if (window.screen.width < 950) {
-        increment = 62;
-        ogPosition = "-1657px";
-        intervalStart = -630;
-        intervalEnd = -680;
+
+        loopPosition = "-1627px";
+        gridHeight = 960;
+
+        tableReset1 = "-631px";
+        tableReset2 = "368px";
+        tableReset3 = "-1629px";
+
+        animStyle = "loopingSmall ";
       }
 
-      speedLoop = gridHeight / columnTime;
+      speedLoop = (gridHeight) / tempoInput.value;
+      // console.log("Speed : " + speedLoop)
 
-      console.log("Column time : " + columnTime)
-
-      // console.log("Interval : " + increment + " et ogPosition : " + ogPosition)
-      
       /////////////   /////////////   /////////////   MOVE THE LOOP  /////////////   /////////////   /////////////   
 
-      table1.style.animation = "looping 3.16s linear infinite";
-      table2.style.animation = "looping 3.16s linear infinite";
-      table3.style.animation = "looping 3.16s linear infinite";
-      
+      animation = animStyle + speedLoop + "s linear infinite";
+
+      table1.style.animation = animation;
+      table2.style.animation = animation;
+      table3.style.animation = animation;
+
 
       let previousCol = 1; // variable to store the index of the previous column
       if (col == 0) { // if we are currently playing the first column (index 0), the previous column is the last one (index : total amount of coloums - 1)
@@ -668,17 +637,16 @@ function playLoop() {
       loopBtn.textContent = 'Play';
 
       table1.style.top = "50%";
-      table1.style.animation = "none";
-      table1.style.marginTop = "-634px";
-      // console.log("Table margin top 1 : " + table1.style.marginTop);
+      table1.style.animation = "";
+      table1.style.marginTop = tableReset1;
 
       table2.style.top = "50%";
-      table2.style.animation = "none";
-      table2.style.marginTop = "310px";
+      table2.style.animation = "";
+      table2.style.marginTop = tableReset2;
 
       table3.style.top = "50%";
-      table3.style.animation = "none";
-      table3.style.marginTop = "-1577px";
+      table3.style.animation = "";
+      table3.style.marginTop = tableReset3;
 
       isLoopPlaying = false;
       Tone.Transport.stop();

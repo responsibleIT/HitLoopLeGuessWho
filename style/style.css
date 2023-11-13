@@ -329,7 +329,7 @@ td.on {
 /* Cells that are currently played turn white */
 .playing {
   background-color: white;
-  transition: 0.05s;
+  /* transition: 0.05s; */
 }
 
 /* Popup windows properties */
@@ -502,15 +502,6 @@ td.on {
   #grid, #grid2, #grid3 {
     left: -20%;
   }
-  #grid {
-    margin-top: -629px;
-  }
-  #grid2 {
-    margin-top: 315px;
-  }
-  #grid3 {
-    margin-top: -1571px;
-  }
 }
 
 @media screen and (max-width: 950px) {
@@ -523,15 +514,13 @@ td.on {
   }
 
   #grid {
-    margin-top: -659px;
+    margin-top: -631px;
   }
   #grid2 {
-    margin-top: 339px;
-    /* display: none; */
+    margin-top: 368px;
   }
   #grid3 {
-    margin-top: -1657px;
-
+    margin-top: -1627px;
   }
   #menu_btn {
     width: 20px;
@@ -556,7 +545,12 @@ td.on {
   #grid, #grid2, #grid3 {
     left: -90%;
   }
+  #menu_btn {
+    left: 90%
+  }
 }
+
+/* ------------------ ANIMATIONS ------------------ */
 
 @keyframes looping {
   0% {
@@ -564,5 +558,14 @@ td.on {
   }
   100% {
     transform: translateY(944px) scale(1) rotate(270deg);
+  }
+}
+
+@keyframes loopingSmall {
+  0% {
+    transform: translateY(0) scale(1) rotate(270deg);
+  }
+  100% {
+    transform: translateY(998px) scale(1) rotate(270deg);
   }
 }
