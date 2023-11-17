@@ -34,7 +34,7 @@ window.addEventListener('load', function () {
   const cells2 = document.querySelectorAll('.cell2'); // Cell (from the sequencer grid 2) 
   const cells3 = document.querySelectorAll('.cell3'); // Cell (from the sequencer grid3) 
 
-  let tempoInput = document.getElementById('tempo-input'); // Tempo button 
+  let tempoInput = document.getElementById('tempo_input'); // Tempo button 
 
   const table1 = document.getElementById("grid"); // first sequencer grid (on top of the white line)
   const table2 = document.getElementById("grid2"); // second sequencer grid (under the white line)
@@ -74,7 +74,7 @@ window.addEventListener('load', function () {
   const genStart = document.getElementById('gen_start'); // BUTTON: Generate music at start  
   const scratchStart = document.getElementById('scratch_start'); // BUTTON: Start music from scratch at start 
 
-  const howGenButn = document.getElementById('how-gen-btn'); // BUTTON: Open te popup explaining how this piece was generated
+  const howGenButn = document.getElementById('how_gen_btn'); // BUTTON: Open te popup explaining how this piece was generated
 
   const popupStart = document.getElementById('popup'); // POPUP: window at the launch of the app
   const popupHow = document.getElementById('how-popup'); // POPUP: 
@@ -334,7 +334,7 @@ window.addEventListener('load', function () {
   const noteLength = '8n';// Decides how long a note can take
 
   let seed = Math.floor(Math.random() * 10);  // Sets the seed to 1,2,3 (random beat set for the first 3 tracks)
-  columnTime = (60 / parseFloat(document.getElementById('tempo-input').value)) * 1000;// Uses input BPM to calculate wait-time between columns
+  columnTime = (60 / parseFloat(document.getElementById('tempo_input').value)) * 1000;// Uses input BPM to calculate wait-time between columns
 
 
   // determines the tempo
