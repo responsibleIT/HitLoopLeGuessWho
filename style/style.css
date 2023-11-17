@@ -10,6 +10,11 @@ h1 {
   display: none;
 }
 
+/* Avoid any scrolling on all devices */
+body, html {
+  overflow: hidden;
+}
+
 /* Parameters for the body of the page */
 body {
   display: flex;
@@ -18,7 +23,6 @@ body {
   width: fit-content;
   block-size: fit-content;
   height: 100vh;
-  overflow: hidden;
   margin: auto;
   align-items:center;
   color: #151515;
@@ -26,7 +30,7 @@ body {
 }
 
 /* Input space for the BPM */
-#tempo-input {
+#tempo_input {
   position: absolute;
   left: 160px;
   top: 24.5%;
@@ -96,9 +100,8 @@ button {
   height: 50px;
   color: #000000;
   left: 20%;
-  top: 5%;
+  top: 6%;
   font-size: 15px;
-  font-weight: bold;
   margin-top: 20px;
   border-radius: 0%;
 }
@@ -120,20 +123,19 @@ button {
 }
 
 /* "How whas this music generated" button to open the popup */
-#how-gen-btn {
+#how_gen_btn {
   position: absolute;
   left: 20%;
   top: 15%;
   width: 60%;
   height : 50px;
   font-size: 15px;
-  font-weight:bold;
   color: black;
   background-color: #c901d4;
   border-radius: 0%;
 }
 
-#how-gen-btn:hover {
+#how_gen_btn:hover {
   color: white;
 }
 
@@ -159,7 +161,6 @@ button {
   font-size: 12px;
   background-color: #ff387a;
   color: #000000;
-  font-weight: bold;
   height: 70px;
   font-size: 11px;
   box-shadow: none;
@@ -347,11 +348,10 @@ td.on {
 /* Start popup window properties */
 .popup_start {
   position: fixed;
-  /* align-items: center; */
+  justify-content: center;
+  align-items: center;
   width: 200vh;
   height: 100vh;
-  /* border: 2px red solid; */
-  /* padding: auto; */
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.664);
   backdrop-filter: blur(7px);
@@ -361,11 +361,11 @@ td.on {
 
 /* Generate music button in the start popup window */
 #gen_start {
-  position: fixed;
+  position: absolute;
   top: 40%;
-  left: 40%;
-  width: 22%;
-  height: 10%;
+  left: 42%;
+  width: 400px;
+  height: 100px;
   background-color:#ff0707c4;
   font-size: 15px;
 }
@@ -389,13 +389,13 @@ td.on {
 #slow_btn, #fast_btn {
   position: fixed;
   top: 30%;
-  width: 10%;
-  height: 5%;
+  width: 200px;
+  height: 50px;
 }
 
 /* Slow (tempo) button in the start popup window */
 #slow_btn {
-  left: 40%;
+  left: 42%;
   background-color: #ffae00b2;
 }
 #slow_btn:hover {
@@ -407,7 +407,7 @@ td.on {
 
 /* Fast (tempo) button in the start popup window */
 #fast_btn {
-  left: 52%;
+  left: 49%;
   background-color: #bfff00b3;
 }
 #fast_btn:hover {
@@ -513,7 +513,6 @@ td.on {
     height: 20px;
     width: 1000px;
   }
-
   #grid {
     margin-top: -631px;
   }
@@ -528,9 +527,6 @@ td.on {
     height: 30px;
     border-radius: 10px;
   }
-  #how-popup {
-    
-  }
 }
 
 @media screen and (max-width: 650px) {
@@ -543,20 +539,65 @@ td.on {
   #how-popup {
     left: 10%;
   }
+  #gen_start {
+    width: 250px;
+    height: 70px;
+    left: 43%;
+  }
+  #slow_btn, #fast_btn {
+    width: 100px;
+    height: 40px;
+  }
+  #slow_btn {
+    left: 44%;
+  }
+  #fast_btn {
+    left: 52%;
+  }
 }
 
 @media screen and (max-width: 450px) {
   #grid, #grid2, #grid3 {
     left: -90%;
   }
-  #menu_btn {
-    left: 90%
-  }
   #how-popup {
     left: 7%;
     width: 250px;
     height: 200px;
     font-size: 10px;
+  }
+  #side-menu {
+    width: 100%;
+  }
+  #gen_music_btn {
+    top: 3%;
+  }
+  #gen_music_btn, #how_gen_btn, #clear_sequencer, #loop-btn, .gen-btn, .og-btn {
+    height: 50px;
+  }
+  #gen_music_btn, #how_gen_btn, #clear_sequencer, #loop-btn {
+    width: 200px;
+  }
+  .gen-btn {
+    padding-top: 20px;
+  }
+  .og-btn {
+    padding-top: 9px;
+  }
+  #gen_music_btn, #how_gen_btn, #loop-btn, #clear_sequencer {
+    left: 22%;
+  }
+  #loop-btn {
+    top: 32%;
+  }
+  #clear_sequencer {
+    top: 40%;
+  }
+  nav {
+    top: 50%;
+  }
+  #close_menu {
+    top: 88%;
   }
 }
 
