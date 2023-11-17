@@ -1,4 +1,5 @@
-//////////////////Calls to API before window is initialised/////////////////////
+////////////////// Calls to API before window is initialised /////////////////////
+
 const Url = 'https://api-hitloop.responsible-it.nl/';
 let sample_list_url;
 let sample_url; //sequence in sequencer is JSON and samples are MP3
@@ -22,71 +23,73 @@ else {
 }
 
 
-///////////////// Pipeline for selecting samples/////////////////////////
+///////////////// Pipeline for selecting samples /////////////////////////
 window.addEventListener('load', function () {
 
   // Create button variables
   const loopBtn = document.getElementById('loop-btn'); // Loop button 
+  const loopMobileBtn = document.getElementById('mobile_play'); // play button to appear at the bottom of the grid on the mobile version
+
   const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
   const cells2 = document.querySelectorAll('.cell2'); // Cell (from the sequencer grid 2) 
   const cells3 = document.querySelectorAll('.cell3'); // Cell (from the sequencer grid3) 
 
   let tempoInput = document.getElementById('tempo-input'); // Tempo button 
 
-  const table1 = document.getElementById("grid");
-  const table2 = document.getElementById("grid2");
-  const table3 = document.getElementById("grid3");
+  const table1 = document.getElementById("grid"); // first sequencer grid (on top of the white line)
+  const table2 = document.getElementById("grid2"); // second sequencer grid (under the white line)
+  const table3 = document.getElementById("grid3"); // third sequencer grid (on top of table1)
 
-  const menuBtn = document.getElementById("menu_btn");
-  const sideMenu = document.getElementById("side-menu");
-  const closeMenuBtn = this.document.getElementById('close_menu');
+  const menuBtn = document.getElementById("menu_btn"); // button to open and close the menu
+  const sideMenu = document.getElementById("side-menu"); // side menu
+  const closeMenuBtn = this.document.getElementById('close_menu'); // button on the side menu to close it (mobile)
 
   const genMuBtn = document.getElementById('gen_music_btn'); // Generate music button 
   const genBeatBtn = document.getElementById('gen_beat_btn'); // Generate track 0 button 
-  const genChordBtn = document.getElementById('gen_chord_btn'); 
-  const genBassBtn = document.getElementById('gen_bass_btn');
-  const genMeloBtn = document.getElementById('gen_melo_btn'); 
+  const genChordBtn = document.getElementById('gen_chord_btn');  // Generate track 1 button 
+  const genBassBtn = document.getElementById('gen_bass_btn'); // Generate track 2 button 
+  const genMeloBtn = document.getElementById('gen_melo_btn'); // Generate track 4 button 
 
-  const ogSample_0 = document.getElementById('og-btn0'); // origin sample track 0 button 
-  const ogSample_1 = document.getElementById('og-btn1'); 
-  const ogSample_2 = document.getElementById('og-btn2');  
-  const ogSample_3 = document.getElementById('og-btn3'); 
+  const ogSample_0 = document.getElementById('og-btn0'); // BUTTON: origin sample track 0  
+  const ogSample_1 = document.getElementById('og-btn1'); // BUTTON: origin sample track 1  
+  const ogSample_2 = document.getElementById('og-btn2'); // BUTTON: origin sample track 2  
+  const ogSample_3 = document.getElementById('og-btn3'); // BUTTON: origin sample track 3  
+
+  const closeSampleBtn_0 = document.getElementById('close-btn-0'); // BUTTON: Close origin sample track 0  
+  const closeSampleBtn_1 = document.getElementById('close-btn-1'); // BUTTON: Close origin sample track 1 
+  const closeSampleBtn_2 = document.getElementById('close-btn-2'); // BUTTON: Close origin sample track 2 
+  const closeSampleBtn_3 = document.getElementById('close-btn-3'); // BUTTON: Close origin sample track 3 
 
   const ogPopup_0 = this.document.getElementById('og-popup0'); // pop origin sample track 0
-  const ogPopup_1 = this.document.getElementById('og-popup1'); // pop origin sample track 0
-  const ogPopup_2 = this.document.getElementById('og-popup2'); // pop origin sample track 0
-  const ogPopup_3 = this.document.getElementById('og-popup3'); // pop origin sample track 0
+  const ogPopup_1 = this.document.getElementById('og-popup1'); // pop origin sample track 1
+  const ogPopup_2 = this.document.getElementById('og-popup2'); // pop origin sample track 2
+  const ogPopup_3 = this.document.getElementById('og-popup3'); // pop origin sample track 3
 
-  const slowBtn = this.document.getElementById('slow_btn');
-  const fastBtn = this.document.getElementById('fast_btn');
+  const slowBtn = this.document.getElementById('slow_btn'); // BUTTON: Slow tempo 
+  const fastBtn = this.document.getElementById('fast_btn'); // BUTTON: Fast tempo 
 
-  let slowBpm = 80;
-  let fastBpm = 300;
+  let slowBpm = 80; // Define the value of the slow tempo button
+  let fastBpm = 300; // Define the value of the fast tempo button
 
-  const genStart = document.getElementById('gen_start'); // Generate music at start button 
-  const scratchStart = document.getElementById('scratch_start'); // Start music from scratch at start button 
+  const genStart = document.getElementById('gen_start'); // BUTTON: Generate music at start  
+  const scratchStart = document.getElementById('scratch_start'); // BUTTON: Start music from scratch at start 
 
-  const body = document.body;
+  const howGenButn = document.getElementById('how-gen-btn'); // BUTTON: Open te popup explaining how this piece was generated
 
-  const howGenButn = document.getElementById('how-gen-btn');
-
-  const popupStart = document.getElementById('popup'); // Popup window at the launch of the app
-  const popupHow = document.getElementById('how-popup');
+  const popupStart = document.getElementById('popup'); // POPUP: window at the launch of the app
+  const popupHow = document.getElementById('how-popup'); // POPUP: 
 
   const totalRow = 4; // Total amount of rows in the sequencer
 
-  const closeHowBtn = document.getElementById('close-how-btn');
+  const closeHowBtn = document.getElementById('close-how-btn'); // BUTTON:
 
-  const closeSampleBtn_0 = document.getElementById('close-btn-0');
-  const closeSampleBtn_1 = document.getElementById('close-btn-1');
-  const closeSampleBtn_2 = document.getElementById('close-btn-2');
-  const closeSampleBtn_3 = document.getElementById('close-btn-3');
+
 
   // Create a variable to store the sampler relevant values for each of the tracks
-  let selectedValue0; // track 1
-  let selectedValue1; // track 2
-  let selectedValue2; // track 3
-  let selectedValue3; // track 4
+  let selectedValue0; // track 0 sample selection
+  let selectedValue1; // track 1 sample selection
+  let selectedValue2; // track 2 sample selection
+  let selectedValue3; // track 3 sample selection
 
   let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
   const numRows = 4; // number of rows
@@ -95,17 +98,16 @@ window.addEventListener('load', function () {
   let col = 0; // Initialize the column index
   let intervalId; // Initialize the intervalId
 
-  let tableReset1 = "";
-  let tableReset2 = "";
-  let tableReset3 = "";
+  let tableReset1 = ""; // Value of where table1 should go back when the loop is stopped
+  let tableReset2 = ""; // Value of where table2 should go back when the loop is stopped
+  let tableReset3 = ""; // Value of where table3 should go back when the loop is stopped
 
-  let gridHeight = 0;
-  let speedLoop = 0;
-  let animation = "";
+  let gridHeight = 960; // Height in pixels of each grid (to use to calculate the speed of the grids descending)
+  let speedLoop = 0; // Speed value of the grids descending
+  let animation = ""; // String value to store the full animation before passing it to CSS (optional)
+  let animStyle = ""; // String value to store which animation is used according to the size of the screen
 
-  let animStyle = "";
-
-  // Create a variable to store the sampler and audio
+  // Create a variable to store the sampler and audio for Tone.js
   let sampler;
   let audio;
 
@@ -131,7 +133,6 @@ window.addEventListener('load', function () {
   genStart.addEventListener('click', function() {
     popupStart.classList.replace('popup_start', 'popup_hidden'); // hide the popup
     genMuBtn.classList.remove('hidden-button');
-    body.classList.add
     initialSequence(); // generate the initial sequence
   });
 
@@ -536,35 +537,30 @@ function playLoop() {
       // For wide screens
       if (window.screen.width > 950) {
         loopPosition = "-1577px";
-        gridHeight = 960;
+        // gridHeight = 960;
+        animStyle = "looping ";
 
         tableReset1 = "-603px";
         tableReset2 = "341px";
         tableReset3 = "-1547px";
-
-        animStyle = "looping ";
       }
 
       // For smaller screens
       if (window.screen.width < 950) {
-
         loopPosition = "-1627px";
-        gridHeight = 960;
+        // gridHeight = 960;
+        animStyle = "loopingSmall ";
 
         tableReset1 = "-631px";
         tableReset2 = "368px";
         tableReset3 = "-1629px";
-
-        animStyle = "loopingSmall ";
       }
 
       speedLoop = (gridHeight) / tempoInput.value;
-      // console.log("Speed : " + speedLoop)
 
       /////////////   /////////////   /////////////   MOVE THE LOOP  /////////////   /////////////   /////////////   
 
       animation = animStyle + speedLoop + "s linear infinite";
-
       table1.style.animation = animation;
       table2.style.animation = animation;
       table3.style.animation = animation;
