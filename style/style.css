@@ -365,7 +365,7 @@ td.on {
   top: 40%;
   left: 42%;
   width: 400px;
-  height: 100px;
+  height: 80px;
   background-color:#ff0707c4;
   font-size: 15px;
 }
@@ -376,8 +376,8 @@ td.on {
 /* Start from scratch button in the start popup window */
 #scratch_start {
   position: fixed;
-  top: 50%;
-  left: 45%;
+  top: 52%;
+  left: 870px;
   font-size: 15px;
   background-color: transparent;
   color: white;
@@ -389,13 +389,13 @@ td.on {
 #slow_btn, #fast_btn {
   position: fixed;
   top: 30%;
-  width: 200px;
+  width: 180px;
   height: 50px;
 }
 
 /* Slow (tempo) button in the start popup window */
 #slow_btn {
-  left: 42%;
+  left: 760px;
   background-color: #ffae00b2;
 }
 #slow_btn:hover {
@@ -407,7 +407,7 @@ td.on {
 
 /* Fast (tempo) button in the start popup window */
 #fast_btn {
-  left: 49%;
+  left: 970px;
   background-color: #bfff00b3;
 }
 #fast_btn:hover {
