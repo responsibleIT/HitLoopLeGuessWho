@@ -13,7 +13,7 @@ h1 {
 /* Avoid any scrolling on all devices */
 html, body, main  {
   overflow: hidden;
-  height: 100%;
+  touch-action: none;
 }
 
 button {
