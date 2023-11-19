@@ -605,10 +605,11 @@ td.on {
     top: 40%;
   }
   nav {
-    top: 50%;
+    top: 45vh;
   }
   #close_menu {
-    top: 85%;
+    bottom: 3vh;
+    left: 40vw;
   }
   #play_mobile {
     display: initial;
@@ -631,6 +632,6 @@ td.on {
     transform: translateY(0) scale(1) rotate(270deg);
   }
   100% {
-    transform: translateY(1000px) scale(1) rotate(270deg);
+    transform: translateY(998px) scale(1) rotate(270deg);
   }
 }
