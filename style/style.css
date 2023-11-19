@@ -631,6 +631,6 @@ td.on {
     transform: translateY(0) scale(1) rotate(270deg);
   }
   100% {
-    transform: translateY(1002px) scale(1) rotate(270deg);
+    transform: translateY(1000px) scale(1) rotate(270deg);
   }
 }

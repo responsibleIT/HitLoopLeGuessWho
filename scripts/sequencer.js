@@ -558,7 +558,7 @@ function playLoop() {
         animStyle = "loopingSmall ";
 
         tableReset1 = "-631px";
-        tableReset2 = "366px";
+        tableReset2 = "367px";
         tableReset3 = "-1629px";
       }
 
@@ -570,7 +570,7 @@ function playLoop() {
       table1.style.animation = animation;
       table2.style.animation = animation;
       table3.style.animation = animation;
-
+      console.log(animation);
 
       let previousCol = 1; // variable to store the index of the previous column
       if (col == 0) { // if we are currently playing the first column (index 0), the previous column is the last one (index : total amount of coloums - 1)
