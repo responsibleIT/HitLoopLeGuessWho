@@ -102,7 +102,7 @@ window.addEventListener('load', function () {
   let tableReset2 = ""; // Value of where table2 should go back when the loop is stopped
   let tableReset3 = ""; // Value of where table3 should go back when the loop is stopped
 
-  let gridHeight = 0; // Height in pixels of each grid (to use to calculate the speed of the grids descending)
+  let gridHeight = 970; // Height in pixels of each grid (to use to calculate the speed of the grids descending)
   let speedLoop = 0; // Speed value of the grids descending
   let animation = ""; // String value to store the full animation before passing it to CSS (optional)
   let animStyle = ""; // String value to store which animation is used according to the size of the screen
@@ -546,7 +546,6 @@ function playLoop() {
       if (window.screen.width > 950) {
         loopPosition = "-1577px";
         animStyle = "looping ";
-        gridHeight = 960;
 
         tableReset1 = "-603px";
         tableReset2 = "341px";
@@ -557,7 +556,6 @@ function playLoop() {
       if (window.screen.width < 950) {
         loopPosition = "-1629px";
         animStyle = "loopingSmall ";
-        gridHeight = 960;
 
         tableReset1 = "-631px";
         tableReset2 = "367px";
