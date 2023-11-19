@@ -371,6 +371,7 @@ td.on {
   width: 400px;
   height: 80px;
   background-color:#ff0707c4;
+  color: #000000;
   font-size: 15px;
 }
 #gen_start:hover {
@@ -395,6 +396,7 @@ td.on {
   top: 30%;
   width: 180px;
   height: 50px;
+  color: #000000;
 }
 
 /* Slow (tempo) button in the start popup window */
@@ -436,6 +438,7 @@ td.on {
   position: absolute;
   left: 125px;
   top: 30%;
+  color: #000000;
 }
 
 /* Position of the clear button */
@@ -443,6 +446,7 @@ td.on {
   position: absolute;
   left: 125px;
   top: 36%;
+  color: #000000;
 }
 
 /* Side (main) menu properties */
