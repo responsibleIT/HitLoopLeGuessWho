@@ -28,7 +28,7 @@ window.addEventListener('load', function () {
 
   // Create button variables
   const loopBtn = document.getElementById('loop-btn'); // Loop button 
-  const loopMobileBtn = document.getElementById('mobile_play'); // play button to appear at the bottom of the grid on the mobile version
+  const loopMobileBtn = document.getElementById('play_mobile'); // play button to appear at the bottom of the grid on the mobile version
 
   const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
   const cells2 = document.querySelectorAll('.cell2'); // Cell (from the sequencer grid 2) 
@@ -633,74 +633,76 @@ function playLoop() {
   Tone.Transport.start();
   Tone.Transport.loop = true;
 }
-  
-  loopBtn.addEventListener('click', function () {
-    if (loopBtn.classList.contains('btn-med')) {
-      loopBtn.classList.remove('btn-med');
-      loopBtn.classList.add('btn-pos');
-      loopBtn.textContent = 'Play';
+  [loopBtn, loopMobileBtn].forEach(function(button) {
+    button.addEventListener('click', function () {
+      if (loopBtn.classList.contains('btn-med')) {
+        loopBtn.classList.remove('btn-med');
+        loopBtn.classList.add('btn-pos');
+        loopBtn.textContent = 'Play';
+        loopMobileBtn.textContent = 'Play';
 
-      table1.style.top = "50%";
-      table1.style.animation = "";
-      table1.style.marginTop = tableReset1;
+        table1.style.top = "50%";
+        table1.style.animation = "";
+        table1.style.marginTop = tableReset1;
 
-      table2.style.top = "50%";
-      table2.style.animation = "";
-      table2.style.marginTop = tableReset2;
+        table2.style.top = "50%";
+        table2.style.animation = "";
+        table2.style.marginTop = tableReset2;
 
-      table3.style.top = "50%";
-      table3.style.animation = "";
-      table3.style.marginTop = tableReset3;
+        table3.style.top = "50%";
+        table3.style.animation = "";
+        table3.style.marginTop = tableReset3;
 
-      isLoopPlaying = false;
-      Tone.Transport.stop();
-      removePlayingClass(numRows, numCols);
+        isLoopPlaying = false;
+        Tone.Transport.stop();
+        removePlayingClass(numRows, numCols);
 
-      clearInterval(intervalId); // clear the time interval
-      col = 0;
-    }
-
-    else if (loopBtn.classList.contains('btn-pos')) {
-      if (sampler === undefined) {
-        sampler = new Tone.Sampler({
-          urls: { //urls to the sample that are associated with the musical notes D2, E2, F2, G2 with Tone.JS. Each note represents a track in the sequencer
-            D2: sample_url +selectedValue3,
-            E2: sample_url +selectedValue2,
-            F2: sample_url +selectedValue1,
-            G2: sample_url +selectedValue0,
-          },
-          onload: () => {
-            console.log("Sampler loaded");
-          }
-        }).toDestination();
-      } 
-  
-      else {
-        // Update the sampler
-        sampler.dispose();
-        sampler = new Tone.Sampler({
-          urls: { //urls to the sample that are associated with the musical notes D2, E2, F2, G2 with Tone.JS. Each note represents a track in the sequencer
-                  D2: sample_url +selectedValue3,
-                  E2: sample_url +selectedValue2,
-                  F2: sample_url +selectedValue1,
-                  G2: sample_url +selectedValue0,
-                },
-                onload: () => {
-                              console.log("Sampler loaded");
-                }
-        }).toDestination();
+        clearInterval(intervalId); // clear the time interval
+        col = 0;
       }
-      loopBtn.classList.remove('btn-pos');
-      loopBtn.classList.add('btn-med');
-      loopBtn.textContent = 'Stop';
-  
-      Tone.start();
-      isLoopPlaying = true;
 
-      playLoop();
-    }  
+      else if (loopBtn.classList.contains('btn-pos')) {
+        if (sampler === undefined) {
+          sampler = new Tone.Sampler({
+            urls: { //urls to the sample that are associated with the musical notes D2, E2, F2, G2 with Tone.JS. Each note represents a track in the sequencer
+              D2: sample_url +selectedValue3,
+              E2: sample_url +selectedValue2,
+              F2: sample_url +selectedValue1,
+              G2: sample_url +selectedValue0,
+            },
+            onload: () => {
+              console.log("Sampler loaded");
+            }
+          }).toDestination();
+        } 
+    
+        else {
+          // Update the sampler
+          sampler.dispose();
+          sampler = new Tone.Sampler({
+            urls: { //urls to the sample that are associated with the musical notes D2, E2, F2, G2 with Tone.JS. Each note represents a track in the sequencer
+                    D2: sample_url +selectedValue3,
+                    E2: sample_url +selectedValue2,
+                    F2: sample_url +selectedValue1,
+                    G2: sample_url +selectedValue0,
+                  },
+                  onload: () => {
+                                console.log("Sampler loaded");
+                  }
+          }).toDestination();
+        }
+        loopBtn.classList.remove('btn-pos');
+        loopBtn.classList.add('btn-med');
+        loopBtn.textContent = 'Stop';
+        loopMobileBtn.textContent = 'Stop';
+    
+        Tone.start();
+        isLoopPlaying = true;
+
+        playLoop();
+      }  
+    });
   });
-  
   /* Function for when the user manually clicks on a cell in the sequencer to turn it on or off
   
   @param {Number} numRows: total amount of rows in a sequencer

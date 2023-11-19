@@ -52,7 +52,6 @@ body {
 
 /* Main */
 main {
-  /* display: flex; */
   flex-direction: row;
   margin-bottom: 30px;
   overflow: hidden;
@@ -195,19 +194,16 @@ button {
 }
 
 /* Sequence control buttons */
-/* Clear button properties */
 .btn-neg {
   background-color: #888888;
   width: 150px;
   height: 50px;
-  /* box-shadow: 0 4px #585454; */
 }
   .btn-neg:hover {
     background-color: #565656;
   }
   .btn-neg:active {
     background-color: #737373;
-    /* box-shadow: 0 0 #454545; */
   }
 
 /* Active play (Stop) button properties */
@@ -258,7 +254,6 @@ table {
 #grid {
   position: absolute;
   left: -10%;
-  /* transform: rotate(270deg); */
   top: 50%;
   margin-top: -603px; 
   animation: none;
@@ -309,8 +304,6 @@ tr:nth-of-type(4) td.on {
   background-color: #01d42b;
 }
 
-
-
 td.on {
   background-color: blue;
 }
@@ -338,7 +331,6 @@ td.on {
 /* Cells that are currently played turn white */
 .playing {
   background-color: white;
-  /* transition: 0.05s; */
 }
 
 /* Popup windows properties */
@@ -489,8 +481,16 @@ td.on {
   color: black;
 }
 
-/* ------------------ MEDIA QUERY ------------------ */
+#play_mobile {
+  position: fixed;
+  z-index: 1;
+  bottom: 3vh;
+  left: 36vw;
+  background-color:#902463;
+  display: none;
+}
 
+/* ------------------ MEDIA QUERY ------------------ */
 @media screen and (min-width: 2400px) {
   #grid, #grid2, #grid3 {
     left: 11%;
@@ -531,7 +531,7 @@ td.on {
     margin-top: 368px;
   }
   #grid3 {
-    margin-top: -1627px;
+    margin-top: -1629px;
   }
   #slow_btn, #fast_btn {
     width: 150px;
@@ -573,7 +573,7 @@ td.on {
     left: 43%;
   }
   #fast_btn {
-    left: 53%;
+    left: 52%;
   }
 }
 
@@ -619,6 +619,9 @@ td.on {
   }
   #close_menu {
     top: 85%;
+  }
+  #play_mobile {
+    display: initial;
   }
 }
 
