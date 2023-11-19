@@ -131,10 +131,9 @@ button {
   background-color: #c901d4;
   border-radius: 0%;
 }
-
-#how_gen_btn:hover {
-  color: white;
-}
+  #how_gen_btn:hover {
+    color: white;
+  }
 
 /* "How whas this music generated" popup */
 #how-popup {
@@ -180,10 +179,9 @@ button {
   padding: 20px;
   border-radius: 10%;
 }
-
-.og-btn:hover {
-  background-color: #753e5e;
-}
+  .og-btn:hover {
+    background-color: #753e5e;
+  }
 
 /* Sequence control buttons */
 .btn-neg {
@@ -520,7 +518,7 @@ td.on {
     margin-top: -631px;
   }
   #grid2 {
-    margin-top: 368px;
+    margin-top: 367px;
   }
   #grid3 {
     margin-top: -1629px;

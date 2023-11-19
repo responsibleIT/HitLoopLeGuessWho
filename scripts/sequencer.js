@@ -545,7 +545,6 @@ function playLoop() {
       // For wide screens
       if (window.screen.width > 950) {
         loopPosition = "-1577px";
-        // gridHeight = 960;
         animStyle = "looping ";
 
         tableReset1 = "-603px";
@@ -556,11 +555,10 @@ function playLoop() {
       // For smaller screens
       if (window.screen.width < 950) {
         loopPosition = "-1627px";
-        // gridHeight = 960;
         animStyle = "loopingSmall ";
 
         tableReset1 = "-631px";
-        tableReset2 = "368px";
+        tableReset2 = "367px";
         tableReset3 = "-1629px";
       }
 
