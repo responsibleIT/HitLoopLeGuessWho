@@ -13,7 +13,10 @@ h1 {
 /* Avoid any scrolling on all devices */
 body, html {
   overflow: hidden;
+  height: 100%
 }
+
+.zeldaMusicBtn {color: black;}
 
 /* Parameters for the body of the page */
 body {
@@ -549,10 +552,10 @@ td.on {
     height: 40px;
   }
   #slow_btn {
-    left: 44%;
+    left: 730px;
   }
   #fast_btn {
-    left: 52%;
+    left: 860px;
   }
 }
 
