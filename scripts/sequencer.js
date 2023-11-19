@@ -111,6 +111,14 @@ window.addEventListener('load', function () {
   let sampler;
   let audio;
 
+  function preventScroll(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+
+  window.addEventListener('scroll', preventScroll, { passive: false }); // prevent user from scrolling on any device
+  // window.removeEventListener('scroll', preventScroll, { passive: false }); // can be used to disable to scrolling prevention
 
   menuBtn.addEventListener('click', function() {
     // sideMenu.style.display = "none";
