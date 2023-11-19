@@ -123,6 +123,7 @@ button {
 /* Close button for the "How whas this music generated" popup */
 #close-how-btn {
   left: 40%;
+  margin-bottom: 20px;
 }
 
 /* "How whas this music generated" button to open the popup */
@@ -148,7 +149,8 @@ button {
   left: 25%;
   width: 400px;
   height: 250px;
-  font-size: 15px;
+  font-size: 1.7dvh;
+  overflow: scroll;
   background-color: #202020;
   color: white;
 }
@@ -380,8 +382,8 @@ td.on {
 /* Start from scratch button in the start popup window */
 #scratch_start {
   position: fixed;
-  top: 48%;
-  left: 45%;
+  top: 50%;
+  left: 49%;
   font-size: 15px;
   background-color: transparent;
   color: white;
@@ -412,7 +414,7 @@ td.on {
 
 /* Fast (tempo) button in the start popup window */
 #fast_btn {
-  left: 50%;
+  left: 54%;
   background-color: #bfff00b3;
 }
 #fast_btn:hover {
@@ -529,6 +531,16 @@ td.on {
   #grid3 {
     margin-top: -1627px;
   }
+  #slow_btn, #fast_btn {
+    width: 150px;
+    height: 40px;
+  }
+  #slow_btn {
+    left: 42%;
+  }
+  #fast_btn {
+    left: 56%;
+  }
   #menu_btn {
     width: 20px;
     height: 30px;
@@ -556,10 +568,10 @@ td.on {
     height: 40px;
   }
   #slow_btn {
-    left: 30%;
+    left: 43%;
   }
   #fast_btn {
-    left: 45%;
+    left: 51%;
   }
 }
 
@@ -604,7 +616,7 @@ td.on {
     top: 50%;
   }
   #close_menu {
-    top: 88%;
+    top: 85%;
   }
 }
 
