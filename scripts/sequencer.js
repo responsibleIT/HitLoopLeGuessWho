@@ -558,7 +558,7 @@ function playLoop() {
         animStyle = "loopingSmall ";
 
         tableReset1 = "-631px";
-        tableReset2 = "367px";
+        tableReset2 = "366px";
         tableReset3 = "-1629px";
       }
 
