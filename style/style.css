@@ -11,10 +11,9 @@ h1 {
 }
 
 /* Avoid any scrolling on all devices */
-body, html {
+html, body, main  {
   overflow: hidden;
-  height: 100%;
-  color: black;
+  /* height: 100%; */
 }
 
 .zeldaMusicBtn {color: black;}
