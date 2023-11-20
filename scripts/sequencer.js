@@ -619,6 +619,7 @@ function playLoop() {
   Tone.Transport.start();
   Tone.Transport.loop = true;
 }
+
   [loopBtn, loopMobileBtn].forEach(function(button) {
     button.addEventListener('click', function () {
       if (loopBtn.classList.contains('btn-med')) {

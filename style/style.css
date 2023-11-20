@@ -338,9 +338,10 @@ td.on {
 /* Start popup window properties */
 .popup_start {
   position: fixed;
+  display: flex;
   justify-content: center;
-  align-items: center;
-  width: 200vh;
+  /* align-items: center; */
+  width: 100vw;
   height: 100vh;
   z-index: 2;
   background-color: rgba(0, 0, 0, 0.664);
@@ -352,8 +353,8 @@ td.on {
 /* Generate music button in the start popup window */
 #gen_start {
   position: absolute;
-  top: 40%;
-  left: 42%;
+  top: 40vh;
+  /* left: 40vw; */
   width: 400px;
   height: 80px;
   background-color:#ff0707c4;
@@ -367,8 +368,8 @@ td.on {
 /* Start from scratch button in the start popup window */
 #scratch_start {
   position: fixed;
-  top: 50%;
-  left: 49%;
+  top: 50vh;
+  /* left: 45vw; */
   font-size: 15px;
   background-color: transparent;
   color: white;
@@ -379,7 +380,8 @@ td.on {
 
 #slow_btn, #fast_btn {
   position: fixed;
-  top: 30%;
+  top: 30vh;
+  margin-bottom: 100px;
   width: 180px;
   height: 50px;
   color: #000000;
@@ -387,7 +389,8 @@ td.on {
 
 /* Slow (tempo) button in the start popup window */
 #slow_btn {
-  left: 42%;
+  /* left: 40vw; */
+  margin-right: 185px;
   background-color: #ffae00b2;
 }
 #slow_btn:hover {
@@ -399,7 +402,8 @@ td.on {
 
 /* Fast (tempo) button in the start popup window */
 #fast_btn {
-  left: 54%;
+  margin-left: 185px;
+  /* left: 51vw; */
   background-color: #bfff00b3;
 }
 #fast_btn:hover {
@@ -528,12 +532,17 @@ td.on {
     width: 150px;
     height: 40px;
   }
-  #slow_btn {
+  #gen_start {
+    width: 350px;
+    height: 70px;
+    /* left: 43%; */
+  }
+  /* #slow_btn {
     left: 42%;
   }
   #fast_btn {
     left: 56%;
-  }
+  } */
   #menu_btn {
     width: 20px;
     height: 30px;
@@ -555,11 +564,7 @@ td.on {
   #how-popup {
     left: 10%;
   }
-  #gen_start {
-    width: 250px;
-    height: 70px;
-    left: 43%;
-  }
+ 
   #gen_music_btn, #how_gen_btn, #clear_sequencer, #loop-btn, .gen-btn, .og-btn {
     height: 50px;
   }
@@ -588,15 +593,15 @@ td.on {
     top: 45vh;
   }
   #slow_btn, #fast_btn {
-    width: 100px;
+    /* width: 100px; */
     height: 40px;
   }
-  #slow_btn {
+  /* #slow_btn {
     left: 43%;
   }
   #fast_btn {
     left: 52%;
-  }
+  } */
   #close_menu {
     bottom: -50vh;
     /* left: 40vw; */
