@@ -556,6 +556,7 @@ function playLoop() {
       if (window.screen.width < 950) {
         loopPosition = "-1629px";
         animStyle = "loopingSmall ";
+        gridHeight = 960; // Can be changed to adapt the speed on mobile devices. Should probably be increased
 
         tableReset1 = "-631px";
         tableReset2 = "367px";
@@ -563,7 +564,6 @@ function playLoop() {
       }
 
       speedLoop = (gridHeight) / tempoInput.value;
-      console.log("Speed : " + speedLoop)
 
       /////////////   /////////////   /////////////   MOVE THE LOOP  /////////////   /////////////   /////////////   
 

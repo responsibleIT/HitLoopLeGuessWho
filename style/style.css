@@ -36,7 +36,8 @@ body {
 /* Input space for the BPM */
 #tempo_input {
   position: relative;
-  left: 40%;
+  left: 140px;
+  width: 80px;
   top: 24vh;
   margin: 5px;
   background-color: white;
@@ -456,20 +457,20 @@ td.on {
 }
 
 #close_menu {
-  position: absolute;
+  position: relative;
   width: 50px;
   height: 50px;
-  bottom: 10vh;
-  left: 18vw;
+  bottom: -42vh;
+  right: -175px;
   background-color: #000000;
   color:white;
   border-radius: 100%;
   font-size: 20px;
 }
-#close_menu:hover {
-  background-color: white;
-  color: black;
-}
+  #close_menu:hover {
+    background-color: white;
+    color: black;
+  }
 
 #play_mobile {
   position: fixed;
@@ -538,6 +539,10 @@ td.on {
     height: 30px;
     border-radius: 10px;
   }
+  #close_menu {
+    /* bottom: -45vh; */
+    /* left: 22vw; */
+  }
 }
 
 @media screen and (max-width: 650px) {
@@ -555,6 +560,33 @@ td.on {
     height: 70px;
     left: 43%;
   }
+  #gen_music_btn, #how_gen_btn, #clear_sequencer, #loop-btn, .gen-btn, .og-btn {
+    height: 50px;
+  }
+  #gen_music_btn, #how_gen_btn, #clear_sequencer, #loop-btn {
+    width: 200px;
+  }
+  .gen-btn {
+    padding-top: 20px;
+  }
+  .og-btn {
+    padding-top: 9px;
+  }
+  #gen_music_btn {
+    top: 3%;
+  }
+  #gen_music_btn, #how_gen_btn, #loop-btn, #clear_sequencer {
+    left: 100px;
+  }
+  #loop-btn {
+    top: 31vh;
+  }
+  #clear_sequencer {
+    top: 39vh;
+  }
+  nav {
+    top: 45vh;
+  }
   #slow_btn, #fast_btn {
     width: 100px;
     height: 40px;
@@ -564,6 +596,10 @@ td.on {
   }
   #fast_btn {
     left: 52%;
+  }
+  #close_menu {
+    bottom: -50vh;
+    /* left: 40vw; */
   }
 }
 
@@ -578,38 +614,10 @@ td.on {
     font-size: 10px;
   }
   #side-menu {
-    width: 100%;
-  }
-  #gen_music_btn {
-    top: 3%;
-  }
-  #gen_music_btn, #how_gen_btn, #clear_sequencer, #loop-btn, .gen-btn, .og-btn {
-    height: 50px;
-  }
-  #gen_music_btn, #how_gen_btn, #clear_sequencer, #loop-btn {
-    width: 200px;
-  }
-  .gen-btn {
-    padding-top: 20px;
-  }
-  .og-btn {
-    padding-top: 9px;
+    width: 100vw;
   }
   #gen_music_btn, #how_gen_btn, #loop-btn, #clear_sequencer {
-    left: 22%;
-  }
-  #loop-btn {
-    top: 32%;
-  }
-  #clear_sequencer {
-    top: 40%;
-  }
-  nav {
-    top: 45vh;
-  }
-  #close_menu {
-    bottom: 3vh;
-    left: 40vw;
+    left: 25vw;
   }
   #play_mobile {
     display: initial;
