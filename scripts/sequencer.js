@@ -22,19 +22,17 @@ else {
 ///////////////// Pipeline for selecting samples /////////////////////////
 window.addEventListener('load', function () {
 
-  // Create button variables
   const loopBtn = document.getElementById('loop-btn'); // Loop button 
   const loopMobileBtn = document.getElementById('play_mobile'); // play button to appear at the bottom of the grid on the mobile version
-
-  const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
-  const cells2 = document.querySelectorAll('.cell2'); // Cell (from the sequencer grid 2) 
-  const cells3 = document.querySelectorAll('.cell3'); // Cell (from the sequencer grid3) 
-
   let tempoInput = document.getElementById('tempo_input'); // Tempo button 
 
   const table1 = document.getElementById("grid"); // first sequencer grid (on top of the white line)
   const table2 = document.getElementById("grid2"); // second sequencer grid (under the white line)
   const table3 = document.getElementById("grid3"); // third sequencer grid (on top of table1)
+
+  const cells = document.querySelectorAll('.cell'); // Cell (from the sequencer grid) 
+  const cells2 = document.querySelectorAll('.cell2'); // Cell (from the sequencer grid 2) 
+  const cells3 = document.querySelectorAll('.cell3'); // Cell (from the sequencer grid3) 
 
   const menuBtn = document.getElementById("menu_btn"); // button to open and close the menu
   const sideMenu = document.getElementById("side-menu"); // side menu
@@ -50,7 +48,6 @@ window.addEventListener('load', function () {
   const ogSample_1 = document.getElementById('og-btn1'); // BUTTON: origin sample track 1  
   const ogSample_2 = document.getElementById('og-btn2'); // BUTTON: origin sample track 2  
   const ogSample_3 = document.getElementById('og-btn3'); // BUTTON: origin sample track 3  
-
   const closeSampleBtn_0 = document.getElementById('close-btn-0'); // BUTTON: Close origin sample track 0  
   const closeSampleBtn_1 = document.getElementById('close-btn-1'); // BUTTON: Close origin sample track 1 
   const closeSampleBtn_2 = document.getElementById('close-btn-2'); // BUTTON: Close origin sample track 2 
@@ -75,21 +72,16 @@ window.addEventListener('load', function () {
   const popupStart = document.getElementById('popup'); // POPUP: window at the launch of the app
   const popupHow = document.getElementById('how-popup'); // POPUP: 
 
-  const totalRow = 4; // Total amount of rows in the sequencer
-
   const closeHowBtn = document.getElementById('close-how-btn'); // BUTTON:
 
-
-
-  // Create a variable to store the sampler relevant values for each of the tracks
-  let selectedValue0; // track 0 sample selection
+  let selectedValue0; // Create a variable to store the sampler relevant values for each of the tracks: track 0 sample selection
   let selectedValue1; // track 1 sample selection
   let selectedValue2; // track 2 sample selection
   let selectedValue3; // track 3 sample selection
 
   let isLoopPlaying = false; // boolean variable to state if the loop is playing or not. Initialised on false
-  const numRows = 4; // number of rows
-  const numCols = 16; // number of columns
+  const numRows = 4; // total number of rows
+  const numCols = 16; // total number of columns
 
   let col = 0; // Initialize the column index
   let intervalId; // Initialize the intervalId
@@ -103,18 +95,8 @@ window.addEventListener('load', function () {
   let animation = ""; // String value to store the full animation before passing it to CSS (optional)
   let animStyle = ""; // String value to store which animation is used according to the size of the screen
 
-  // Create a variable to store the sampler and audio for Tone.js
-  let sampler;
+  let sampler;   // Create a variable to store the sampler and audio for Tone.js
   let audio;
-
-  function preventScroll(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
-
-  window.addEventListener('scroll', preventScroll, { passive: false }); // prevent user from scrolling on any device
-  // window.removeEventListener('scroll', preventScroll, { passive: false }); // can be used to disable to scrolling prevention
 
   menuBtn.addEventListener('click', function() {
     // sideMenu.style.display = "none";
@@ -127,34 +109,33 @@ window.addEventListener('load', function () {
     }
   });
 
-  // Function to update the sampler with a new sample
+  /* Function to update the sampler with a new sample
+
+  @param selectedValue: element to select the sample for each track
+  @param sampleURL: URL of the sample that is taken as input
+  */
   function updateSampler(selectedValue, sampleURL) {
     sampler.releaseAll(); // Remove the existing sample
     sampler.add(selectedValue, sampleURL);  // Add the new sample
   }
 
-  // If the popup button to start with a generated button is selected
-  genStart.addEventListener('click', function() {
+  genStart.addEventListener('click', function() {   // If the popup button to start with a generated button is selected
     popupStart.classList.replace('popup_start', 'popup_hidden'); // hide the popup
     genMuBtn.classList.remove('hidden-button');
     initialSequence(); // generate the initial sequence
   });
-
-  closeMenuBtn.addEventListener('click', function() {
+  closeMenuBtn.addEventListener('click', function() { // close menu if press on the close button
     sideMenu.classList.replace('side-menu', 'popup_hidden'); // hide the popup
   })
-
-    // If the popup button to start from scratch is selected
-  scratchStart.addEventListener('click', function() {
+  scratchStart.addEventListener('click', function() { // If the popup button to start from scratch is selected
     popupStart.classList.replace('popup_start', 'popup_hidden'); // hide the popup (Grid starts empty)
     genMuBtn.classList.remove('hidden-button');
   });
 
-  slowBtn.addEventListener('click', function() {
+  slowBtn.addEventListener('click', function() { // Change the BPM to the slow value when the slow tempo button is activated
     tempoInput.value = slowBpm;
     columnTime = (60 / slowBpm) * 1000;
   })
-
   fastBtn.addEventListener('click', function() {
     tempoInput.value = fastBpm;
     columnTime = (60 / fastBpm) * 1000;
@@ -458,23 +439,20 @@ window.addEventListener('load', function () {
     const cell1 = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
     const cell2 = document.querySelector(`.cell2[data-row="${row}"][data-col="${col}"]`);
     const cell3 = document.querySelector(`.cell3[data-row="${row}"][data-col="${col}"]`);
-
-    // Sequencer grid 1
-    if (cell1.classList.contains('on')) {
+   
+    if (cell1.classList.contains('on')) { // Sequencer grid 1
       cell1.classList.remove('on');
     } 
     else {
       cell1.classList.add('on');
     }
-    // Sequencer grid 2
-    if (cell2.classList.contains('on')) {
+    if (cell2.classList.contains('on')) { // Sequencer grid 2
       cell2.classList.remove('on');
     } 
     else {
       cell2.classList.add('on');
     }
-    // Sequencer grid 3
-    if (cell3.classList.contains('on')) {
+    if (cell3.classList.contains('on')) { // Sequencer grid 3
       cell3.classList.remove('on');
     } 
     else {
@@ -502,6 +480,10 @@ window.addEventListener('load', function () {
 
 /////////////   /////////////   /////////////   PLAY STEP   /////////////   /////////////   /////////////   
 
+  /* Function to play one step of the sequencer grid 
+  @param {Number} col: the column that is being read for every track at the same time
+  @return {void}
+  */
   function playStep(col) {
     const playedNotes = {}; 
     const headerElements = document.querySelectorAll('.cell-header'); // Remove 'current' class from all header elements
@@ -526,37 +508,34 @@ window.addEventListener('load', function () {
 
 /////////////   /////////////   /////////////   MUSICAL LOOP  /////////////   /////////////   /////////////   
 
-/* Play loop function: Activated when the user presses on the play (loop) button.
-no param */
+/* Play loop function: Activated when the user presses on the play (loop) button. Initialises the information necessary for the animation, 
+resets the animation when reaching the end of the sequencer for every of the 3 grids
+@param {none}
+@return {void} */
 function playLoop() {
   intervalId = setInterval(function() {
     if (isLoopPlaying) { // Check if isLoopPlaying is true
       playStep(col);
       
       if (window.screen.width > 950) { // For wide screens
-        // loopPosition = "-1577px";
-        animStyle = "looping ";
+        animStyle = "looping "; // use the animation and positions (margin tops) for the dimensions defined for the bigger screen devices
         tableReset1 = "-603px";
         tableReset2 = "341px";
         tableReset3 = "-1547px";
       }
 
       if (window.screen.width < 950) { // For smaller screens
-        // loopPosition = "-1629px";
-        animStyle = "loopingSmall ";
+        animStyle = "loopingSmall "; // use the animation and positions (margin tops) for the dimensions defined for the smaller screen devices
         gridHeight = 960; // Can be changed to adapt the speed on mobile devices. Should probably be increased
         tableReset1 = "-631px";
         tableReset2 = "367px";
         tableReset3 = "-1629px";
       }
 
-      speedLoop = Math.round((((gridHeight) / tempoInput.value) * 1000)) / 1000;
-      console.log("Speed for loop : " + speedLoop)
-      console.log("gridHeight : " + gridHeight)
-      console.log("tempoInput : " + tempoInput.value)
+      speedLoop = Math.round((((gridHeight) / tempoInput.value) * 1000)) / 1000; // Speed of the animation
 
       /////////////   /////////////   /////////////   MOVE THE LOOP  /////////////   /////////////   /////////////   
-      animation = animStyle + speedLoop + "s linear infinite";
+      animation = animStyle + speedLoop + "s linear infinite"; // define the animation style and apply it to each table
       table1.style.animation = animation;
       table2.style.animation = animation;
       table3.style.animation = animation;
@@ -570,7 +549,7 @@ function playLoop() {
       }
 
       // for every row in the sequence
-      for (row = 0; row < totalRow; row++) {  
+      for (row = 0; row < numRows; row++) {  
         const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`); // define the current cell that is currently played
         const previousCell = document.querySelector(`.cell[data-row="${row}"][data-col="${(previousCol)}"]`); // define the cell right before the one that is currently played
 
@@ -588,7 +567,6 @@ function playLoop() {
           previousCell.classList.remove('playing');
           previousCell.classList.add('on'); 
         }
-
         if (cell2.classList.contains('on')) { // if the current cell played is "on", change it to "playing" (white) [GRID 2]
           cell2.classList.remove('on');
           cell2.classList.add('playing'); 
@@ -597,7 +575,6 @@ function playLoop() {
           previousCell2.classList.remove('playing');
           previousCell2.classList.add('on'); 
         }
-
         if (cell3.classList.contains('on')) { // if the current cell played is "on", change it to "playing" (white) [GRID 2]
           cell3.classList.remove('on');
           cell3.classList.add('playing'); 
@@ -622,30 +599,30 @@ function playLoop() {
   Tone.Transport.start();
   Tone.Transport.loop = true;
 }
-
+  // When the play button from the side menu or the one at the bottom of the screen on mobile devices is activated: Launch or stop the loop and Tone.js
   [loopBtn, loopMobileBtn].forEach(function(button) {
     button.addEventListener('click', function () {
       if (loopBtn.classList.contains('btn-med')) {
-        loopBtn.classList.remove('btn-med');
+        loopBtn.classList.remove('btn-med'); // Change the state and text of the button back to "Play"
         loopBtn.classList.add('btn-pos');
         loopBtn.textContent = 'Play';
         loopMobileBtn.textContent = 'Play';
 
-        table1.style.top = "50%";
+        table1.style.top = "50%"; // reset the sequencer grid 1
         table1.style.animation = "";
         table1.style.marginTop = tableReset1;
 
-        table2.style.top = "50%";
+        table2.style.top = "50%"; // reset the sequencer grid 2
         table2.style.animation = "";
         table2.style.marginTop = tableReset2;
 
-        table3.style.top = "50%";
+        table3.style.top = "50%"; // reset the sequencer grid 3
         table3.style.animation = "";
         table3.style.marginTop = tableReset3;
 
-        isLoopPlaying = false;
+        isLoopPlaying = false; // reset the loop and stop Tone.js
         Tone.Transport.stop();
-        removePlayingClass(numRows, numCols);
+        removePlayingClass(numRows, numCols); // remove the cells coloured in white (playing) and give them their original colours
 
         clearInterval(intervalId); // clear the time interval
         col = 0;
@@ -686,7 +663,7 @@ function playLoop() {
         loopBtn.textContent = 'Stop';
         loopMobileBtn.textContent = 'Stop';
     
-        Tone.start();
+        Tone.start(); // Start Tone.JS and start the playLoop function
         isLoopPlaying = true;
 
         playLoop();
@@ -698,7 +675,7 @@ function playLoop() {
   
   @param {Number} numRows: total amount of rows in a sequencer
   @param {Number} numCols: total amount of columns in a sequencer
-  @return {void}*/
+  @return {void} */
   function turnCellOn(cells) {
     cells.forEach(function (cell) {
       cell.addEventListener('click', function (event) {
@@ -716,7 +693,7 @@ function playLoop() {
   
   @param {Number} numRows: total amount of rows in a sequencer
   @param {Number} numCols: total amount of columns in a sequencer
-  @return {void}*/
+  @return {void} */
   function removeOnClass(numRows, numCols) {
     for (let row = 0; row <= numRows; row++) {
       for (let col = 0; col <= numCols; col++) {
@@ -741,9 +718,9 @@ function playLoop() {
   }
   /* Function to remove the 'playing' attribute of all cells that have it active
 
-  param numRows: total amount of rows in a sequencer
-  param numCols: total amount of columns in a sequencer
-  return: none */
+  @param {Number} numRows: total amount of rows in a sequencer
+  @param {Number} numCols: total amount of columns in a sequencer
+  @return {void} */
   function removePlayingClass(numRows, numCols) {
     for (let row = 0; row < numRows; row++) {
       for (let col = 0; col < numCols; col++) {
@@ -769,9 +746,9 @@ function playLoop() {
 
   /* Function to remove all the cells that are turned 'ON' on one row
 
-  param idRow: the row where "ON" cells are going to be removed
-  param numCols: amount of columns - usually same amount for each row
-  return: none */
+  @param {Number} idRow: the row where "ON" cells are going to be removed
+  @param {Number} numCols: amount of columns - usually same amount for each row
+  @return {void} */
   function removeOnClassRow(idRow, numCols) {
     for (let col = 0; col <= numCols; col++) {
       const cell = document.querySelector(`.cell[data-row="${idRow}"][data-col="${col}"]`);
@@ -796,13 +773,19 @@ function playLoop() {
     popupHow.classList.remove('popup_hidden');
     popupHow.classList.add('popup');
   });
-  closeHowBtn.addEventListener('click', function() { 
+  closeHowBtn.addEventListener('click', function() { // Close popup about how the composition was generated
     popupHow.classList.remove('popup');
     popupHow.classList.add('popup_hidden');
   });
 
   /////////////////   OPEN SAMPLE ORIGIN POPUP WINDOWS  ///////////////// 
 
+  /* Function to control the button to open / close popup about the origin of a sample of a track
+
+  @param {HTMLelement} button: Button used for the popup of the sample of a specific track
+  @param {HTMLelement} popup: Popup for the sample of a specific track
+  @param {Number} action: 1 to open or 0 to close the popup.
+  @return {void} */
   function popupSample(button, popup, action) {
     if (action == 1) {
       button.addEventListener('click', function() { // Show popup window about the sample origin of track 1 (index 0)
@@ -814,15 +797,12 @@ function playLoop() {
         popup.classList.replace('popup', 'popup_hidden');
       });
     }
-
   }
-
-  popupSample(ogSample_0, ogPopup_0, 1);
+  popupSample(ogSample_0, ogPopup_0, 1); // Calls of the popupSample function to open every track's sample origin popup
   popupSample(ogSample_1, ogPopup_1, 1);
   popupSample(ogSample_2, ogPopup_2, 1);
   popupSample(ogSample_3, ogPopup_3, 1);
-
-  popupSample(closeSampleBtn_0, ogPopup_0, 0);
+  popupSample(closeSampleBtn_0, ogPopup_0, 0); // Calls of the popupSample function to close every track's sample origin popup
   popupSample(closeSampleBtn_1, ogPopup_1, 0);
   popupSample(closeSampleBtn_2, ogPopup_2, 0);
   popupSample(closeSampleBtn_3, ogPopup_3, 0);
@@ -839,12 +819,17 @@ function playLoop() {
 
   /////////////////   CLEAN CELLS BY ROW   ///////////////// 
 
+  /* Function to generate a track when the button for that track is clicked
+
+  @param {HTMLelement} track: generate button for the track that is generated
+  @param {Number} row: index of the row that is generated
+  @return {void} */
   function genTrackOnClick(track, row) {
     track.addEventListener('click', function() {  // clear the first row of the sequence grid when the generate beat button is pressed
       removeOnClassRow(row, 15);
     });
   }
-  genTrackOnClick(genBeatBtn, 0);
+  genTrackOnClick(genBeatBtn, 0); // Call the function for each of the track
   genTrackOnClick(genChordBtn, 1);
   genTrackOnClick(genBassBtn, 2);
   genTrackOnClick(genMeloBtn, 3);
