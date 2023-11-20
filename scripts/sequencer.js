@@ -550,7 +550,10 @@ function playLoop() {
         tableReset3 = "-1629px";
       }
 
-      speedLoop = (gridHeight) / tempoInput.value;
+      speedLoop = Math.round((((gridHeight) / tempoInput.value) * 1000)) / 1000;
+      console.log("Speed for loop : " + speedLoop)
+      console.log("gridHeight : " + gridHeight)
+      console.log("tempoInput : " + tempoInput.value)
 
       /////////////   /////////////   /////////////   MOVE THE LOOP  /////////////   /////////////   /////////////   
       animation = animStyle + speedLoop + "s linear infinite";
