@@ -3,20 +3,16 @@
 const Url = 'https://api-hitloop.responsible-it.nl/';
 let sample_list_url;
 let sample_url; //sequence in sequencer is JSON and samples are MP3
-
-// Check if the url contains a parameter to select a sample pack
-const urlParams = new URLSearchParams(window.location.search);
+const urlParams = new URLSearchParams(window.location.search); // Check if the url contains a parameter to select a sample pack
 
 if (urlParams.has("A")) {
   sample_list_url = Url + 'samples_test_list?sample_pack=a';
   sample_url = Url+'test_samples?sample_pack=a&file=';
 }
-
 else if (urlParams.has("B")) {
   sample_list_url = Url + 'samples_test_list?sample_pack=b';
   sample_url = Url+'test_samples?sample_pack=b&file=';
 }
-
 else {
   sample_list_url = Url + 'samples_list';
   sample_url = Url+'samples?file=';
@@ -509,20 +505,15 @@ window.addEventListener('load', function () {
   function playStep(col) {
     const playedNotes = {}; 
     const headerElements = document.querySelectorAll('.cell-header'); // Remove 'current' class from all header elements
-
     headerElements.forEach((header) => {
       header.classList.remove('current');
     });
-    
     const currentHeader = document.querySelector(`.cell-header[data-col="${col}"]`); // Set the 'current' class for the header element corresponding to the given column
-
     if (currentHeader) {
       currentHeader.classList.add('current');
     }
-
     for (let row = 0; row < numRows; row++) {
       const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
-
       if (cell && cell.classList.contains('on')) {
         const note = notes[row];
         if (!playedNotes[note]) {
@@ -541,23 +532,19 @@ function playLoop() {
   intervalId = setInterval(function() {
     if (isLoopPlaying) { // Check if isLoopPlaying is true
       playStep(col);
-    
-      // For wide screens
-      if (window.screen.width > 950) {
-        loopPosition = "-1577px";
+      
+      if (window.screen.width > 950) { // For wide screens
+        // loopPosition = "-1577px";
         animStyle = "looping ";
-
         tableReset1 = "-603px";
         tableReset2 = "341px";
         tableReset3 = "-1547px";
       }
 
-      // For smaller screens
-      if (window.screen.width < 950) {
-        loopPosition = "-1629px";
+      if (window.screen.width < 950) { // For smaller screens
+        // loopPosition = "-1629px";
         animStyle = "loopingSmall ";
         gridHeight = 960; // Can be changed to adapt the speed on mobile devices. Should probably be increased
-
         tableReset1 = "-631px";
         tableReset2 = "367px";
         tableReset3 = "-1629px";
@@ -566,7 +553,6 @@ function playLoop() {
       speedLoop = (gridHeight) / tempoInput.value;
 
       /////////////   /////////////   /////////////   MOVE THE LOOP  /////////////   /////////////   /////////////   
-
       animation = animStyle + speedLoop + "s linear infinite";
       table1.style.animation = animation;
       table2.style.animation = animation;
@@ -618,12 +604,14 @@ function playLoop() {
           previousCell3.classList.add('on'); 
         }
       }
+    }
 
-      col++; // Increment the column count
-      if (col === numCols) { // if the column count is at the end of the grid (total amount of columns) reset it to 0
-        col = 0; 
-      }
-    }  
+    col++; // Increment the column count
+
+    if (col === numCols) { // if the column count is at the end of the grid (total amount of columns) reset it to 0
+      col = 0; 
+    }
+    // }  
   }, columnTime);
 
   // Set the loopEnd to repeat indefinitely
@@ -701,6 +689,7 @@ function playLoop() {
       }  
     });
   });
+
   /* Function for when the user manually clicks on a cell in the sequencer to turn it on or off
   
   @param {Number} numRows: total amount of rows in a sequencer
@@ -851,10 +840,8 @@ function playLoop() {
       removeOnClassRow(row, 15);
     });
   }
-
   genTrackOnClick(genBeatBtn, 0);
   genTrackOnClick(genChordBtn, 1);
   genTrackOnClick(genBassBtn, 2);
   genTrackOnClick(genMeloBtn, 3);
-
 });
