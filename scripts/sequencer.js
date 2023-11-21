@@ -90,7 +90,7 @@ window.addEventListener('load', function () {
   let tableReset2 = ""; // Value of where table2 should go back when the loop is stopped
   let tableReset3 = ""; // Value of where table3 should go back when the loop is stopped
 
-  let gridHeight = 960; // Height in pixels of each grid (to use to calculate the speed of the grids descending)
+  let gridHeight = 960; // Height in pixels of each grid (used to calculate the speed of the grids descending) CHANGE THIS VALUE TO ADAPT THE SPEED OF THE ANIMATION
   let speedLoop = 0; // Speed value of the grids descending
   let animation = ""; // String value to store the full animation before passing it to CSS (optional)
   let animStyle = ""; // String value to store which animation is used according to the size of the screen
@@ -679,7 +679,6 @@ function playLoop() {
   function turnCellOn(cells) {
     cells.forEach(function (cell) {
       cell.addEventListener('click', function (event) {
-        // console.log("This is the cell clicked : ", cell);
         toggleCell(event, cell);
       });
     });
@@ -777,8 +776,6 @@ function playLoop() {
     popupHow.classList.remove('popup');
     popupHow.classList.add('popup_hidden');
   });
-
-  /////////////////   OPEN SAMPLE ORIGIN POPUP WINDOWS  ///////////////// 
 
   /* Function to control the button to open / close popup about the origin of a sample of a track
 
